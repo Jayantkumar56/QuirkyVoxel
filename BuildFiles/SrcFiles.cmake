@@ -24,6 +24,8 @@ set(BASE_SOURCE_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Src")
 RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Application"
     "Application.h"
     "Application.cpp"
+    "GameLayer.h"
+    "Layer.h"
     "main.cpp"
     "Window.h"
     "Window.cpp"
