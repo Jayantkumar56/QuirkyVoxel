@@ -5,12 +5,18 @@
 
 
 #include "GameLayer.h"
+#include "World/WorldSettings.h"
 
 
-void GameLayer::OnAttach() {
+namespace Mct {
 
-}
+	GameLayer::GameLayer() :
+			m_Player(glm::vec3(0.0f)),
+			m_World(WorldSettings{ TerrainType::SuperFlat })
+	{}
 
-void GameLayer::OnUpdate() {
+	void GameLayer::OnUpdate() {
+
+	}
 
 }

@@ -14,59 +14,63 @@
 #include <string_view>
 
 
-class Window {
-public:
-	[[nodiscard]] static bool Initialise() noexcept;
-	static void Terminate() noexcept;
+namespace Mct {
 
-	[[nodiscard]] static std::optional<Window> Create(const std::string_view title,
-		                                              const int width,
-		                                              const int height) noexcept;
-public:
-	~Window();
+	class Window {
+	public:
+		[[nodiscard]] static bool Initialise() noexcept;
+		static void Terminate() noexcept;
 
-	// Non-copyable
-	Window(const Window&)            = delete;
-	Window& operator=(const Window&) = delete;
+		[[nodiscard]] static std::optional<Window> Create(const std::string_view title,
+														  const int width,
+														  const int height) noexcept;
+	public:
+		~Window();
 
-	inline Window(Window&& other) noexcept : m_WindowHandle(other.m_WindowHandle) {
-		other.m_WindowHandle = nullptr;
-	}
+		// Non-copyable
+		Window(const Window&) = delete;
+		Window& operator=(const Window&) = delete;
 
-	inline Window& operator=(Window&& other) noexcept {
-		if (this != &other) {
-			if (m_WindowHandle) {
-				glfwDestroyWindow(m_WindowHandle);
-			}
-
-			m_WindowHandle = other.m_WindowHandle;
+		Window(Window&& other) noexcept : m_WindowHandle(other.m_WindowHandle) {
 			other.m_WindowHandle = nullptr;
 		}
 
-		return *this;
-	}
+		Window& operator=(Window&& other) noexcept {
+			if (this != &other) {
+				if (m_WindowHandle) {
+					glfwDestroyWindow(m_WindowHandle);
+				}
 
-	[[nodiscard]] inline bool ShouldClose() const noexcept {
-		return glfwWindowShouldClose(m_WindowHandle);
-	}
+				m_WindowHandle = other.m_WindowHandle;
+				other.m_WindowHandle = nullptr;
+			}
 
-	inline void PollEvents() const noexcept {
-		glfwPollEvents();
-	}
+			return *this;
+		}
 
-	inline void SwapBuffers() const noexcept {
-		glfwSwapBuffers(m_WindowHandle);
-	}
+		[[nodiscard]] bool ShouldClose() const noexcept {
+			return glfwWindowShouldClose(m_WindowHandle);
+		}
 
-private:
-	[[nodiscard]] static bool InitialiseGlad() noexcept;
+		void PollEvents() const noexcept {
+			glfwPollEvents();
+		}
 
-	inline Window(GLFWwindow* windowHandle) noexcept : m_WindowHandle(windowHandle) {}
+		void SwapBuffers() const noexcept {
+			glfwSwapBuffers(m_WindowHandle);
+		}
 
-private:
-	static bool s_GLFWInitialised;
-	static bool s_GladInitialized;
+	private:
+		[[nodiscard]] static bool InitialiseGlad() noexcept;
 
-private:
-	GLFWwindow* m_WindowHandle;
-};
+		Window(GLFWwindow* windowHandle) noexcept : m_WindowHandle(windowHandle) {}
+
+	private:
+		static bool s_GLFWInitialised;
+		static bool s_GladInitialized;
+
+	private:
+		GLFWwindow* m_WindowHandle;
+	};
+
+}

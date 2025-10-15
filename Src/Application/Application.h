@@ -15,27 +15,31 @@
 #include <memory>
 
 
-class Application {
-public:
-	Application() noexcept;
-	~Application();
+namespace Mct {
 
-	void Run();
+    class Application {
+    public:
+        Application() noexcept;
+        ~Application();
 
-    template<typename T, typename... Args>
-    requires (std::derived_from<T, Layer> && std::constructible_from<T, Args...>)
-    T& PushLayer(Args&&... args) {
-        auto& up = m_LayerStack.emplace_back(
-            std::make_unique<T>(std::forward<Args>(args)...)
-        );
+        void Run();
 
-        up->OnAttach();
-        return static_cast<T&>(*up);
-    }
+        template<typename T, typename... Args>
+        requires (std::derived_from<T, Layer>&& std::constructible_from<T, Args...>)
+        T& PushLayer(Args&&... args) {
+            auto& up = m_LayerStack.emplace_back(
+                std::make_unique<T>(std::forward<Args>(args)...)
+            );
 
-private:
-	std::optional<Window> m_Window;
+            up->OnAttach();
+            return static_cast<T&>(*up);
+        }
 
-	// TODO: Move layer stack to it's own dedicated class
-	std::vector<std::unique_ptr<Layer>> m_LayerStack;
-};
+    private:
+        std::optional<Window> m_Window;
+
+        // TODO: Move layer stack to it's own dedicated class
+        std::vector<std::unique_ptr<Layer>> m_LayerStack;
+    };
+
+}

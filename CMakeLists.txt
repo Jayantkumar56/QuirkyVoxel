@@ -24,6 +24,14 @@ set(CURRENT_PROJ_NAME "Minecraft-Clone")
 # Create the main executable for our game
 add_executable(${CURRENT_PROJ_NAME} ${SOURCE_FILES})
 
+target_compile_definitions(${CURRENT_PROJ_NAME} PUBLIC
+    $<$<CONFIG:Debug>:MCT_DEBUG>
+    $<$<CONFIG:Release>:MCT_RELEASE>
+)
+
+# Set source directory "Src" and include directory
+target_include_directories(${CURRENT_PROJ_NAME} PRIVATE "Src")
+
 enable_release_optimizations_for(${CURRENT_PROJ_NAME})
 add_compiler_flags_for(${CURRENT_PROJ_NAME})
 

@@ -8,7 +8,7 @@
 
 
 int main() {
-    Application gameApp;
+    Mct::Application gameApp;
     gameApp.Run();
 
     return 0;

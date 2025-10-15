@@ -7,16 +7,20 @@
 #pragma once
 
 
-class Layer {
-public:
-    virtual ~Layer() = default;
+namespace Mct {
 
-    // Called once when the layer is attached to the application.
-    virtual void OnAttach() {}
+    class Layer {
+    public:
+        virtual ~Layer() = default;
 
-    // Called once when the layer is detached from the application.
-    virtual void OnDetach() {}
+        // Called once when the layer is attached to the application.
+        virtual void OnAttach() {}
 
-    // Called every frame.
-    virtual void OnUpdate() {}
-};
+        // Called once when the layer is detached from the application.
+        virtual void OnDetach() {}
+
+        // Called every frame.
+        virtual void OnUpdate() {}
+    };
+
+}

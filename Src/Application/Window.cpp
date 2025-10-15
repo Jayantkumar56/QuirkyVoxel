@@ -9,70 +9,74 @@
 #include <iostream>
 
 
-bool Window::s_GLFWInitialised = false;
-bool Window::s_GladInitialized = false;
+namespace Mct {
+
+	bool Window::s_GLFWInitialised = false;
+	bool Window::s_GladInitialized = false;
 
 
-bool Window::Initialise() noexcept {
-	if (!glfwInit()) {
-		std::cerr << "Failed to initialize GLFW" << std::endl;
-		s_GLFWInitialised = false;
-		return false;
+	bool Window::Initialise() noexcept {
+		if (!glfwInit()) {
+			std::cerr << "Failed to initialize GLFW" << std::endl;
+			s_GLFWInitialised = false;
+			return false;
+		}
+
+		s_GLFWInitialised = true;
+		return true;
 	}
 
-	s_GLFWInitialised = true;
-	return true;
-}
-
-void Window::Terminate() noexcept {
-	if (s_GLFWInitialised) {
-		glfwTerminate();
-	}
-}
-
-std::optional<Window> Window::Create(const std::string_view title, 
-	                                 const int width, 
-	                                 const int height) noexcept {
-	if (!s_GLFWInitialised) {
-		std::cerr << "GLFW not initialised." << std::endl;
-		return std::nullopt;
+	void Window::Terminate() noexcept {
+		if (s_GLFWInitialised) {
+			glfwTerminate();
+		}
 	}
 
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	std::optional<Window> Window::Create(const std::string_view title,
+		const int width,
+		const int height) noexcept {
+		if (!s_GLFWInitialised) {
+			std::cerr << "GLFW not initialised." << std::endl;
+			return std::nullopt;
+		}
 
-	GLFWwindow* window = glfwCreateWindow(width, height, title.data(), NULL, NULL);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	if (window == NULL) {
-		std::cerr << "Failed to create GLFW window" << std::endl;
-		glfwTerminate();
-		return std::nullopt;
+		GLFWwindow* window = glfwCreateWindow(width, height, title.data(), NULL, NULL);
+
+		if (window == NULL) {
+			std::cerr << "Failed to create GLFW window" << std::endl;
+			glfwTerminate();
+			return std::nullopt;
+		}
+
+		glfwMakeContextCurrent(window);
+
+		if (!s_GladInitialized && !InitialiseGlad()) {
+			return std::nullopt;
+		}
+
+		return Window(window);
 	}
 
-	glfwMakeContextCurrent(window);
-
-	if (!s_GladInitialized && !InitialiseGlad()) {
-		return std::nullopt;
+	Window::~Window() {
+		if (m_WindowHandle) {
+			glfwDestroyWindow(m_WindowHandle);
+			m_WindowHandle = nullptr;
+		}
 	}
 
-	return Window(window);
-}
+	bool Window::InitialiseGlad() noexcept {
+		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+			std::cerr << "Failed to initialize GLAD" << std::endl;
+			s_GladInitialized = false;
+			return false;
+		}
 
-Window::~Window() {
-	if (m_WindowHandle) {
-		glfwDestroyWindow(m_WindowHandle);
-		m_WindowHandle = nullptr;
-	}
-}
-
-bool Window::InitialiseGlad() noexcept {
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-		std::cerr << "Failed to initialize GLAD" << std::endl;
-		s_GladInitialized = false;
-		return false;
+		s_GladInitialized = true;
+		return true;
 	}
 
-	s_GladInitialized = true;
-	return true;
 }

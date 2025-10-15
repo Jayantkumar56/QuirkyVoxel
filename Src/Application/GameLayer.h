@@ -8,10 +8,21 @@
 
 
 #include "Layer.h"
+#include "Player/Player.h"
+#include "World/World.h"
 
 
-class GameLayer : public Layer {
-public:
-    virtual void OnAttach() override;
-    virtual void OnUpdate() override;
-};
+namespace Mct {
+
+    class GameLayer : public Layer {
+    public:
+        GameLayer();
+
+        virtual void OnUpdate() override;
+
+    private:
+        Player m_Player;
+        World  m_World;
+    };
+
+}
