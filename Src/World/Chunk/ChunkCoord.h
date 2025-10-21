@@ -55,9 +55,9 @@ namespace std {
 
     template <>
     struct hash<Mct::ChunkCoord> {
-        std::size_t operator()(const Mct::ChunkCoord& c) const noexcept {
-            std::size_t hx = std::hash<int>()(c.X);
-            std::size_t hz = std::hash<int>()(c.Z);
+        size_t operator()(const Mct::ChunkCoord& c) const noexcept {
+            size_t hx = std::hash<int>()(c.X);
+            size_t hz = std::hash<int>()(c.Z);
 
             // Combine the hashes.
             // This formula is inspired by boost::hash_combine

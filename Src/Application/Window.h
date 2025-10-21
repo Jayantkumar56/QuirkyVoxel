@@ -7,6 +7,8 @@
 #pragma once
 
 
+#include "Common/NonCopyable.h"
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -16,7 +18,7 @@
 
 namespace Mct {
 
-	class Window {
+	class Window : public NonCopyable {
 	public:
 		[[nodiscard]] static bool Initialise() noexcept;
 		static void Terminate() noexcept;
@@ -26,10 +28,6 @@ namespace Mct {
 														  const int height) noexcept;
 	public:
 		~Window();
-
-		// Non-copyable
-		Window(const Window&) = delete;
-		Window& operator=(const Window&) = delete;
 
 		Window(Window&& other) noexcept : m_WindowHandle(other.m_WindowHandle) {
 			other.m_WindowHandle = nullptr;

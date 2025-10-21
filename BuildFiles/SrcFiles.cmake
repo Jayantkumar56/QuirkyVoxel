@@ -35,11 +35,33 @@ RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Application"
 # Source files in Common
 RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Common"
     "Assert.h"
+    "NonCopyable.h"
 )
 
 # Source files in Player
 RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Player"
     "Player.h"
+)
+
+# Source files in Renderer/Mesh
+RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Renderer/Mesh"
+    "GpuMesh.h"
+    "Mesh.h"
+)
+
+# Source files in Renderer/Primitives
+RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Renderer/Primitives"
+    "BufferHandle.h"
+    "BufferLayout.h"
+    "IndexBuffer.h"
+    "IndexBuffer.cpp"
+    "Shader.h"
+    "Shader.cpp"
+    "Types.h"
+    "VertexArray.h"
+    "VertexArray.cpp"
+    "VertexBuffer.h"
+    "VertexBuffer.cpp"
 )
 
 # Source files in Utils
