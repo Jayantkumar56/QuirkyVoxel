@@ -15,8 +15,10 @@ namespace Mct {
 	enum  class BlockType : uint16_t {
 		Air,
 		Bedrock,
+		Water,
 		Dirt,
-		Grass
+		Grass,
+		COUNT                // Total number of Block types.
 	};
 
 }

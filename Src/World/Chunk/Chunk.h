@@ -30,7 +30,7 @@ namespace Mct {
 			m_Subchunks.reserve(WorldConst::SubchunkCount);
 
 			for (size_t i = 0; i < WorldConst::SubchunkCount; ++i) {
-				m_Subchunks.emplace_back(m_Blocks->SubchunkView(i));
+				m_Subchunks.emplace_back(m_Blocks->GetSubchunkForWrite(i));
 			}
 		}
 

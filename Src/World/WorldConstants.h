@@ -32,4 +32,9 @@ namespace Mct::WorldConst {
     inline constexpr size_t ChunkBlockCount    = ChunkSizeX    * ChunkSizeY    * ChunkSizeZ;
     inline constexpr size_t SubchunkBlockCount = SubchunkSizeX * SubchunkSizeY * SubchunkSizeZ;
 
+
+    // The render distance (measured in chunks).
+    // TODO: Consider a better place for this.
+    inline constexpr int RenderDistance = 8;
+
 }

@@ -35,6 +35,8 @@ RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Application"
 # Source files in Common
 RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Common"
     "Assert.h"
+    "BuddyAllocator.h"
+    "BuddyAllocator.cpp"
     "NonCopyable.h"
 )
 
@@ -53,6 +55,7 @@ RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Renderer/Mesh"
 RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Renderer/Primitives"
     "BufferHandle.h"
     "BufferLayout.h"
+    "CubeData.h"
     "IndexBuffer.h"
     "IndexBuffer.cpp"
     "Shader.h"
@@ -64,6 +67,14 @@ RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Renderer/Primitives"
     "VertexBuffer.cpp"
 )
 
+# Source files in Renderer
+RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Renderer"
+    "MeshManager.h"
+    "MeshManager.cpp"
+    "Renderer.h"
+    "Renderer.cpp"
+)
+
 # Source files in Utils
 RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Utils"
     "Math.h"
@@ -72,6 +83,7 @@ RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Utils"
 # Source files in World/Block
 RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/World/Block"
     "Block.h"
+    "BlockDataManager.h"
     "BlockType.h"
 )
 
@@ -80,7 +92,12 @@ RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/World/Chunk"
     "BlockStorage.h"
     "Chunk.h"
     "ChunkCoord.h"
+    "ChunkMeshGenerator.h"
+    "ChunkMeshGenerator.cpp"
+    "ChunkSpan.h"
     "Subchunk.h"
+    "SubchunkMesh.h"
+    "SubchunkRenderData.h"
 )
 
 # Source files in World/TerrainGeneration
@@ -93,6 +110,8 @@ RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/World/TerrainGenerati
 
 # Source files in World
 RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/World"
+    "ChunkManager.h"
+    "ChunkManager.cpp"
     "World.h"
     "World.cpp"
     "WorldConstants.h"

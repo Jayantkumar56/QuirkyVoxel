@@ -8,18 +8,29 @@
 
 
 #include "BlockType.h"
+#include "BlockDataManager.h"
+#include "Renderer/Primitives/CubeData.h"
 
 
 namespace Mct {
 
 	class Block {
 	public:
-		// Initailise with default air block
-		constexpr Block() noexcept : m_Type(BlockType::Air) {}
-
-		constexpr Block(BlockType type) noexcept : m_Type(type) {}
+		constexpr Block(BlockType type = BlockType::Air) noexcept : m_Type(type) {}
 
 		[[nodiscard]] constexpr BlockType GetType() const noexcept { return m_Type; }
+
+		[[nodiscard]] bool IsSolid()  const noexcept { return BlockDataManager::IsSolid(m_Type);       }
+		[[nodiscard]] bool IsWater()  const noexcept { return m_Type == BlockType::Water;              }
+		[[nodiscard]] bool HaveMesh() const noexcept { return BlockDataManager::BlockHaveMesh(m_Type); }
+
+		[[nodiscard]] uint32_t GetFaceTexture(CubeNormal faceNormal) const noexcept {
+			return BlockDataManager::GetFaceTexture(m_Type, faceNormal);
+		}
+
+		[[nodiscard]] const std::array<glm::uvec2, 4>& GetUV(CubeNormal faceNormal) const noexcept {
+			return BlockDataManager::GetUV(m_Type, faceNormal);
+		}
 
 	private:
 		BlockType m_Type;
