@@ -23,6 +23,8 @@ namespace Mct {
         std::optional<IndexBufferHandle> IboHandle;
 
         RenderPrimitive PrimitiveType = RenderPrimitive::Triangles;
+
+        uint64_t DebugId = 0;
     };
 
 }

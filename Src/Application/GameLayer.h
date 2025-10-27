@@ -10,6 +10,7 @@
 #include "Layer.h"
 #include "Player/Player.h"
 #include "World/World.h"
+#include "Renderer/GameRenderer.h"
 
 
 namespace Mct {
@@ -23,6 +24,7 @@ namespace Mct {
     private:
         Player m_Player;
         World  m_World;
+        GameRenderer m_Renderer;
     };
 
 }

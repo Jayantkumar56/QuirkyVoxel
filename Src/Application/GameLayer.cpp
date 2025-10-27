@@ -16,7 +16,9 @@ namespace Mct {
 	{}
 
 	void GameLayer::OnUpdate() {
+		//m_World.Update(m_Player.GetPostion());
 
+		//m_Renderer.Render(m_World, m_Player);
 	}
 
 }

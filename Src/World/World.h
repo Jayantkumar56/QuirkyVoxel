@@ -8,6 +8,7 @@
 
 
 #include "WorldSettings.h"
+#include "ChunkManager.h"
 #include "TerrainGeneration/TerrainGenerator.h"
 
 #include <memory>
@@ -15,14 +16,17 @@
 
 namespace Mct {
 
-	struct WorldSettings;
-
 	class World {
 	public:
 		World(const WorldSettings& settings);
 
+		void Update(glm::vec3 playerPos);
+
+		[[nodiscard]] ChunkManager& GetChunkManager() noexcept { return m_ChunkManager; }
+
 	private:
 		std::unique_ptr<TerrainGenerator> m_TerrainGenerator;
+		ChunkManager m_ChunkManager;
 	};
 
 }

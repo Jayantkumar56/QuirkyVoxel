@@ -43,14 +43,14 @@ namespace Mct {
                                               const uint32_t   texID,
                                               const CubeNormal normID) noexcept
         {
-            uint32_t data1 = (x & 0x1F)               |
-                             ((y & 0x1F) << 5)        |
-                             ((z & 0x1F) << 10)       |
+            uint32_t data1 = (x & 0x1F)                 |
+                             ((y & 0x1F) << 5)          |
+                             ((z & 0x1F) << 10)         |
                              ((yOffset & 0xF) << 15);
 
-            uint32_t data2 = (static_cast<uint32_t>(normID) & 0x7)  |
-                             ((u & 0x1F) << 3)                      |
-                             ((v & 0x1F) << 8)                      |
+            uint32_t data2 = (static_cast<uint32_t>(normID) & 0x7)      |
+                             ((u & 0x1F) << 3)                          |
+                             ((v & 0x1F) << 8)                          |
                              ((texID & 0x3FF) << 13);
 
             return TerrainVertex{ data1, data2 };
@@ -59,9 +59,9 @@ namespace Mct {
 
     // CPU-side mesh for a single chunk's geometry pass (e.g. Solid or Water).
     //
-    class SubchunkMesh : public Mesh {
+    class PackedTerrainMesh : public Mesh {
     public:
-        SubchunkMesh() :
+        PackedTerrainMesh() :
                 Mesh(CreateUploadDescriptor())
         {
             m_UploadDescriptor.Primitive = RenderPrimitive::Triangles;
@@ -111,24 +111,18 @@ namespace Mct {
             };
 
             return MeshUploadDesc{
-                .Primitive     { RenderPrimitive::Triangles},
-                .VertexCount   { 0                         },
-                .VertexLayout  { vertexLayoutGetter()      },
-                .IndexCount    { 0                         },
-                .IndexType     { IndexType::UInt32         },
-                .InstanceCount { 1                         }
+                .Primitive     { RenderPrimitive::Triangles },
+                .VertexCount   { 0                          },
+                .VertexLayout  { vertexLayoutGetter()       },
+                .IndexCount    { 0                          },
+                .IndexType     { IndexType::UInt32          },
+                .InstanceCount { 1                          }
             };
         }
 
     private:
         std::vector<uint32_t>      m_Indices;
         std::vector<TerrainVertex> m_Vertices;
-    };
-
-    struct SubchunkCpuMeshes {
-        SubchunkMesh SolidMesh;
-        SubchunkMesh WaterMesh;
-        // TODO: Have mesh for transparent blocks.
     };
 
 }

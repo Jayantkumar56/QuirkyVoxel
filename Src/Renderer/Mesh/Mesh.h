@@ -10,17 +10,13 @@
 #include "Renderer/Primitives/Types.h"
 #include "Renderer/Primitives/BufferLayout.h"
 
+#include <type_traits>
+
 
 namespace Mct {
 
     using MeshGpuId = uint32_t;
     inline constexpr MeshGpuId NullMeshGpuId = static_cast<MeshGpuId>(-1);
-
-    enum class MeshType : uint8_t { 
-        Generic,
-        QuadInstanced, 
-        TerrainPacked,
-    };
 
     struct MeshUploadDesc {
         RenderPrimitive Primitive     = RenderPrimitive::Triangles;
@@ -34,6 +30,11 @@ namespace Mct {
     // Base for CPU-side mesh objects.
     class Mesh {
     public:
+        Mesh(MeshUploadDesc&& uploadDescriptor)
+            noexcept(std::is_nothrow_move_constructible_v<MeshUploadDesc>) : 
+                m_UploadDescriptor(std::move(uploadDescriptor)) 
+        {}
+
         virtual ~Mesh() = default;
 
         // GPU id is set on successful upload (render thread).
@@ -44,7 +45,7 @@ namespace Mct {
         constexpr const MeshUploadDesc& GetDesc() const noexcept { return m_UploadDescriptor; }
 
         // Raw data pointers. Must remain valid until UploadMesh() returns.
-        // Returning nullptr is valid for missing buffer (e.g., instanced path with no index buffer).
+        // Returning nullptr is valid for missing buffer (e.g. instanced path with no index buffer).
         virtual const void* VertexData() const noexcept = 0;
         virtual const void* IndexData()  const noexcept = 0;
 

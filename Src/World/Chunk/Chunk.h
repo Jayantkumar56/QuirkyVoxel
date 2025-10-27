@@ -10,13 +10,9 @@
 #include "ChunkCoord.h"
 #include "Subchunk.h"
 #include "BlockStorage.h"
-#include "World/WorldConstants.h"
-#include "World/Block/Block.h"
-
-#include <glm/glm.hpp>
 
 #include <span>
-#include <vector>
+#include <memory>
 
 
 namespace Mct {
@@ -36,8 +32,8 @@ namespace Mct {
 
 		[[nodiscard]] ChunkCoord GetCoord() const noexcept { m_Coord; }
 
-		[[nodiscard]] ChunkSpan<const Block> GetBlocks() const noexcept { return { m_Blocks->View() }; }
-		[[nodiscard]] ChunkSpan<Block> GetBlocksForWrite()     noexcept { return { m_Blocks->View() }; }
+		[[nodiscard]] ChunkSpan<const Block> GetBlocks() const noexcept { return { m_Blocks->ViewForRead()  }; }
+		[[nodiscard]] ChunkSpan<Block> GetBlocksForWrite()     noexcept { return { m_Blocks->ViewForWrite() }; }
 
 		[[nodiscard]] std::span<const Subchunk> GetSubchunks() const noexcept { return m_Subchunks; }
 		[[nodiscard]] std::span<Subchunk> GetSubchunksForWrite()     noexcept { return m_Subchunks; }

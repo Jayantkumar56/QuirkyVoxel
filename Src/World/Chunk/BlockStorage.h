@@ -20,8 +20,8 @@ namespace Mct {
     public:
         constexpr BlockStorage() noexcept = default;
 
-        [[nodiscard]] constexpr ChunkSpan<Block>       View()       noexcept { return { m_Data.data() }; }
-        [[nodiscard]] constexpr ChunkSpan<const Block> View() const noexcept { return { m_Data.data() }; }
+        [[nodiscard]] constexpr ChunkSpan<Block>       ViewForWrite()       noexcept { return { m_Data.data() }; }
+        [[nodiscard]] constexpr ChunkSpan<const Block> ViewForRead()  const noexcept { return { m_Data.data() }; }
 
         [[nodiscard]] constexpr SubchunkSpan<Block> GetSubchunkForWrite(const size_t subchunkIdx) noexcept {
             MCT_ASSERT(subchunkIdx < WorldConst::SubchunkCount);

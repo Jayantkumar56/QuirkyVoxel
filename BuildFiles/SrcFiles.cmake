@@ -69,10 +69,12 @@ RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Renderer/Primitives"
 
 # Source files in Renderer
 RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Renderer"
+    "GameRenderer.h"
+    "GameRenderer.cpp"
     "MeshManager.h"
     "MeshManager.cpp"
-    "Renderer.h"
-    "Renderer.cpp"
+    "WorldRenderer.h"
+    "WorldRenderer.cpp"
 )
 
 # Source files in Utils
@@ -92,11 +94,13 @@ RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/World/Chunk"
     "BlockStorage.h"
     "Chunk.h"
     "ChunkCoord.h"
+    "ChunkMesh.h"
     "ChunkMeshGenerator.h"
     "ChunkMeshGenerator.cpp"
+    "ChunkNeighbor.h"
     "ChunkSpan.h"
+    "PackedTerrainMesh.h"
     "Subchunk.h"
-    "SubchunkMesh.h"
     "SubchunkRenderData.h"
 )
 

@@ -7,8 +7,9 @@
 #pragma once
 
 
-#include "BlockStorage.h"
 #include "World/Block/Block.h"
+#include "ChunkSpan.h"
+#include "Renderer/Mesh/GpuMesh.h"
 
 
 namespace Mct {
@@ -20,8 +21,14 @@ namespace Mct {
 		[[nodiscard]] SubchunkSpan<const Block> GetBlocks() const noexcept { return m_Blocks; }
 		[[nodiscard]] SubchunkSpan<Block> GetBlocksForWrite()     noexcept { return m_Blocks; }
 
+		void SetSolidMesh(GpuMesh solidMesh) { m_SolidMesh = solidMesh; }
+		void SetWaterMesh(GpuMesh waterMesh) { m_WaterMesh = waterMesh; }
+
 	private:
 		SubchunkSpan<Block> m_Blocks;
+
+		std::optional<GpuMesh> m_SolidMesh;
+		std::optional<GpuMesh> m_WaterMesh;
 	};
 
 }

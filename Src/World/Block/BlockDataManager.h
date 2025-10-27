@@ -8,6 +8,11 @@
 
 
 #include "BlockType.h"
+#include "Renderer/Primitives/CubeData.h"
+
+#include <glm/glm.hpp>
+
+#include <array>
 
 
 namespace Mct {
@@ -58,7 +63,7 @@ namespace Mct {
 
         [[nodiscard]] static const std::array<glm::uvec2, 4>& GetUV(BlockType blockType, CubeNormal faceNormal) noexcept {
             // TODO: Remove this temp and Return proper texture uv.
-            static inline std::array<glm::uvec2, 4> temp{};
+            static std::array<glm::uvec2, 4> temp{};
             return temp;
         }
 
