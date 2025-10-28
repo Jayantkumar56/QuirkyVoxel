@@ -46,6 +46,10 @@ namespace Mct {
 			return *this;
 		}
 
+		[[nodiscard]] GLFWwindow* GetHandle() const noexcept {
+			return m_WindowHandle;
+		}
+
 		[[nodiscard]] bool ShouldClose() const noexcept {
 			return glfwWindowShouldClose(m_WindowHandle);
 		}

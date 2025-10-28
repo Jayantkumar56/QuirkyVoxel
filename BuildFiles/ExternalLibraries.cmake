@@ -13,15 +13,19 @@ add_subdirectory( Vendor/glfw )
 add_subdirectory( Vendor/Glad )
 add_subdirectory( Vendor/glm  )
 
+include("BuildFiles/imgui.cmake")
+
 target_link_libraries(${CURRENT_PROJ_NAME} PRIVATE 
     glfw 
     Glad
     glm
+    imgui
 )
 
 set_target_properties(
     Glad 
     glm
+    imgui
     PROPERTIES FOLDER "Dependencies"
 )
 

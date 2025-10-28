@@ -36,6 +36,13 @@ namespace Mct {
         }
 
     private:
+        void InitImgui();
+        void TerminateImgui();
+
+        void BeginImgui();
+        void EndImgui();
+
+    private:
         std::optional<Window> m_Window;
 
         // TODO: Move layer stack to it's own dedicated class

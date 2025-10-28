@@ -101,7 +101,6 @@ RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/World/Chunk"
     "ChunkSpan.h"
     "PackedTerrainMesh.h"
     "Subchunk.h"
-    "SubchunkRenderData.h"
 )
 
 # Source files in World/TerrainGeneration
