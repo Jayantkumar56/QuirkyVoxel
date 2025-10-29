@@ -9,6 +9,8 @@
 
 namespace Mct {
 
+    class Event;
+
     class Layer {
     public:
         virtual ~Layer() = default;
@@ -21,6 +23,9 @@ namespace Mct {
 
         // Called every frame.
         virtual void OnUpdate() {}
+
+        // Called every frame.
+        virtual void OnEvent(Event& e) {}
     };
 
 }

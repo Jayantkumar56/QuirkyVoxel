@@ -12,12 +12,19 @@
 
 namespace Mct {
 
+	class Event;
+
 	// TODO: Remove this and create a dedicated camera class
 	class Camera {};
 
 	class Player {
 	public:
-		Player(glm::vec3 position) : m_Position(position) {}
+		Player(glm::vec3 position) : 
+				m_Position(position) 
+		{}
+
+		void OnUpdate();
+		bool OnEvent(Event& e);
 
 		[[nodiscard]] glm::vec3 GetPostion() const noexcept { return m_Position; }
 

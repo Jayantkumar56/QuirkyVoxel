@@ -12,24 +12,55 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include <optional>
 #include <string_view>
+#include <memory>
 
 
 namespace Mct {
+
+	struct WindowCallbacks {
+		// TODO: Implement these remaining callbacks
+		// 
+		//GLFWerrorfun                         = nullptr;
+		//GLFWwindowposfun                     = nullptr;
+		//GLFWwindowrefreshfun                 = nullptr;
+		//GLFWwindowfocusfun                   = nullptr;
+		//GLFWwindowiconifyfun                 = nullptr;
+		//GLFWwindowmaximizefun                = nullptr;
+		//GLFWframebuffersizefun               = nullptr;
+		//GLFWwindowcontentscalefun            = nullptr;
+		//GLFWcursorenterfun                   = nullptr;
+		//GLFWcharmodsfun                      = nullptr;
+		//GLFWdropfun                          = nullptr;
+		//GLFWjoyfun                           = nullptr;
+		//GLFWmonitorfun                       = nullptr;
+
+		GLFWwindowsizefun             WindowSize   = nullptr;
+		GLFWwindowclosefun            WindowClose  = nullptr;
+		GLFWkeyfun                    Key          = nullptr;
+		GLFWcharfun                   Char         = nullptr;
+		GLFWmousebuttonfun            MouseButton  = nullptr;
+		GLFWcursorposfun              CursorPos    = nullptr;
+		GLFWscrollfun                 Scroll       = nullptr;
+	};
 
 	class Window : public NonCopyable {
 	public:
 		[[nodiscard]] static bool Initialise() noexcept;
 		static void Terminate() noexcept;
 
-		[[nodiscard]] static std::optional<Window> Create(const std::string_view title,
-														  const int width,
-														  const int height) noexcept;
+		[[nodiscard]] static std::unique_ptr<Window> Create(const std::string_view title,
+														    const int width,
+														    const int height,
+														    std::unique_ptr<WindowCallbacks> eventCallbacks = nullptr) noexcept;
 	public:
 		~Window();
 
-		Window(Window&& other) noexcept : m_WindowHandle(other.m_WindowHandle) {
+		Window(Window&& other) noexcept : 
+				m_WindowHandle   ( other.m_WindowHandle              ),
+				m_MouseState     ( other.m_MouseState                ),
+				m_EventCallbacks ( std::move(other.m_EventCallbacks) )
+		{
 			other.m_WindowHandle = nullptr;
 		}
 
@@ -39,8 +70,10 @@ namespace Mct {
 					glfwDestroyWindow(m_WindowHandle);
 				}
 
-				m_WindowHandle = other.m_WindowHandle;
+				m_WindowHandle       = other.m_WindowHandle;
 				other.m_WindowHandle = nullptr;
+				m_MouseState         = other.m_MouseState;
+				m_EventCallbacks     = std::move(other.m_EventCallbacks);
 			}
 
 			return *this;
@@ -63,9 +96,27 @@ namespace Mct {
 		}
 
 	private:
+		struct MouseState {
+			double LastX   = 0.0;
+			double LastY   = 0.0;
+			bool   HasLast = false;
+		};
+
+	private:
 		[[nodiscard]] static bool InitialiseGlad() noexcept;
 
-		Window(GLFWwindow* windowHandle) noexcept : m_WindowHandle(windowHandle) {}
+		Window(GLFWwindow* windowHandle, std::unique_ptr<WindowCallbacks> eventCallbacks) noexcept : 
+				m_WindowHandle   ( windowHandle              ),
+				m_EventCallbacks ( std::move(eventCallbacks) )
+		{}
+
+		void SetKeyCallback();
+		void SetCharCallback();
+		void SetMouseButtonCallback();
+		void SetScrollCallback();
+		void SetCursorPosCallback();
+		void SetWindowSizeCallback();
+		void SetWindowCloseCallback();
 
 	private:
 		static bool s_GLFWInitialised;
@@ -73,6 +124,8 @@ namespace Mct {
 
 	private:
 		GLFWwindow* m_WindowHandle;
+		MouseState      m_MouseState;
+		std::unique_ptr<WindowCallbacks> m_EventCallbacks;
 	};
 
 }

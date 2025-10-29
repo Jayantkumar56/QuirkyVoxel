@@ -7,7 +7,6 @@
 #pragma once
 
 
-#include "Window.h"
 #include "Layer.h"
 
 #include <vector>
@@ -16,6 +15,9 @@
 
 
 namespace Mct {
+
+    class Event;
+    class Window;
 
     class Application {
     public:
@@ -36,14 +38,10 @@ namespace Mct {
         }
 
     private:
-        void InitImgui();
-        void TerminateImgui();
-
-        void BeginImgui();
-        void EndImgui();
+        void OnEvent(Event& e);
 
     private:
-        std::optional<Window> m_Window;
+        std::unique_ptr<Window> m_Window;
 
         // TODO: Move layer stack to it's own dedicated class
         std::vector<std::unique_ptr<Layer>> m_LayerStack;

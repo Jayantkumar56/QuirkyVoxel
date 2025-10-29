@@ -26,6 +26,8 @@ RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Application"
     "Application.cpp"
     "GameLayer.h"
     "GameLayer.cpp"
+    "ImguiContext.h"
+    "ImguiContext.cpp"
     "Layer.h"
     "main.cpp"
     "Window.h"
@@ -40,9 +42,19 @@ RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Common"
     "NonCopyable.h"
 )
 
+# Source files in Events
+RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Events"
+    "ApplicationEvents.h"
+    "Event.h"
+    "EventDispatcher.h"
+    "KeyboardEvents.h"
+    "MouseEvents.h"
+)
+
 # Source files in Player
 RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Player"
     "Player.h"
+    "Player.cpp"
 )
 
 # Source files in Renderer/Mesh

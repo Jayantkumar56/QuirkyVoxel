@@ -15,11 +15,12 @@
 
 namespace Mct {
 
-    class GameLayer : public Layer {
+    class GameLayer final : public Layer {
     public:
         GameLayer();
 
         virtual void OnUpdate() override;
+        virtual void OnEvent(Event& e) override;
 
     private:
         Player m_Player;
