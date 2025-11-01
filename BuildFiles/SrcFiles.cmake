@@ -53,6 +53,9 @@ RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Events"
 
 # Source files in Player
 RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Player"
+    "Camera.h"
+    "CameraController.h"
+    "CameraController.cpp"
     "Player.h"
     "Player.cpp"
 )
@@ -68,6 +71,8 @@ RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Renderer/Primitives"
     "BufferHandle.h"
     "BufferLayout.h"
     "CubeData.h"
+    "FrameBuffer.h"
+    "FrameBuffer.cpp"
     "IndexBuffer.h"
     "IndexBuffer.cpp"
     "Shader.h"

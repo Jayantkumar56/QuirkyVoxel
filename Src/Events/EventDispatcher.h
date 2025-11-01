@@ -36,7 +36,7 @@ namespace Mct {
 
 		// Handles certain type of event.
 		template<typename EventT, typename Function>
-			requires std::derived_from<EventT, Event> && std::invocable<Function&, EventT&>
+		requires std::derived_from<EventT, Event> && std::invocable<Function&, EventT&>
 		static bool Handle(Event& event, Function&& func)
 				noexcept(noexcept(std::invoke(std::forward<Function>(func), static_cast<EventT&>(event))))
 		{

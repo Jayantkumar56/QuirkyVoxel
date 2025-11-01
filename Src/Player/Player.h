@@ -7,32 +7,29 @@
 #pragma once
 
 
-#include <glm/glm.hpp>
+#include "CameraController.h"
 
 
 namespace Mct {
 
 	class Event;
 
-	// TODO: Remove this and create a dedicated camera class
-	class Camera {};
-
 	class Player {
 	public:
-		Player(glm::vec3 position) : 
-				m_Position(position) 
-		{}
+		Player();
 
-		void OnUpdate();
-		bool OnEvent(Event& e);
+		void OnEvent(Event& e);
+		void OnUpdate(float deltaTime);
 
-		[[nodiscard]] glm::vec3 GetPostion() const noexcept { return m_Position; }
-
-		[[nodiscard]] const Camera& GetCamera() noexcept { return m_Camera; }
+		const auto& GetCamera()   const { return m_CameraController.GetCamera();   }
+		const auto  GetPosition() const { return m_CameraController.GetPosition(); }
 
 	private:
-		Camera    m_Camera;
-		glm::vec3 m_Position;
+		// TODO: move this to a proper serializer system and read from file.
+		CameraController CreateController();
+
+	private:
+		CameraController m_CameraController;
 	};
 
 }

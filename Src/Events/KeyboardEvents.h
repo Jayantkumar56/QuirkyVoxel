@@ -53,7 +53,7 @@ namespace Mct {
 
 		int GetKeyCode() const noexcept { return m_KeyCode; }
 
-		CATEGORY_AND_TYPE(EventCategory::InputEvent | EventCategory::KeyboardEvent, EventType::KeyPressedEvent);
+		CATEGORY_AND_TYPE(EventCategory::InputEvent | EventCategory::KeyboardEvent, EventType::KeyReleasedEvent);
 
 	private:
 		int m_Mods;
