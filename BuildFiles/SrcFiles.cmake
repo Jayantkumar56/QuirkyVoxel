@@ -39,6 +39,8 @@ RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Common"
     "Assert.h"
     "BuddyAllocator.h"
     "BuddyAllocator.cpp"
+    "CubeData.h"
+    "IdGenerator.h"
     "NonCopyable.h"
 )
 
@@ -53,11 +55,16 @@ RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Events"
 
 # Source files in Player
 RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Player"
-    "Camera.h"
     "CameraController.h"
     "CameraController.cpp"
     "Player.h"
     "Player.cpp"
+)
+
+# Source files in Renderer/Camera
+RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Renderer/Camera"
+    "Camera.h"
+    "PerspectiveCamera.h"
 )
 
 # Source files in Renderer/Mesh
@@ -70,13 +77,15 @@ RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Renderer/Mesh"
 RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Renderer/Primitives"
     "BufferHandle.h"
     "BufferLayout.h"
-    "CubeData.h"
     "FrameBuffer.h"
     "FrameBuffer.cpp"
     "IndexBuffer.h"
     "IndexBuffer.cpp"
+    "IndirectBuffer.h"
     "Shader.h"
     "Shader.cpp"
+    "TextureArray.h"
+    "TextureArray.cpp"
     "Types.h"
     "VertexArray.h"
     "VertexArray.cpp"
@@ -96,6 +105,9 @@ RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Renderer"
 
 # Source files in Utils
 RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Utils"
+    "FileUtils.h"
+    "Image.h"
+    "Image.cpp"
     "Math.h"
 )
 
@@ -103,6 +115,7 @@ RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Utils"
 RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/World/Block"
     "Block.h"
     "BlockDataManager.h"
+    "BlockDataManager.cpp"
     "BlockType.h"
 )
 
