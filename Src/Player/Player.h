@@ -21,8 +21,8 @@ namespace Mct {
 		void OnEvent(Event& e);
 		void OnUpdate(float deltaTime);
 
-		const auto& GetCamera()   const { return m_CameraController.GetCamera();   }
-		const auto  GetPosition() const { return m_CameraController.GetPosition(); }
+		auto& GetCamera()              noexcept { return m_CameraController.GetCamera();   }
+		const auto GetPosition() const noexcept { return m_CameraController.GetPosition(); }
 
 	private:
 		// TODO: move this to a proper serializer system and read from file.

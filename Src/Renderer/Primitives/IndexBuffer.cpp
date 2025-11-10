@@ -13,35 +13,21 @@ namespace Mct {
 
 	IndexBuffer::IndexBuffer(const uint32_t* indices, const uint32_t count) noexcept {
 		m_Count = count;
-
-		glCreateBuffers(1, &m_RendererId);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererId);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(uint32_t), indices, GL_STATIC_DRAW);
-	}
-
-	IndexBuffer::~IndexBuffer() noexcept {
-		glDeleteBuffers(1, &m_RendererId);
+		Allocate(count * sizeof(uint32_t), indices, GL_DYNAMIC_STORAGE_BIT);
 	}
 
 	IndexBuffer::IndexBuffer(IndexBuffer&& other) noexcept :
-			m_Count      ( other.m_Count      ),
-			m_RendererId ( other.m_RendererId)
+		    GpuBuffer ( std::move(other) ),
+			m_Count   ( other.m_Count    )
 	{
-		other.m_Count      = 0;
-		other.m_RendererId = 0;
+		other.m_Count = 0;
 	}
 
 	IndexBuffer& IndexBuffer::operator=(IndexBuffer&& other) noexcept {
 		if (this != &other) {
-			if (m_RendererId > 0) {
-				glDeleteBuffers(1, &m_RendererId);
-			}
-
-			m_Count      = other.m_Count;
-			m_RendererId = other.m_RendererId;
-
-			other.m_Count      = 0;
-			other.m_RendererId = 0;
+			GpuBuffer::operator=(std::move(other));
+			m_Count        = other.m_Count;
+			other.m_Count  = 0;
 		}
 
 		return *this;

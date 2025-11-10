@@ -46,20 +46,30 @@ namespace Mct {
             static_cast<int>(std::floor(playerPos.z))
         );
 
+        const int loadDist   = WorldConst::LoadDistance;
         const int renderDist = WorldConst::RenderDistance;
 
         // --- Load Pass ---
-        for (int x = playerChunkPos.X - renderDist; x <= playerChunkPos.X + renderDist; ++x) {
-            for (int z = playerChunkPos.Z - renderDist; z <= playerChunkPos.Z + renderDist; ++z) {
+        for (int x = playerChunkPos.X - loadDist; x <= playerChunkPos.X + loadDist; ++x) {
+            for (int z = playerChunkPos.Z - loadDist; z <= playerChunkPos.Z + loadDist; ++z) {
                 ChunkCoord pos = { x, z };
 
                 // If the chunk doesn't exist, add it
                 if (!m_LoadedChunks.contains(pos)) {
-                    auto newChunk = std::make_unique<Chunk>(pos);
-
+                    auto newChunk = std::make_shared<Chunk>(pos);
                     m_TerrainGenerator.GenerateFor(*newChunk);
-
                     m_LoadedChunks[pos] = std::move(newChunk);
+                }
+
+                if (m_LoadedChunks[pos]->NeedRemesh()) {
+                    const int distFromPlayerX = std::abs(x - playerChunkPos.X);
+                    const int distFromPlayerZ = std::abs(z - playerChunkPos.Z);
+
+                    // Queue for Remesh only when in the render distance.
+                    if (distFromPlayerX <= renderDist && distFromPlayerZ <= renderDist) {
+                        m_MeshBuildQueue.insert(pos);
+                        m_LoadedChunks[pos]->SetMeshInProgress();
+                    }
                 }
             }
         }
@@ -71,7 +81,7 @@ namespace Mct {
             int distX = std::abs(chunkPos.X - playerChunkPos.X);
             int distZ = std::abs(chunkPos.Z - playerChunkPos.Z);
 
-            if (distX > renderDist || distZ > renderDist) {
+            if (distX > loadDist || distZ > loadDist) {
                 it = m_LoadedChunks.erase(it);
             }
             else {

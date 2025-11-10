@@ -9,26 +9,35 @@
 
 #include "World/Block/Block.h"
 #include "ChunkSpan.h"
-#include "Renderer/Mesh/GpuMesh.h"
+#include "ChunkGpuMesh.h"
+
+#include <glm/glm.hpp>
 
 
 namespace Mct {
 
 	class Subchunk {
 	public:
-		Subchunk(SubchunkSpan<Block> blocks) noexcept : m_Blocks(blocks) {}
+		Subchunk(glm::vec3 pos, SubchunkSpan<Block> blocks) noexcept : 
+				m_Position ( pos    ),
+				m_Blocks   ( blocks ) 
+		{}
 
 		[[nodiscard]] SubchunkSpan<const Block> GetBlocks() const noexcept { return m_Blocks; }
 		[[nodiscard]] SubchunkSpan<Block> GetBlocksForWrite()     noexcept { return m_Blocks; }
 
-		void SetSolidMesh(GpuMesh solidMesh) { m_SolidMesh = solidMesh; }
-		void SetWaterMesh(GpuMesh waterMesh) { m_WaterMesh = waterMesh; }
+		void SetMesh(SubchunkGpuMesh* mesh) noexcept { m_Mesh = mesh; }
+
+		bool HasSolidMesh() const noexcept { return m_Mesh && m_Mesh->SolidMesh.has_value(); }
+		const GpuMesh& GetSolidMesh() const noexcept { return *m_Mesh->SolidMesh; }
+
+		const glm::vec3& GetPosition() const noexcept { return m_Position; }
 
 	private:
+		glm::vec3           m_Position;
 		SubchunkSpan<Block> m_Blocks;
 
-		std::optional<GpuMesh> m_SolidMesh;
-		std::optional<GpuMesh> m_WaterMesh;
+		SubchunkGpuMesh* m_Mesh = nullptr;
 	};
 
 }

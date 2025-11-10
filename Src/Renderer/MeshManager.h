@@ -30,17 +30,19 @@ namespace Mct {
                     const size_t vertexBufferSize,
                     const size_t indexBufferSize,
                     const size_t vertexMinBlockSize,
-                    const size_t indexMinBlockSize) noexcept;
+                    const size_t indexMinBlockSize);
 
         // Uploads a CPU-side mesh to the GPU. Returns std::nullopt on allocation/upload failure.
-        [[nodiscard]] std::optional<GpuMesh> UploadMesh(const Mesh& mesh) noexcept;
+        [[nodiscard]] std::optional<GpuMesh> UploadMesh(const Mesh& mesh);
+
+        void FreeMesh(const GpuMesh& mesh);
 
         [[nodiscard]] const VertexArray& GetCommonVAO() const noexcept { return m_VertexArray; }
 
         [[nodiscard]] size_t GetVertexBufferSize() const noexcept { return m_VertexBufferSize; }
         [[nodiscard]] size_t GetIndexBufferSize()  const noexcept { return m_IndexBufferSize;  }
 
-        [[nodiscard]] const BufferLayout& GetVBOLayout() const noexcept { return m_VertexBuffer.GetLayout(); }
+        [[nodiscard]] const BufferLayout& GetVBOLayout() const noexcept { return m_VertexBuffer->GetLayout(); }
 
     private:
         void UploadVertexData(const void* data, size_t size, size_t offset) noexcept;
@@ -50,12 +52,14 @@ namespace Mct {
         size_t m_VertexBufferSize{};
         size_t m_IndexBufferSize{};
 
-        VertexBuffer m_VertexBuffer;
-        IndexBuffer  m_IndexBuffer;
+        std::shared_ptr<VertexBuffer> m_VertexBuffer;
+        std::shared_ptr<IndexBuffer>  m_IndexBuffer;
         VertexArray  m_VertexArray;
 
         BuddyAllocator m_VertexAllocator;
         BuddyAllocator m_IndexAllocator;
+
+        BufferLayoutId m_VBOLayoutId = 0;
     };
 
 }

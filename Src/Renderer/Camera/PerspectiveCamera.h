@@ -7,10 +7,10 @@
 #pragma once
 
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
+#include "Camera.h"
 
 #define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
 
 
@@ -26,7 +26,7 @@ namespace Mct {
 		glm::vec3 Forward;
 	};
 
-	class PerspectiveCamera {
+	class PerspectiveCamera : public Camera {
 	public:
 		PerspectiveCamera(const PerspectiveCameraSpecs& spec) noexcept :
 				m_FOVY                 ( spec.FOVY        ),
@@ -40,10 +40,11 @@ namespace Mct {
 				m_ViewProjectionMatrix ( m_ProjectionMatrix * m_ViewMatrix )
 		{}
 
+		virtual glm::mat4 GetViewProjection() const noexcept override { return m_ViewProjectionMatrix; }
+		virtual glm::vec3 GetPosition()       const noexcept override { return m_Position;             }
+
 		glm::mat4 GetViewMatrix()     const noexcept { return m_ViewMatrix;           }
-		glm::mat4 GetViewProjection() const noexcept { return m_ViewProjectionMatrix; }
 		glm::quat GetOrientation()    const noexcept { return m_Orientation;          }
-		glm::vec3 GetPosition()       const noexcept { return m_Position;             }
 		glm::vec3 GetRight()          const noexcept { return glm::normalize(m_Orientation * glm::vec3(1, 0, 0));  }
 		glm::vec3 GetForward()        const noexcept { return glm::normalize(m_Orientation * glm::vec3(0, 0, -1)); }
 		glm::vec3 GetUp()             const noexcept { return glm::normalize(m_Orientation * glm::vec3(0, 1, 0));  }

@@ -33,9 +33,10 @@ namespace Mct {
         [[nodiscard]] constexpr BufferLayoutId GetLayoutId() const noexcept { return m_Layout; }
 
     private:
-        size_t         m_Offset;
-        size_t         m_Size;
-        BufferLayoutId m_Layout;
+        size_t          m_Offset;
+        size_t          m_Size;
+        BufferLayoutId  m_Layout;
+        RenderPrimitive PrimitiveType = RenderPrimitive::Triangles;
     };
 
     // This is just a CPU-side handle. It owns NO GPU resources.

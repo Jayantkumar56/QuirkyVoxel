@@ -8,6 +8,8 @@
 
 #include <glad/glad.h>
 
+#include <iostream>
+
 
 namespace Mct {
 
@@ -55,25 +57,26 @@ namespace Mct {
 		return *this;
 	}
 
-	void VertexArray::SetIndexBuffer(IndexBuffer&& indexBuffer) noexcept {
+	void VertexArray::SetIndexBuffer(std::shared_ptr<IndexBuffer> indexBuffer) noexcept {
 		glBindVertexArray(m_RendererId);
-		indexBuffer.Bind();
+		indexBuffer->Bind();
 		m_IndexBuffer = std::move(indexBuffer);
+		glBindVertexArray(0);
 	}
 
-	void VertexArray::AddVertexBuffer(VertexBuffer&& vertexBuffer, const bool instanced) {
-		MCT_ASSERT(vertexBuffer.GetLayout().GetElements().size() && "Vertex Buffer has no layout!");
+	void VertexArray::AddVertexBuffer(std::shared_ptr<VertexBuffer> vertexBuffer, const bool instanced) {
+		MCT_ASSERT(vertexBuffer->GetLayout().GetElements().size() && "Vertex Buffer has no layout!");
 
 		glBindVertexArray(m_RendererId);
-		vertexBuffer.Bind();
+		vertexBuffer->Bind();
 
-		const auto& layout = vertexBuffer.GetLayout();
+		const auto& layout = vertexBuffer->GetLayout();
 		uint64_t offset = 0;
 
 		for (const auto& element : layout) {
 			if (element.IsIntType()) {
 				glEnableVertexAttribArray(m_Index);
-				glVertexAttribIPointer(m_Index, GetComponentCount(element.Type), GL_INT, layout.GetStride(), (const void*)offset);
+				glVertexAttribIPointer(m_Index, GetComponentCount(element.Type), GL_UNSIGNED_INT, layout.GetStride(), (const void*)offset);
 
 				if (instanced)
 					glVertexAttribDivisor(m_Index, 1);
@@ -118,6 +121,7 @@ namespace Mct {
 		}
 
 		m_VertexBuffers.push_back(std::move(vertexBuffer));
+		glBindVertexArray(0);
 	}
 
 }

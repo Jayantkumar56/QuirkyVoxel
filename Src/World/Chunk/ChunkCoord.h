@@ -22,10 +22,10 @@ namespace Mct {
         int Z;
 
         // Map world (block) XZ to ChunkCoord.
-        [[nodiscard]] static constexpr ChunkCoord FromWorldXZ(int wx, int wz) noexcept {
+        [[nodiscard]] static constexpr ChunkCoord FromWorldXZ(const int wx, const int wz) noexcept {
             return {
-                .X{ Utils::FloorDiv(wx, WorldConst::ChunkSizeX) },
-                .Z{ Utils::FloorDiv(wz, WorldConst::ChunkSizeZ) }
+                .X{ Utils::FloorDiv(wx, static_cast<int>(WorldConst::ChunkSizeX)) },
+                .Z{ Utils::FloorDiv(wz, static_cast<int>(WorldConst::ChunkSizeZ)) }
             };
         }
 
@@ -34,17 +34,17 @@ namespace Mct {
 
         [[nodiscard]] constexpr glm::ivec3 ToBlockCoord() const noexcept {
             return glm::ivec3{
-                X * WorldConst::ChunkSizeX,
+                X * static_cast<int>(WorldConst::ChunkSizeX),
                 0,
-                Z * WorldConst::ChunkSizeZ
+                Z * static_cast<int>(WorldConst::ChunkSizeZ)
             };
         }
 
         [[nodiscard]] constexpr glm::vec3 ToBlockCoordFloat() const noexcept {
             return glm::vec3{
-                static_cast<float>(X * WorldConst::ChunkSizeX),
+                static_cast<float>(X * static_cast<int>(WorldConst::ChunkSizeX)),
                 0.0f,
-                static_cast<float>(Z * WorldConst::ChunkSizeZ)
+                static_cast<float>(Z * static_cast<int>(WorldConst::ChunkSizeZ))
             };
         }
     };

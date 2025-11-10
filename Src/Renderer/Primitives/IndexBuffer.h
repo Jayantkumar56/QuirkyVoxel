@@ -7,17 +7,14 @@
 #pragma once
 
 
-#include "Common/NonCopyable.h"
-
-#include <cstdint>
+#include "GpuBuffer.h"
 
 
 namespace Mct {
 
-	class IndexBuffer : public NonCopyable {
+	class IndexBuffer : public GpuBuffer {
 	public:
 		IndexBuffer(const uint32_t* indices, const uint32_t count) noexcept;
-		~IndexBuffer() noexcept;
 
 		IndexBuffer(IndexBuffer&& other)            noexcept;
 		IndexBuffer& operator=(IndexBuffer&& other) noexcept;
@@ -26,8 +23,7 @@ namespace Mct {
 		void Unbind() const noexcept;
 
 	private:
-		uint32_t m_Count{};
-		uint32_t m_RendererId{};
+		uint32_t m_Count;
 	};
 
 }

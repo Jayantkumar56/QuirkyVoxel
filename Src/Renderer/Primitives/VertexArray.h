@@ -11,6 +11,7 @@
 #include "IndexBuffer.h"
 
 #include <optional>
+#include <memory>
 
 
 namespace Mct {
@@ -26,18 +27,18 @@ namespace Mct {
 		VertexArray(VertexArray&& other)            noexcept;
 		VertexArray& operator=(VertexArray&& other) noexcept;
 
-		void SetIndexBuffer(IndexBuffer&& indexBuffer) noexcept;
-		void AddVertexBuffer(VertexBuffer&& vertexBuffer, const bool instanced = false);
+		void SetIndexBuffer(std::shared_ptr<IndexBuffer> indexBuffer) noexcept;
+		void AddVertexBuffer(std::shared_ptr<VertexBuffer> vertexBuffer, const bool instanced = false);
 
-		const std::optional<IndexBuffer>& GetIndexBuffer()   const noexcept { return m_IndexBuffer;   }
-		std::span<const VertexBuffer>     GetVertexBuffers() const noexcept { return m_VertexBuffers; }
+		std::shared_ptr<IndexBuffer>&            GetIndexBuffer()   noexcept { return m_IndexBuffer;   }
+		std::span<std::shared_ptr<VertexBuffer>> GetVertexBuffers() noexcept { return m_VertexBuffers; }
 
 	protected:
 		uint32_t m_Index{};
 		uint32_t m_RendererId{};
 
-		std::optional<IndexBuffer> m_IndexBuffer;
-		std::vector<VertexBuffer>  m_VertexBuffers;
+		std::shared_ptr<IndexBuffer>               m_IndexBuffer;
+		std::vector<std::shared_ptr<VertexBuffer>> m_VertexBuffers;
 	};
 
 }

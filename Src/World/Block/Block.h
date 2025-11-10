@@ -9,7 +9,7 @@
 
 #include "BlockType.h"
 #include "BlockDataManager.h"
-#include "Renderer/Primitives/CubeData.h"
+#include "Common/CubeData.h"
 
 
 namespace Mct {
@@ -28,7 +28,7 @@ namespace Mct {
 			return BlockDataManager::GetFaceTexture(m_Type, faceNormal);
 		}
 
-		[[nodiscard]] const std::array<glm::uvec2, 4>& GetUV(CubeNormal faceNormal) const noexcept {
+		[[nodiscard]] const std::array<glm::vec2, 4>& GetUV(CubeNormal faceNormal) const noexcept {
 			return BlockDataManager::GetUV(m_Type, faceNormal);
 		}
 

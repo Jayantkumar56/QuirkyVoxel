@@ -23,8 +23,8 @@ namespace Mct {
                                  const SubChunkNeighbor& neighbor);
 
 
-    ChunkMeshes ChunkMeshGenerator::GenerateChunkMeshes(const ChunkMeshInput& neighbor) {
-        ChunkMeshes outMesh{};
+    ChunkMesh ChunkMeshGenerator::GenerateChunkMeshes(const ChunkMeshInput& neighbor) {
+        ChunkMesh outMesh{};
 
         MCT_ASSERT(
             (neighbor.Main  ||
@@ -57,14 +57,14 @@ namespace Mct {
                 .West   { neighbor.West.GetSubchunkForRead(yIdx)       }
             };
 
-            GenerateSubchunkMesh(subchunkNeighbor, &outMesh.SubchunkMeshes[yIdx]);
+            GenerateSubchunkMesh(subchunkNeighbor, &outMesh.SubchunkMesh[yIdx]);
         }
 
         return outMesh;
 	}
 
 	void ChunkMeshGenerator::GenerateSubchunkMesh(const SubChunkNeighbor& neighbor,
-												  SubchunkMeshes*         outMesh)
+												  SubchunkMesh*         outMesh)
 	{
         MCT_ASSERT(outMesh && "Cannot Write to null mesh, provide valid non null mesh.");
 
@@ -130,7 +130,7 @@ namespace Mct {
 
         const uint32_t texID = currentBlock.GetFaceTexture(face);
 
-        const std::array<glm::uvec2, 4>& uv = currentBlock.GetUV(face);
+        const std::array<glm::vec2, 4>& uv = currentBlock.GetUV(face);
 
         // TODO: Fetch correct offset from the block
         uint32_t yOffset = 0;

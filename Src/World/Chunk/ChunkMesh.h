@@ -15,14 +15,14 @@
 
 namespace Mct {
 
-    struct SubchunkMeshes {
+    struct SubchunkMesh {
         PackedTerrainMesh SolidMesh;
         PackedTerrainMesh WaterMesh;
         // TODO: Have mesh for transparent blocks.
     };
 
-    struct ChunkMeshes {
-        std::array<SubchunkMeshes, WorldConst::SubchunkCount> SubchunkMeshes;
+    struct ChunkMesh {
+        std::array<SubchunkMesh, WorldConst::SubchunkCount> SubchunkMesh;
     };
 
 }

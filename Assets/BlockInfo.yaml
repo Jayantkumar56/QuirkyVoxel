@@ -1,0 +1,91 @@
+textures:
+    dirt: &dirtTex Assets/Textures/Blocks/dirt.png
+    bedrock: &bedrockTex Assets/Textures/Blocks/bedrock.png
+
+uv_quad: &quadUV
+  - {u: 0, v: 0}
+  - {u: 1, v: 0}
+  - {u: 1, v: 1}
+  - {u: 0, v: 1}
+
+BlocksInfo:
+  - BlockType: Air
+    IsSolid: false
+    FaceTextures:
+        Top: *dirtTex
+        Bottom: *dirtTex
+        East: *dirtTex
+        West: *dirtTex
+        South: *dirtTex
+        North: *dirtTex
+    FaceUV:
+        Top: *quadUV
+        Bottom: *quadUV
+        East: *quadUV
+        West: *quadUV
+        South: *quadUV
+        North: *quadUV
+  - BlockType: Bedrock
+    IsSolid: true
+    FaceTextures:
+        Top: *bedrockTex
+        Bottom: *bedrockTex
+        East: *bedrockTex
+        West: *bedrockTex
+        South: *bedrockTex
+        North: *bedrockTex
+    FaceUV:
+        Top: *quadUV
+        Bottom: *quadUV
+        East: *quadUV
+        West: *quadUV
+        South: *quadUV
+        North: *quadUV
+  - BlockType: Water
+    IsSolid: true
+    FaceTextures:
+        Top: *dirtTex
+        Bottom: *dirtTex
+        East: *dirtTex
+        West: *dirtTex
+        South: *dirtTex
+        North: *dirtTex
+    FaceUV:
+        Top: *quadUV
+        Bottom: *quadUV
+        East: *quadUV
+        West: *quadUV
+        South: *quadUV
+        North: *quadUV
+  - BlockType: Dirt
+    IsSolid: true
+    FaceTextures:
+        Top: *dirtTex
+        Bottom: *dirtTex
+        East: *dirtTex
+        West: *dirtTex
+        South: *dirtTex
+        North: *dirtTex
+    FaceUV:
+        Top: *quadUV
+        Bottom: *quadUV
+        East: *quadUV
+        West: *quadUV
+        South: *quadUV
+        North: *quadUV
+  - BlockType: Grass
+    IsSolid: true
+    FaceTextures:
+        Top: *dirtTex
+        Bottom: *dirtTex
+        East: *dirtTex
+        West: *dirtTex
+        South: *dirtTex
+        North: *dirtTex
+    FaceUV:
+        Top: *quadUV
+        Bottom: *quadUV
+        East: *quadUV
+        West: *quadUV
+        South: *quadUV
+        North: *quadUV

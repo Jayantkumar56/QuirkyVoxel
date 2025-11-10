@@ -21,10 +21,6 @@ namespace Mct {
         // Handle to the block of memory in the massive IBO.
         // This is optional, as a mesh may not be indexed.
         std::optional<IndexBufferHandle> IboHandle;
-
-        RenderPrimitive PrimitiveType = RenderPrimitive::Triangles;
-
-        uint64_t DebugId = 0;
     };
 
 }

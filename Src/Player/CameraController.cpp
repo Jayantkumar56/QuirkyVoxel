@@ -5,6 +5,7 @@
 
 
 #include "CameraController.h"
+#include "Events/MouseEvents.h"
 #include "Events/KeyboardEvents.h"
 #include "Events/EventDispatcher.h"
 
@@ -16,6 +17,7 @@ namespace Mct {
 	void CameraController::OnEvent(Event& e) {
 		EventDispatcher::Handle<KeyPressedEvent>(e,  [this](KeyPressedEvent& e)  { return OnKeyPressed(e);  });
 		EventDispatcher::Handle<KeyReleasedEvent>(e, [this](KeyReleasedEvent& e) { return OnKeyReleased(e); });
+		EventDispatcher::Handle<MouseMovedEvent>(e,  [this](MouseMovedEvent& e)  { return OnMouseMoved(e);  });
 	}
 	
 	void CameraController::OnUpdate(float deltaTime) {
@@ -27,21 +29,20 @@ namespace Mct {
 			m_Camera.AddMovementInput(posOffset);
 		}
 
-		//if (Quirk::Input::IsKeyPressed(QK_Key_LeftMouseBtn))
-		//	CalcCameraOrientation();
-
-		//m_MousePos.x = Quirk::Input::MouseCurrentX();
-		//m_MousePos.y = Quirk::Input::MouseCurrentY();
+		CalcCameraOrientation(deltaTime);
 	}
 
-	void CameraController::CalcCameraOrientation() {
-		//glm::vec2 mousePos   ( Quirk::Input::MouseCurrentX(),  Quirk::Input::MouseCurrentY()  );
-		//glm::vec2 deltaMouse ( mousePos - m_MousePos );
+	void CameraController::CalcCameraOrientation(float deltaTime) {
+		if (m_MouseDelta.x == 0.0f && m_MouseDelta.y == 0.0f)
+			return;
 
-		//deltaMouse *= m_MouseSpeed * Quirk::Time::GetDeltaTime();
+		m_MouseDelta *= m_MouseSpeed * deltaTime;
 
-		//m_Camera.AddYawInput(deltaMouse.x);
-		//m_Camera.AddPitchInput(deltaMouse.y);
+		m_Camera.AddYawInput(m_MouseDelta.x);
+		m_Camera.AddPitchInput(m_MouseDelta.y);
+
+		m_MouseDelta.x = 0.0f;
+		m_MouseDelta.y = 0.0f;
 	}
 
 	void CameraController::CalculateVelocity(float deltaTime) {
@@ -66,19 +67,19 @@ namespace Mct {
 		glm::vec3 forward = glm::cross(up, right);
 		
 
-		if ( m_IsMovingForward  ) { acceleration += forward;  }
-		if ( m_IsMovingBackward ) { acceleration += -forward; }
-		if ( m_IsMovingLeft     ) { acceleration += right;    }
-		if ( m_IsMovingRight    ) { acceleration += -right;   }
-		if ( m_IsMovingUp       ) { acceleration += up;       }
-		if ( m_IsMovingDown     ) { acceleration -= up;       }
+		if ( m_IsMovingForward  ) { acceleration += forward; }
+		if ( m_IsMovingBackward ) { acceleration -= forward; }
+		if ( m_IsMovingLeft     ) { acceleration -= right;   }
+		if ( m_IsMovingRight    ) { acceleration += right;   }
+		if ( m_IsMovingUp       ) { acceleration += up;      }
+		if ( m_IsMovingDown     ) { acceleration -= up;      }
 
 		return acceleration;
 	}
 
-	bool CameraController::OnKeyPressed(KeyPressedEvent& e) {
+	bool CameraController::OnKeyPressed(KeyPressedEvent& e) noexcept {
 		int key = e.GetKeyCode();
-    
+		
 		if ( key == m_CameraControls.Forward  ) { m_IsMovingForward  = true; return true; }
 		if ( key == m_CameraControls.Backward ) { m_IsMovingBackward = true; return true; }
 		if ( key == m_CameraControls.Left     ) { m_IsMovingLeft     = true; return true; }
@@ -89,7 +90,7 @@ namespace Mct {
 		return false;
 	}
 
-	bool CameraController::OnKeyReleased(KeyReleasedEvent& e) {
+	bool CameraController::OnKeyReleased(KeyReleasedEvent& e) noexcept {
 		int key = e.GetKeyCode();
 
 		if ( key == m_CameraControls.Forward  ) { m_IsMovingForward  = false; return true; }
@@ -100,6 +101,13 @@ namespace Mct {
 		if ( key == m_CameraControls.Down     ) { m_IsMovingDown     = false; return true; }
 
 		return false;
+	}
+
+	bool CameraController::OnMouseMoved(MouseMovedEvent& e) noexcept {
+		m_MouseDelta.x = e.GetDeltaX();
+		m_MouseDelta.y = e.GetDeltaY();
+
+		return true;
 	}
 
 }

@@ -14,14 +14,13 @@ namespace Mct {
 
     struct ChunkMeshInput;
     struct SubChunkNeighbor;
-    struct SubchunkMeshes;
 
     class ChunkMeshGenerator {
     public:
-        static ChunkMeshes GenerateChunkMeshes(const ChunkMeshInput& neighbor);
+        static ChunkMesh GenerateChunkMeshes(const ChunkMeshInput& neighbor);
 
         static void GenerateSubchunkMesh(const SubChunkNeighbor& neighbor,
-                                         SubchunkMeshes*         outMeshes);
+                                         SubchunkMesh*         outMeshes);
     };
 
 }

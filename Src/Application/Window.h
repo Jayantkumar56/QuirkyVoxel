@@ -79,6 +79,9 @@ namespace Mct {
 			return *this;
 		}
 
+		[[nodiscard]] int GetWidth()  const noexcept { return m_Width;  }
+		[[nodiscard]] int GetHeight() const noexcept { return m_Height; }
+
 		[[nodiscard]] GLFWwindow* GetHandle() const noexcept {
 			return m_WindowHandle;
 		}
@@ -95,6 +98,10 @@ namespace Mct {
 			glfwSwapBuffers(m_WindowHandle);
 		}
 
+		void SetCursorMode(int mode) noexcept {
+			glfwSetInputMode(m_WindowHandle, GLFW_CURSOR, mode);
+		}
+
 	private:
 		struct MouseState {
 			double LastX   = 0.0;
@@ -105,7 +112,9 @@ namespace Mct {
 	private:
 		[[nodiscard]] static bool InitialiseGlad() noexcept;
 
-		Window(GLFWwindow* windowHandle, std::unique_ptr<WindowCallbacks> eventCallbacks) noexcept : 
+		Window(GLFWwindow* windowHandle, std::unique_ptr<WindowCallbacks> eventCallbacks, int width, int height) noexcept :
+				m_Width          ( width                     ),
+				m_Height         ( height                    ),
 				m_WindowHandle   ( windowHandle              ),
 				m_EventCallbacks ( std::move(eventCallbacks) )
 		{}
@@ -123,8 +132,11 @@ namespace Mct {
 		static bool s_GladInitialized;
 
 	private:
+		int m_Width;
+		int m_Height;
+
 		GLFWwindow* m_WindowHandle;
-		MouseState      m_MouseState;
+		MouseState  m_MouseState;
 		std::unique_ptr<WindowCallbacks> m_EventCallbacks;
 	};
 

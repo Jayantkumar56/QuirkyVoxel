@@ -8,7 +8,7 @@
 
 
 #include "Renderer/Mesh/Mesh.h"
-#include "Renderer/Primitives/CubeData.h"
+#include "Common/CubeData.h"
 
 #include <glm/glm.hpp> 
 
@@ -101,19 +101,19 @@ namespace Mct {
 
         constexpr bool IsEmpty() const noexcept { return m_Indices.empty(); }
 
-    private:
-        MeshUploadDesc CreateUploadDescriptor() const {
-            auto vertexLayoutGetter = +[]() {
-                return BufferLayout{
+        static BufferLayout GetBufferLayout() {
+            return BufferLayout{
                     { ShaderDataType::Int,  "i_Data1" },
                     { ShaderDataType::Int,  "i_Data2" }
-                };
             };
+        }
 
+    private:
+        MeshUploadDesc CreateUploadDescriptor() const {
             return MeshUploadDesc{
                 .Primitive     { RenderPrimitive::Triangles },
                 .VertexCount   { 0                          },
-                .VertexLayout  { vertexLayoutGetter()       },
+                .VertexLayout  { GetBufferLayout()          },
                 .IndexCount    { 0                          },
                 .IndexType     { IndexType::UInt32          },
                 .InstanceCount { 1                          }

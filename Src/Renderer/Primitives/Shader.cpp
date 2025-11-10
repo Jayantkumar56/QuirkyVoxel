@@ -10,6 +10,8 @@
 #include <glad/glad.h>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <iostream>
+
 
 namespace Mct {
 
@@ -50,7 +52,8 @@ namespace Mct {
 			glDeleteShader(vertexShader);
 			glDeleteShader(fragmentShader);
 
-			MCT_ASSERT(false && "Shader link failure with error {0}" && infoLog.data());
+			std::cerr << "Shader link failure with error " << infoLog.data();
+			MCT_ASSERT(false);
 			return;
 		}
 

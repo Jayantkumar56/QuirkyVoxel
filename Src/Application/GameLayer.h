@@ -19,13 +19,21 @@ namespace Mct {
     public:
         GameLayer();
 
-        virtual void OnUpdate() override;
-        virtual void OnEvent(Event& e) override;
+        virtual void OnAttach()                override;
+        virtual void OnEvent(Event& e)         override;
+        virtual void OnUpdate(float deltaTime) override;
 
     private:
+        void UpdateGameUI(float deltaTime);
+        void UpdateDebugUI(float deltaTime);
+
+    private:
+        bool   m_GameHaveFocus = false;
         Player m_Player;
         World  m_World;
         GameRenderer m_Renderer;
+
+        glm::vec2 m_GameViewportSize = { 0.0f, 0.0f };
     };
 
 }

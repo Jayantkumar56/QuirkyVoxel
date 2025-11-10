@@ -17,12 +17,6 @@
 namespace Mct {
 
     Application::Application() noexcept {
-        // Initialise the global GLFW state first.
-        if (!Window::Initialise()) {
-            std::cerr << "Failed to initialise GLFW!" << std::endl;
-            return;
-        }
-
         EventCallbackFn eventCallback = [] (Event& e, void* userData) {
             Application* app = static_cast<Application*>(userData);
             app->OnEvent(e);
@@ -38,7 +32,6 @@ namespace Mct {
     }
 
     Application::~Application() {
-        Window::Terminate(); // Clean up GLFW
         ImguiContext::Terminate();
     }
 
@@ -51,15 +44,17 @@ namespace Mct {
         PushLayer<GameLayer>();
 
         while (!m_Window->ShouldClose()) {
-            m_Window->PollEvents();
+            const double time      = glfwGetTime();
+            const float  deltaTime = static_cast<float>(time - m_LastFrameTime);
 
-            glClearColor(0.2f, 0.5f, 0.5f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT);
+            m_LastFrameTime = time;
+
+            m_Window->PollEvents();
 
             ImguiContext::Begin();
 
             for (const auto& layer : m_LayerStack) {
-                layer->OnUpdate();
+                layer->OnUpdate(deltaTime);
             }
 
             ImguiContext::End();

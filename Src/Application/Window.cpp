@@ -37,17 +37,17 @@ namespace Mct {
 	}
 
 	std::unique_ptr<Window> Window::Create(const std::string_view title,
-									     const int width,
-									     const int height,
-										 std::unique_ptr<WindowCallbacks> eventCallbacks) noexcept
+									       const int width,
+									       const int height,
+										   std::unique_ptr<WindowCallbacks> eventCallbacks) noexcept
 	{
 		if (!s_GLFWInitialised) {
 			std::cerr << "GLFW not initialised." << std::endl;
 			return nullptr;
 		}
 
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 		GLFWwindow* windowHandle = glfwCreateWindow(width, height, title.data(), NULL, NULL);
@@ -64,7 +64,7 @@ namespace Mct {
 			return nullptr;
 		}
 
-		std::unique_ptr<Window> window (new Window(windowHandle, std::move(eventCallbacks)));
+		std::unique_ptr<Window> window (new Window(windowHandle, std::move(eventCallbacks), width, height));
 		glfwSetWindowUserPointer(windowHandle, &(*window));
 
 		window->SetKeyCallback();
@@ -204,6 +204,9 @@ namespace Mct {
 	void Window::SetWindowSizeCallback() {
 		GLFWwindowsizefun callback = [] (GLFWwindow* window, int width, int height) {
 			auto* wind = static_cast<Window*>(glfwGetWindowUserPointer(window));
+
+			wind->m_Width  = width;
+			wind->m_Height = height;
 
 			if (wind->m_EventCallbacks && wind->m_EventCallbacks->WindowSize)
 				wind->m_EventCallbacks->WindowSize(window, width, height);

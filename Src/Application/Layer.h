@@ -11,7 +11,11 @@ namespace Mct {
 
     class Event;
 
+    class Application;
+
     class Layer {
+        friend class Application;
+
     public:
         virtual ~Layer() = default;
 
@@ -22,10 +26,15 @@ namespace Mct {
         virtual void OnDetach() {}
 
         // Called every frame.
-        virtual void OnUpdate() {}
+        virtual void OnEvent(Event& e) {}
 
         // Called every frame.
-        virtual void OnEvent(Event& e) {}
+        virtual void OnUpdate(float deltaTime) {}
+
+        Application* GetApp() noexcept { return m_App; }
+
+    private:
+        Application* m_App = nullptr;
     };
 
 }

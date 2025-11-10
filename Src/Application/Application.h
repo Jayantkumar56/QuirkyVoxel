@@ -10,7 +10,6 @@
 #include "Layer.h"
 
 #include <vector>
-#include <type_traits>
 #include <memory>
 
 
@@ -29,13 +28,16 @@ namespace Mct {
         template<typename T, typename... Args>
         requires (std::derived_from<T, Layer>&& std::constructible_from<T, Args...>)
         T& PushLayer(Args&&... args) {
-            auto& up = m_LayerStack.emplace_back(
+            auto& layer = m_LayerStack.emplace_back(
                 std::make_unique<T>(std::forward<Args>(args)...)
             );
 
-            up->OnAttach();
-            return static_cast<T&>(*up);
+            layer->m_App = this;
+            layer->OnAttach();
+            return static_cast<T&>(*layer);
         }
+
+        Window& GetWindow() noexcept { return *m_Window; }
 
     private:
         void OnEvent(Event& e);
@@ -45,6 +47,8 @@ namespace Mct {
 
         // TODO: Move layer stack to it's own dedicated class
         std::vector<std::unique_ptr<Layer>> m_LayerStack;
+
+        double m_LastFrameTime = 0.0;
     };
 
 }

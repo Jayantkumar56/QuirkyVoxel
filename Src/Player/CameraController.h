@@ -7,13 +7,14 @@
 #pragma once
 
 
-#include "Camera.h"
+#include "Renderer/Camera/PerspectiveCamera.h"
 
 
 namespace Mct {
 
 	class Event;
 
+	class MouseMovedEvent;
 	class KeyPressedEvent;
 	class KeyReleasedEvent;
 	
@@ -40,7 +41,7 @@ namespace Mct {
 				m_Up             ( camSpec.Up     ),
 				m_Velocity       ( 0.0f           ),
 				m_MousePos       ( 0.0f           ),
-				m_MouseSpeed     ( 5.0f           ),
+				m_MouseSpeed     ( 6.0f           ),
 				m_Camera         ( camSpec        ),
 				m_CameraControls ( controls       ),
 				m_ControllerSpec ( controllerSpec )
@@ -49,8 +50,8 @@ namespace Mct {
 		void OnEvent(Event& e);
 		void OnUpdate(float deltaTime);
 
-		const auto& GetCamera()   const noexcept { return m_Camera;               }
-		const auto  GetPosition() const noexcept { return m_Camera.GetPosition(); }
+		auto& GetCamera()              noexcept { return m_Camera;               }
+		const auto GetPosition() const noexcept { return m_Camera.GetPosition(); }
 
 		void OnWindowResized(uint16_t width, uint16_t height) { 
 			m_Camera.SetAspectRatio(float(width) / float(height)); 
@@ -58,11 +59,12 @@ namespace Mct {
 
 	private:
 		void CalculateVelocity(float deltaTime);
-		void CalcCameraOrientation();
+		void CalcCameraOrientation(float deltaTime);
 		glm::vec3 CalculateAcceleration() const;
 
-		bool OnKeyPressed(KeyPressedEvent& e);
-		bool OnKeyReleased(KeyReleasedEvent& e);
+		bool OnKeyPressed(KeyPressedEvent& e)   noexcept;
+		bool OnKeyReleased(KeyReleasedEvent& e) noexcept;
+		bool OnMouseMoved(MouseMovedEvent& e)   noexcept;
 
 	private:
 		glm::vec3 m_Up;
@@ -80,6 +82,9 @@ namespace Mct {
 		bool m_IsMovingRight    = false;
 		bool m_IsMovingUp       = false;
 		bool m_IsMovingDown     = false;
+		bool m_FirstMouse       = true;
+
+		glm::vec2 m_MouseDelta{};
 	};
 
 }

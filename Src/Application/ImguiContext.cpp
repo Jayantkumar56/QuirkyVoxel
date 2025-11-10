@@ -38,7 +38,7 @@ namespace Mct {
         style.ScaleAllSizes(mainScale);
         style.FontScaleDpi = mainScale;
 
-        const char* glsl_version = "#version 450 core";
+        const char* glsl_version = "#version 460 core";
         ImGui_ImplGlfw_InitForOpenGL(window, false);
         ImGui_ImplOpenGL3_Init(glsl_version);
 	}
@@ -53,6 +53,8 @@ namespace Mct {
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
+
+        //ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport());
 	}
 
 	void ImguiContext::End() {
@@ -68,8 +70,6 @@ namespace Mct {
     std::unique_ptr<WindowCallbacks> ImguiContext::GetEventCallbacks() {
         std::unique_ptr<WindowCallbacks> eventCallbacks = std::make_unique<WindowCallbacks>();
 
-        //eventCallbacks->WindowSize  = ;
-        //eventCallbacks->WindowClose = ;
         eventCallbacks->Key         = ImGui_ImplGlfw_KeyCallback;
         eventCallbacks->Char        = ImGui_ImplGlfw_CharCallback;
         eventCallbacks->MouseButton = ImGui_ImplGlfw_MouseButtonCallback;

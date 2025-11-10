@@ -10,6 +10,8 @@
 #include "Chunk/Chunk.h"
 #include "Chunk/ChunkNeighbor.h"
 
+#include <glm/glm.hpp>
+
 #include <memory>
 #include <array>
 #include <set>
@@ -30,6 +32,8 @@ namespace Mct {
 				m_TerrainGenerator(generator)
 		{}
 
+		auto& GetChunks() { return m_LoadedChunks; }
+
 		std::shared_ptr<Chunk>        GetChunk(ChunkCoord pos);
 		std::optional<ChunkMeshInput> GetChunkMeshInputData(ChunkCoord pos);
 
@@ -40,7 +44,7 @@ namespace Mct {
 
 	private:
 		static inline std::array<Block, WorldConst::SubchunkBlockCount> s_EmptySubchunkData;
-		static inline Subchunk s_EmptySubchunk{ ChunkManager::s_EmptySubchunkData.data() };
+		static inline Subchunk s_EmptySubchunk{ glm::vec3(0.0f), ChunkManager::s_EmptySubchunkData.data() };
 
 	private:
 		TerrainGenerator& m_TerrainGenerator;
