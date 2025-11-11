@@ -5,7 +5,7 @@
 
 
 #include "GpuBuffer.h"
-#include "Common/Assert.h"
+#include "Utils/Assert.h"
 
 #include <glad/glad.h>
 

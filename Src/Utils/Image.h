@@ -7,7 +7,7 @@
 #pragma once
 
 
-#include "Common/NonCopyable.h"
+#include "Utils/NonCopyable.h"
 
 #include <string>
 #include <cstdint>

@@ -23,6 +23,7 @@ namespace Mct {
     class World;
     class Camera;
     class MeshManager;
+    class Chunk;
 
     struct DrawElementsIndirectCommand {
         uint32_t count;         // Number of indices (IndexCount)
@@ -41,10 +42,9 @@ namespace Mct {
         void Render(const Camera& camera, World& world);
 
     private:
-        // Builds new meshes, called before Render
-        void UpdateMeshes(World& world);
-
         void BuildRenderCommands(World& world, const Camera& camera);
+
+        void UploadChunkMesh(std::shared_ptr<Chunk>& chunk);
 
     private:
         ShaderStorageBuffer    m_ChunkOffsetSSBO;

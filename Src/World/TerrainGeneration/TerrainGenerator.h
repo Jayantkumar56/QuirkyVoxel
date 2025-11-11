@@ -8,8 +8,10 @@
 
 
 #include "World/WorldSettings.h"
+#include "SuperFlatTerrainGen.h"
 
 #include <memory>
+#include <variant>
 
 
 namespace Mct {
@@ -18,11 +20,28 @@ namespace Mct {
 
 	class TerrainGenerator {
 	public:
-		[[nodiscard]] static std::unique_ptr<TerrainGenerator> Create(const TerrainType type);
+		template<typename T>
+		static TerrainGenerator Create() {
+			TerrainGenerator terrainGenerator;
+			terrainGenerator.m_Generator.emplace<T>();
+			return terrainGenerator;
+		}
 
-		virtual ~TerrainGenerator() noexcept = default;
+		virtual void GenerateFor(Chunk& chunk) {
+			std::visit([&chunk](auto&& activeGenerator) {
+				using T = std::decay_t<decltype(activeGenerator)>;
 
-		virtual void GenerateFor(Chunk& chunk) noexcept = 0;
+				if constexpr (!std::is_same_v<T, std::monostate>) {
+					activeGenerator.GenerateFor(chunk);
+				}
+			}, m_Generator);
+		}
+
+	private:
+		std::variant<
+			std::monostate, 
+			SuperFlatTerrainGen
+		> m_Generator;
 	};
 
 }

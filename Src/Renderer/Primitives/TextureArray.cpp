@@ -6,7 +6,7 @@
 
 #include "TextureArray.h"
 #include "Utils/Image.h"
-#include "Common/Assert.h"
+#include "Utils/Assert.h"
 
 #include <glad/glad.h>
 

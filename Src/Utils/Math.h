@@ -7,7 +7,7 @@
 #pragma once
 
 
-#include "Common/Assert.h"
+#include "Utils/Assert.h"
 
 
 namespace Mct::Utils {

@@ -4,7 +4,7 @@
 // Copyright(c) 2025 Jayantkumar56
 
 
-#include "Common/Assert.h"
+#include "Utils/Assert.h"
 #include "Shader.h"
 
 #include <glad/glad.h>

@@ -7,8 +7,8 @@
 #pragma once
 
 
-#include "Common/NonCopyable.h"
-#include "Common/BuddyAllocator.h"
+#include "Utils/NonCopyable.h"
+#include "Utils/BuddyAllocator.h"
 #include "Primitives/VertexBuffer.h"
 #include "Primitives/IndexBuffer.h"
 #include "Primitives/VertexArray.h"

@@ -7,20 +7,17 @@
 #pragma once
 
 
-#include "ChunkMesh.h"
-
-
 namespace Mct {
 
-    struct ChunkMeshInput;
+    struct SubchunkMesh;
+    struct ChunkMesh;
+    struct ChunkMeshInputView;
     struct SubChunkNeighbor;
 
     class ChunkMeshGenerator {
     public:
-        static ChunkMesh GenerateChunkMeshes(const ChunkMeshInput& neighbor);
-
-        static void GenerateSubchunkMesh(const SubChunkNeighbor& neighbor,
-                                         SubchunkMesh*         outMeshes);
+        static void GenerateChunkMeshes(ChunkMesh& outMesh, const ChunkMeshInputView& neighbor);
+        static void GenerateSubchunkMesh(SubchunkMesh* outMesh, const SubChunkNeighbor& neighbor);
     };
 
 }

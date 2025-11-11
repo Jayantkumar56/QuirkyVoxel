@@ -34,16 +34,6 @@ RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Application"
     "Window.cpp"
 )
 
-# Source files in Common
-RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Common"
-    "Assert.h"
-    "BuddyAllocator.h"
-    "BuddyAllocator.cpp"
-    "CubeData.h"
-    "IdGenerator.h"
-    "NonCopyable.h"
-)
-
 # Source files in Events
 RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Events"
     "ApplicationEvents.h"
@@ -109,10 +99,19 @@ RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Renderer"
 
 # Source files in Utils
 RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Utils"
+    "Assert.h"
+    "BuddyAllocator.h"
+    "BuddyAllocator.cpp"
+    "CubeData.h"
     "FileUtils.h"
+    "IdGenerator.h"
     "Image.h"
     "Image.cpp"
     "Math.h"
+    "NonCopyable.h"
+    "NonMovable.h"
+    "TaskProcessorPool.h"
+    "ThreadSafeVector.h"
 )
 
 # Source files in World/Block
@@ -141,7 +140,6 @@ RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/World/Chunk"
 # Source files in World/TerrainGeneration
 RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/World/TerrainGeneration"
     "TerrainGenerator.h"
-    "TerrainGenerator.cpp"
     "SuperFlatTerrainGen.h"
     "SuperFlatTerrainGen.cpp"
 )

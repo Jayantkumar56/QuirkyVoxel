@@ -9,7 +9,7 @@
 
 #include "ChunkSpan.h"
 #include "World/WorldConstants.h"
-#include "Common/Assert.h"
+#include "Utils/Assert.h"
 
 #include <array>
 

@@ -9,7 +9,6 @@
 #include "GameLayer.h"
 #include "Events/EventDispatcher.h"
 #include "ImguiContext.h"
-#include "Events/MouseEvents.h"
 
 #include <iostream>
 
@@ -17,7 +16,7 @@
 namespace Mct {
 
     Application::Application() noexcept {
-        EventCallbackFn eventCallback = [] (Event& e, void* userData) {
+        static EventCallbackFn eventCallback = +[] (Event& e, void* userData) {
             Application* app = static_cast<Application*>(userData);
             app->OnEvent(e);
         };

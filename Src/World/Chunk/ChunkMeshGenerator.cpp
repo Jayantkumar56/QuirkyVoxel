@@ -23,9 +23,7 @@ namespace Mct {
                                  const SubChunkNeighbor& neighbor);
 
 
-    ChunkMesh ChunkMeshGenerator::GenerateChunkMeshes(const ChunkMeshInput& neighbor) {
-        ChunkMesh outMesh{};
-
+    void ChunkMeshGenerator::GenerateChunkMeshes(ChunkMesh& outMesh, const ChunkMeshInputView& neighbor) {
         MCT_ASSERT(
             (neighbor.Main  ||
              neighbor.North ||
@@ -57,15 +55,11 @@ namespace Mct {
                 .West   { neighbor.West.GetSubchunkForRead(yIdx)       }
             };
 
-            GenerateSubchunkMesh(subchunkNeighbor, &outMesh.SubchunkMesh[yIdx]);
+            GenerateSubchunkMesh(&outMesh.SubchunkMesh[yIdx], subchunkNeighbor);
         }
-
-        return outMesh;
 	}
 
-	void ChunkMeshGenerator::GenerateSubchunkMesh(const SubChunkNeighbor& neighbor,
-												  SubchunkMesh*         outMesh)
-	{
+	void ChunkMeshGenerator::GenerateSubchunkMesh(SubchunkMesh* outMesh, const SubChunkNeighbor& neighbor) {
         MCT_ASSERT(outMesh && "Cannot Write to null mesh, provide valid non null mesh.");
 
         neighbor.Main.ForEachConstXYZ([&neighbor, outMesh](const size_t x, 

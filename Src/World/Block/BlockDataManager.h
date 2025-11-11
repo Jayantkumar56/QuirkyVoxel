@@ -8,7 +8,7 @@
 
 
 #include "BlockType.h"
-#include "Common/CubeData.h"
+#include "Utils/CubeData.h"
 
 #include <glm/glm.hpp>
 

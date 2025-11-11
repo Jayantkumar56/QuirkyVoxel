@@ -7,7 +7,7 @@
 #pragma once
 
 
-#include "Common/NonCopyable.h"
+#include "Utils/NonCopyable.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -57,6 +57,8 @@ namespace Mct {
 		~Window();
 
 		Window(Window&& other) noexcept : 
+				m_Width          ( other.m_Width                     ),
+				m_Height         ( other.m_Height                    ),
 				m_WindowHandle   ( other.m_WindowHandle              ),
 				m_MouseState     ( other.m_MouseState                ),
 				m_EventCallbacks ( std::move(other.m_EventCallbacks) )
@@ -70,10 +72,13 @@ namespace Mct {
 					glfwDestroyWindow(m_WindowHandle);
 				}
 
-				m_WindowHandle       = other.m_WindowHandle;
+				m_Width          =  other.m_Width;
+				m_Height         =  other.m_Height;
+				m_WindowHandle   = other.m_WindowHandle;
+				m_MouseState     = other.m_MouseState;
+				m_EventCallbacks = std::move(other.m_EventCallbacks);
+
 				other.m_WindowHandle = nullptr;
-				m_MouseState         = other.m_MouseState;
-				m_EventCallbacks     = std::move(other.m_EventCallbacks);
 			}
 
 			return *this;

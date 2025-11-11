@@ -7,16 +7,13 @@
 #pragma once
 
 
-#include "TerrainGenerator.h"
-
-
 namespace Mct {
 
 	class Chunk;
 
-	class SuperFlatTerrainGen : public TerrainGenerator {
+	class SuperFlatTerrainGen {
 	public:
-		virtual void GenerateFor(Chunk& chunk) noexcept;
+		void GenerateFor(Chunk& chunk) noexcept;
 	};
 
 }

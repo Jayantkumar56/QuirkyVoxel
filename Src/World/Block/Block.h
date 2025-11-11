@@ -9,7 +9,7 @@
 
 #include "BlockType.h"
 #include "BlockDataManager.h"
-#include "Common/CubeData.h"
+#include "Utils/CubeData.h"
 
 
 namespace Mct {

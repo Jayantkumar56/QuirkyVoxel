@@ -25,8 +25,8 @@ namespace Mct {
 		[[nodiscard]] ChunkManager& GetChunkManager() noexcept { return m_ChunkManager; }
 
 	private:
-		std::unique_ptr<TerrainGenerator> m_TerrainGenerator;
-		ChunkManager m_ChunkManager;
+		TerrainGenerator m_TerrainGenerator;
+		ChunkManager     m_ChunkManager;
 	};
 
 }

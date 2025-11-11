@@ -10,6 +10,7 @@
 #include "ChunkCoord.h"
 #include "Subchunk.h"
 #include "BlockStorage.h"
+#include "ChunkMesh.h"
 #include "ChunkGpuMesh.h"
 
 #include <glm/glm.hpp>
@@ -23,8 +24,8 @@ namespace Mct {
 	class Chunk {
 		enum class MeshState {
 			NoMesh,
-			HaveMesh,
-			GeneratingMesh
+			DirtyMesh,
+			HaveMesh
 		};
 
 	public:
@@ -42,7 +43,7 @@ namespace Mct {
 			}
 		}
 
-		[[nodiscard]] ChunkCoord GetCoord() const noexcept { m_Coord; }
+		[[nodiscard]] ChunkCoord GetCoord() const noexcept { return m_Coord; }
 
 		[[nodiscard]] ChunkSpan<const Block> GetBlocks() const noexcept { return { m_Blocks->ViewForRead()  }; }
 		[[nodiscard]] ChunkSpan<Block> GetBlocksForWrite()     noexcept { return { m_Blocks->ViewForWrite() }; }
@@ -50,15 +51,12 @@ namespace Mct {
 		[[nodiscard]] std::span<const Subchunk> GetSubchunks() const noexcept { return m_Subchunks; }
 		[[nodiscard]] std::span<Subchunk> GetSubchunksForWrite()     noexcept { return m_Subchunks; }
 
-		[[nodiscard]] bool NeedRemesh() const noexcept {
-			return m_MeshState == MeshState::NoMesh;
-		}
+		[[nodiscard]] bool NeedRemesh()    const noexcept { return m_MeshState == MeshState::NoMesh;    }
+		[[nodiscard]] bool HaveDirtyMesh() const noexcept { return m_MeshState == MeshState::DirtyMesh; }
 
-		void SetMeshInProgress() noexcept {
-			m_MeshState = MeshState::GeneratingMesh;
-		}
+		std::unique_ptr<ChunkMesh> GetMeshForUpload() noexcept { return std::move(m_CpuMesh); }
 
-		void SetMesh(std::unique_ptr<ChunkGpuMesh> mesh) {
+		void SetGpuMesh(std::unique_ptr<ChunkGpuMesh> mesh) {
 			m_GpuMesh   = std::move(mesh);
 			m_MeshState = MeshState::HaveMesh;
 
@@ -67,13 +65,20 @@ namespace Mct {
 			}
 		}
 
-	private:
-		MeshState m_MeshState = MeshState::NoMesh;
-		std::unique_ptr<ChunkGpuMesh> m_GpuMesh;
+		void SetMesh(std::unique_ptr<ChunkMesh> cpuMesh) {
+			m_CpuMesh   = std::move(cpuMesh);
+			m_MeshState = MeshState::DirtyMesh;
+		}
 
+	private:
 		ChunkCoord                    m_Coord;
 		std::unique_ptr<BlockStorage> m_Blocks;
 		std::vector<Subchunk>         m_Subchunks;
+
+		MeshState m_MeshState = MeshState::NoMesh;
+
+		std::unique_ptr<ChunkMesh>    m_CpuMesh;
+		std::unique_ptr<ChunkGpuMesh> m_GpuMesh;
 	};
 
 }

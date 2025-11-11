@@ -13,11 +13,8 @@
 #include "Events/EventDispatcher.h"
 #include "Events/ApplicationEvents.h"
 
-#include <GLFW/glfw3.h>
 #include "imgui.h"
 #include <glm/gtc/type_ptr.hpp>
-
-#include <iostream>
 
 
 namespace Mct {
@@ -33,7 +30,7 @@ namespace Mct {
 		const float height = static_cast<float>(window.GetHeight());
 
 		m_Player.GetCamera().SetAspectRatio(width / height);
-		m_Renderer.OnViewportResize(width, height);
+		m_Renderer.OnViewportResize(static_cast<uint32_t>(width), static_cast<uint32_t>(height));
 	}
 
 	void GameLayer::OnEvent(Event& e) {
@@ -61,12 +58,12 @@ namespace Mct {
 			const float height = static_cast<float>(event.GetHeight());
 
 			// Don't update if window is minimized
-			if (width == 0.0f || height == 0.0f) {
+			if (width <= 0.0f || height <= 0.0f) {
 				return false;
 			}
 
 			m_Player.GetCamera().SetAspectRatio(width / height);
-			m_Renderer.OnViewportResize(width, height);
+			m_Renderer.OnViewportResize(static_cast<uint32_t>(width), static_cast<uint32_t>(height));
 
 			return false;
 		});

@@ -13,6 +13,88 @@
 
 namespace Mct {
 
+    ChunkManager::ChunkManager(TerrainGenerator generator) :
+			m_TerrainGeneratorPool ( 6, TerrainGenFunctor(generator, &m_TerrainGeneratorResults) ),
+			m_ChunkMeshGenPool     ( 6, ChunkMeshGenFunctor(&m_ChunkMeshGenResults)              )
+	{}
+
+    void ChunkManager::Update(glm::vec3 playerPos) {
+        ChunkCoord playerChunkPos = ChunkCoord::FromWorldXZ(
+            static_cast<int>(std::floor(playerPos.x)),
+            static_cast<int>(std::floor(playerPos.z))
+        );
+
+        const int loadDist   = WorldConst::LoadDistance;
+        const int renderDist = WorldConst::RenderDistance;
+
+        // Stores chunks returned by the terrain generator.
+        {
+            std::vector<std::shared_ptr<Chunk>> results = m_TerrainGeneratorResults.Drain();
+
+            for (auto& result : results) {
+                ChunkCoord currChunkCoord = result->GetCoord();
+                m_LoadedChunks[currChunkCoord] = std::move(result);
+                m_ChunksInTerrainGeneration.erase(currChunkCoord);
+            }
+        }
+
+        // Stores mesh returned by the mesh generator.
+        {
+            std::vector<ChunkMeshGenResult> results = m_ChunkMeshGenResults.Drain();
+
+            for (auto& result : results) {
+                auto it = m_LoadedChunks.find(result.ChunkCoord);
+
+                if (it != m_LoadedChunks.end()) {
+                    it->second->SetMesh(std::move(result.ChunkMesh));
+                }
+            }
+        }
+
+        // Load Pass
+        for (int x = playerChunkPos.X - loadDist; x <= playerChunkPos.X + loadDist; ++x) {
+            for (int z = playerChunkPos.Z - loadDist; z <= playerChunkPos.Z + loadDist; ++z) {
+                ChunkCoord pos = { x, z };
+       
+                if (m_LoadedChunks.contains(pos)) {
+                    if (!m_ChunksInMeshGeneration.contains(pos) && m_LoadedChunks[pos]->NeedRemesh()) {
+                        const int distFromPlayerX = std::abs(x - playerChunkPos.X);
+                        const int distFromPlayerZ = std::abs(z - playerChunkPos.Z);
+
+                        // Queue for Remesh only when in the render distance.
+                        if (distFromPlayerX <= renderDist && distFromPlayerZ <= renderDist) {
+                            std::optional<ChunkMeshInput> meshInput = GetChunkMeshInputData(pos);
+
+                            if (meshInput) {
+                                m_ChunksInMeshGeneration.emplace(pos);
+                                m_ChunkMeshGenPool.Submit(std::move(*meshInput));
+                            }
+                        }
+                    }
+                }
+                else if (!m_ChunksInTerrainGeneration.contains(pos)) {   // If the chunk doesn't exist, add it.
+                    m_TerrainGeneratorPool.Submit(pos);
+                    m_ChunksInTerrainGeneration.insert(pos);
+                }
+            }
+        }
+
+        // Unload Pass
+        for (auto it = m_LoadedChunks.begin(); it != m_LoadedChunks.end(); ) {
+            ChunkCoord chunkPos = it->first;
+
+            int distX = std::abs(chunkPos.X - playerChunkPos.X);
+            int distZ = std::abs(chunkPos.Z - playerChunkPos.Z);
+
+            if (distX > loadDist || distZ > loadDist) {
+                it = m_LoadedChunks.erase(it);
+                continue;
+            }
+
+            ++it;
+        }
+	}
+
     std::shared_ptr<Chunk> ChunkManager::GetChunk(ChunkCoord pos) {
         if (auto it = m_LoadedChunks.find(pos); it != m_LoadedChunks.end())
             return it->second;
@@ -35,59 +117,5 @@ namespace Mct {
 
         return chunks;
     }
-
-    void ChunkManager::Update(glm::vec3 playerPos) {
-        UpdateVisibleChunks(playerPos);
-    }
-
-    void ChunkManager::UpdateVisibleChunks(glm::vec3 playerPos) {
-        ChunkCoord playerChunkPos = ChunkCoord::FromWorldXZ(
-            static_cast<int>(std::floor(playerPos.x)),
-            static_cast<int>(std::floor(playerPos.z))
-        );
-
-        const int loadDist   = WorldConst::LoadDistance;
-        const int renderDist = WorldConst::RenderDistance;
-
-        // --- Load Pass ---
-        for (int x = playerChunkPos.X - loadDist; x <= playerChunkPos.X + loadDist; ++x) {
-            for (int z = playerChunkPos.Z - loadDist; z <= playerChunkPos.Z + loadDist; ++z) {
-                ChunkCoord pos = { x, z };
-
-                // If the chunk doesn't exist, add it
-                if (!m_LoadedChunks.contains(pos)) {
-                    auto newChunk = std::make_shared<Chunk>(pos);
-                    m_TerrainGenerator.GenerateFor(*newChunk);
-                    m_LoadedChunks[pos] = std::move(newChunk);
-                }
-
-                if (m_LoadedChunks[pos]->NeedRemesh()) {
-                    const int distFromPlayerX = std::abs(x - playerChunkPos.X);
-                    const int distFromPlayerZ = std::abs(z - playerChunkPos.Z);
-
-                    // Queue for Remesh only when in the render distance.
-                    if (distFromPlayerX <= renderDist && distFromPlayerZ <= renderDist) {
-                        m_MeshBuildQueue.insert(pos);
-                        m_LoadedChunks[pos]->SetMeshInProgress();
-                    }
-                }
-            }
-        }
-
-        // --- Unload Pass ---
-        for (auto it = m_LoadedChunks.begin(); it != m_LoadedChunks.end(); ) {
-            ChunkCoord chunkPos = it->first;
-
-            int distX = std::abs(chunkPos.X - playerChunkPos.X);
-            int distZ = std::abs(chunkPos.Z - playerChunkPos.Z);
-
-            if (distX > loadDist || distZ > loadDist) {
-                it = m_LoadedChunks.erase(it);
-            }
-            else {
-                ++it;
-            }
-        }
-	}
 
 }

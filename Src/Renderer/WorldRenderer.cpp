@@ -10,7 +10,6 @@
 #include "Primitives/TextureArray.h"
 #include "Camera/Camera.h"
 #include "Renderer/Primitives/Shader.h"
-#include "World/Chunk/ChunkMeshGenerator.h"
 #include "Utils/FileUtils.h"
 
 #include <glad/glad.h>
@@ -58,8 +57,6 @@ namespace Mct {
     WorldRenderer::~WorldRenderer() = default;
 
     void WorldRenderer::Render(const Camera& camera, World& world) {
-        UpdateMeshes(world);
-
         BuildRenderCommands(world, camera);
 
         // Bind Shader and perform draw call
@@ -100,39 +97,6 @@ namespace Mct {
         }
     }
 
-    void WorldRenderer::UpdateMeshes(World& world) {
-        auto& chunkManager = world.GetChunkManager();
-        auto& remeshQueue  = chunkManager.GetRemeshQueueToProcess();
-
-        // Use an iterator to safely remove items while looping
-        auto it = remeshQueue.begin();
-
-        while (it != remeshQueue.end()) {
-            ChunkCoord coord = *it;
-            std::optional<ChunkMeshInput> chunkMeshInput = chunkManager.GetChunkMeshInputData(coord);
-
-            if (chunkMeshInput) {
-                auto  cpuMeshes = ChunkMeshGenerator::GenerateChunkMeshes(*chunkMeshInput);
-                auto& chunk     = chunkMeshInput->GetMainChunk();
-
-                std::unique_ptr<ChunkGpuMesh> chunkGpuMesh = std::make_unique<ChunkGpuMesh>();
-
-                // Uploads mesh of each subchunks and asign the generated GpuMesh to the respective subchunk.
-                for (size_t i = 0; i < cpuMeshes.SubchunkMesh.size(); ++i) {
-                    auto solidMeshOpt = m_MeshManager->UploadMesh(cpuMeshes.SubchunkMesh[i].SolidMesh);
-                    auto waterMeshOpt = m_MeshManager->UploadMesh(cpuMeshes.SubchunkMesh[i].WaterMesh);
-
-                    chunkGpuMesh->SubchunkMeshes[i].SolidMesh = solidMeshOpt;
-                    chunkGpuMesh->SubchunkMeshes[i].WaterMesh = waterMeshOpt;
-                }
-
-                chunk->SetMesh(std::move(chunkGpuMesh));
-            }
-
-            it = remeshQueue.erase(it);
-        }
-    }
-
     void WorldRenderer::BuildRenderCommands(World& world, const Camera& camera) {
         m_DrawCommands.clear();
 
@@ -151,6 +115,10 @@ namespace Mct {
 
             if (distFromCameraX > renderDist || distFromCameraZ > renderDist)
                 continue;
+
+            if (chunk->HaveDirtyMesh()) {
+                UploadChunkMesh(chunk);
+            }
 
             // Loop through all subchunks in this chunk
             for (const auto& subchunk : chunk->GetSubchunks()) {
@@ -183,6 +151,23 @@ namespace Mct {
                 // (You would do a separate pass for water/transparent meshes)
             }
         }
+    }
+
+    void WorldRenderer::UploadChunkMesh(std::shared_ptr<Chunk>& chunk) {
+        auto cpuMeshes = chunk->GetMeshForUpload();
+
+        std::unique_ptr<ChunkGpuMesh> chunkGpuMesh = std::make_unique<ChunkGpuMesh>();
+
+        // Uploads mesh of each subchunks and asign the generated GpuMesh to the respective subchunk.
+        for (size_t i = 0; i < cpuMeshes->SubchunkMesh.size(); ++i) {
+            auto solidMeshOpt = m_MeshManager->UploadMesh(cpuMeshes->SubchunkMesh[i].SolidMesh);
+            auto waterMeshOpt = m_MeshManager->UploadMesh(cpuMeshes->SubchunkMesh[i].WaterMesh);
+
+            chunkGpuMesh->SubchunkMeshes[i].SolidMesh = solidMeshOpt;
+            chunkGpuMesh->SubchunkMeshes[i].WaterMesh = waterMeshOpt;
+        }
+
+        chunk->SetGpuMesh(std::move(chunkGpuMesh));
     }
 
 }

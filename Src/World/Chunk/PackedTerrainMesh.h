@@ -8,7 +8,7 @@
 
 
 #include "Renderer/Mesh/Mesh.h"
-#include "Common/CubeData.h"
+#include "Utils/CubeData.h"
 
 #include <glm/glm.hpp> 
 

@@ -46,26 +46,17 @@ namespace Mct {
     };
 
     struct ChunkMeshInput {
+        friend struct ChunkMeshInputView;
+
     public:
         // These spans are guaranteed to be valid for the
         // lifetime of this struct object.
-
-        const ChunkSpan<const Block> Main;
-        const ChunkSpan<const Block> North;
-        const ChunkSpan<const Block> South;
-        const ChunkSpan<const Block> East;
-        const ChunkSpan<const Block> West;
 
         ChunkMeshInput(std::shared_ptr<Chunk>       main,
                        std::shared_ptr<const Chunk> north,
                        std::shared_ptr<const Chunk> south,
                        std::shared_ptr<const Chunk> east,
                        std::shared_ptr<const Chunk> west) :
-                Main       ( main->GetBlocks()  ),
-                North      ( north->GetBlocks() ),
-                South      ( south->GetBlocks() ),
-                East       ( east->GetBlocks()  ),
-                West       ( west->GetBlocks()  ),
                 m_MainPtr  ( std::move(main)    ),
                 m_NorthPtr ( std::move(north)   ),
                 m_SouthPtr ( std::move(south)   ),
@@ -88,6 +79,22 @@ namespace Mct {
         std::shared_ptr<const Chunk> m_SouthPtr;
         std::shared_ptr<const Chunk> m_EastPtr;
         std::shared_ptr<const Chunk> m_WestPtr;
+    };
+
+    struct ChunkMeshInputView {
+        const ChunkSpan<const Block> Main;
+        const ChunkSpan<const Block> North;
+        const ChunkSpan<const Block> South;
+        const ChunkSpan<const Block> East;
+        const ChunkSpan<const Block> West;
+
+        ChunkMeshInputView(ChunkMeshInput& meshInput) : 
+                Main       ( meshInput.m_MainPtr->GetBlocks()  ),
+                North      ( meshInput.m_NorthPtr->GetBlocks() ),
+                South      ( meshInput.m_SouthPtr->GetBlocks() ),
+                East       ( meshInput.m_EastPtr->GetBlocks()  ),
+                West       ( meshInput.m_WestPtr->GetBlocks()  )
+        {}
     };
 
 }
