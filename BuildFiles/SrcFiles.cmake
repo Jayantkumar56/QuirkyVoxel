@@ -59,7 +59,8 @@ RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Renderer/Camera"
 
 # Source files in Renderer/Mesh
 RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Renderer/Mesh"
-    "GpuMesh.h"
+    "GpuMeshHandle.h"
+    "GpuMeshHandle.cpp"
     "Mesh.h"
 )
 
@@ -139,9 +140,11 @@ RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/World/Chunk"
 
 # Source files in World/TerrainGeneration
 RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/World/TerrainGeneration"
-    "TerrainGenerator.h"
+    "SimpleTerrainGen.h"
+    "SimpleTerrainGen.cpp"
     "SuperFlatTerrainGen.h"
     "SuperFlatTerrainGen.cpp"
+    "TerrainGenerator.h"
 )
 
 # Source files in World

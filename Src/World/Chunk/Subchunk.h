@@ -29,7 +29,7 @@ namespace Mct {
 		void SetMesh(SubchunkGpuMesh* mesh) noexcept { m_Mesh = mesh; }
 
 		bool HasSolidMesh() const noexcept { return m_Mesh && m_Mesh->SolidMesh.has_value(); }
-		const GpuMesh& GetSolidMesh() const noexcept { return *m_Mesh->SolidMesh; }
+		const GpuMeshHandle& GetSolidMesh() const noexcept { return *m_Mesh->SolidMesh; }
 
 		const glm::vec3& GetPosition() const noexcept { return m_Position; }
 
@@ -37,6 +37,7 @@ namespace Mct {
 		glm::vec3           m_Position;
 		SubchunkSpan<Block> m_Blocks;
 
+		// Points to the Gpu mesh object for this subchunk stored in the chunk.
 		SubchunkGpuMesh* m_Mesh = nullptr;
 	};
 

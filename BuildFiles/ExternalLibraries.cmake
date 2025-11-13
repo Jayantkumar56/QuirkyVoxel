@@ -16,11 +16,12 @@ set(GLFW_BUILD_TESTS    OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_DOCS     OFF CACHE BOOL "" FORCE)
 
 
-add_subdirectory( Vendor/glfw     )
-add_subdirectory( Vendor/Glad     )
-add_subdirectory( Vendor/glm      )
-add_subdirectory( Vendor/stb      )
-add_subdirectory( Vendor/yaml-cpp )
+add_subdirectory( Vendor/glfw          )
+add_subdirectory( Vendor/Glad          )
+add_subdirectory( Vendor/glm           )
+add_subdirectory( Vendor/stb           )
+add_subdirectory( Vendor/yaml-cpp      )
+add_subdirectory( Vendor/FastNoiseLite )
 
 include("BuildFiles/imgui.cmake")
 
@@ -31,6 +32,7 @@ target_link_libraries(${CURRENT_PROJ_NAME} PRIVATE
     imgui
     stb
     yaml-cpp
+    FastNoiseLite
 )
 
 set_target_properties(
@@ -39,6 +41,7 @@ set_target_properties(
     imgui
     stb
     yaml-cpp
+    FastNoiseLite
     PROPERTIES FOLDER "Dependencies"
 )
 

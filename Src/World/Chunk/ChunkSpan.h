@@ -58,19 +58,49 @@ namespace Mct {
             }
 
             // Walk every (x,y,z) in layout order and invoke f(x,y,z, idx)
-            // f must be callable with (size_t x, size_t y, size_t z, size_t idx)
             template<class Fun>
-            static constexpr void ForEachIndexInSubchunk(Fun&& f)
+            requires std::is_invocable_v<Fun&&, size_t, size_t, size_t, size_t>
+            static constexpr void ForEachIndexInSubchunk(Fun&& fun)
                 noexcept(std::is_nothrow_invocable_v<Fun&&, size_t, size_t, size_t, size_t>)
             {
                 for (size_t x = 0; x < WorldConst::SubchunkSizeX; ++x) {
                     const size_t baseX = x * StrideX;
                     for (size_t y = 0; y < WorldConst::SubchunkSizeY; ++y) {
-                        size_t idx = baseX + y * StrideY;
-                        for (size_t z = 0; z < WorldConst::SubchunkSizeZ; ++z, ++idx) {
-                            std::invoke(std::forward<Fun>(f), x, y, z, idx);
+                        size_t blockIdx = baseX + y * StrideY;
+                        for (size_t z = 0; z < WorldConst::SubchunkSizeZ; ++z, ++blockIdx) {
+                            std::invoke(std::forward<Fun>(fun), x, y, z, blockIdx);
                         }
                     }
+                }
+            }
+
+            template<class Fun>
+            requires std::is_invocable_v<Fun&&, size_t, size_t, size_t, size_t>
+            static constexpr void ForEachIndexInChunk(Fun&& f)
+                noexcept(std::is_nothrow_invocable_v<Fun&&, size_t, size_t, size_t, size_t>)
+            {
+                for (size_t scY = 0; scY < WorldConst::SubchunkCount; ++scY) {
+                    // Base memory offset for this subchunk
+                    const size_t subchunkBaseOffset = SubchunkOffset(scY);
+
+                    // Base world-Y coordinate for this subchunk
+                    const size_t subchunkBaseY = scY * WorldConst::SubchunkSizeY;
+
+                    ForEachIndexInSubchunk(
+                        [&](size_t x, size_t y, size_t z, size_t localIdx) 
+                            noexcept(std::is_nothrow_invocable_v<Fun&&, size_t, size_t, size_t, size_t>)
+                        {
+                            // Calculate the chunk coordinates
+                            const size_t chunkX = x;
+                            const size_t chunkY = subchunkBaseY + y;
+                            const size_t chunkZ = z;
+
+                            // Calculate the final chunk index
+                            const size_t chunkIdx = subchunkBaseOffset + localIdx;
+
+                            std::invoke(std::forward<Fun>(f), chunkX, chunkY, chunkZ, chunkIdx);
+                        }
+                    );
                 }
             }
         };
@@ -111,9 +141,9 @@ namespace Mct {
         [[nodiscard]] constexpr size_t SizeZ() const noexcept { return WorldConst::SubchunkSizeZ; }
 
         template<typename Fun>
+        requires (!std::is_const_v<T> && std::is_invocable_v<Fun&&, size_t, size_t, size_t, T&>)
         constexpr void ForEachXYZ(Fun&& fun) 
-            noexcept(std::is_nothrow_invocable_v<Fun&&, size_t, size_t, size_t, size_t>)
-            requires (!std::is_const_v<T>)
+            noexcept(std::is_nothrow_invocable_v<Fun&&, size_t, size_t, size_t, T&>)
         {
             MCT_ASSERT(m_Data != nullptr);
 
@@ -125,6 +155,7 @@ namespace Mct {
         }
 
         template<typename Fun>
+        requires std::is_invocable_v<Fun&&, size_t, size_t, size_t, const T&>
         constexpr void ForEachConstXYZ(Fun&& fun) const
             noexcept(std::is_nothrow_invocable_v<Fun&&, size_t, size_t, size_t, const T&>)
         {
@@ -188,6 +219,34 @@ namespace Mct {
             MCT_ASSERT(subchunkIdx < WorldConst::SubchunkCount);
 
             return { &m_Data[Internal::ChunkLayout::SubchunkOffset(subchunkIdx)] };
+        }
+
+        template<typename Fun>
+        requires (!std::is_const_v<T> && std::is_invocable_v<Fun&&, size_t, size_t, size_t, T&>)
+        constexpr void ForEachXYZ(Fun&& fun) 
+            noexcept(std::is_nothrow_invocable_v<Fun&&, size_t, size_t, size_t, T&>)
+        {
+            MCT_ASSERT(m_Data != nullptr);
+
+            Internal::ChunkLayout::ForEachIndexInChunk([this, &fun](size_t x, size_t y, size_t z, size_t idx)
+                noexcept(std::is_nothrow_invocable_v<Fun&&, size_t, size_t, size_t, T&>)
+            {
+                std::invoke(std::forward<Fun>(fun), x, y, z, m_Data[idx]);
+            });
+        }
+
+        template<typename Fun>
+        requires std::is_invocable_v<Fun&&, size_t, size_t, size_t, const T&>
+        constexpr void ForEachConstXYZ(Fun&& fun) const
+            noexcept(std::is_nothrow_invocable_v<Fun&&, size_t, size_t, size_t, const T&>)
+        {
+            MCT_ASSERT(m_Data != nullptr);
+
+            Internal::ChunkLayout::ForEachIndexInChunk([this, &fun](size_t x, size_t y, size_t z, size_t idx)
+                noexcept(std::is_nothrow_invocable_v<Fun&&, size_t, size_t, size_t, const T&>)
+            {
+                std::invoke(std::forward<Fun>(fun), x, y, z, m_Data[idx]);
+            });
         }
 
     private:

@@ -21,6 +21,7 @@ namespace Mct {
 		Water,
 		Dirt,
 		Grass,
+		Stone,
 		COUNT                // Total number of Block types.
 	};
 
@@ -30,6 +31,7 @@ namespace Mct {
 		{   "Water",	    	             BlockType::Water		},
 		{   "Dirt",				             BlockType::Dirt	    },
 		{   "Grass",			             BlockType::Grass		},
+		{   "Stone",			             BlockType::Stone		},
 	};
 
 	inline const std::unordered_map<BlockType, std::string_view> BlockTypeToStringMap = {
@@ -38,6 +40,7 @@ namespace Mct {
 		{   BlockType::Water,               "Water"          },
 		{   BlockType::Dirt,                "Dirt"           },
 		{   BlockType::Grass,               "Grass"          },
+		{   BlockType::Stone,               "Stone"          },
 	};
 
 	inline BlockType BlockTypeFromString(std::string_view str) {

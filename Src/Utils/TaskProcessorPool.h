@@ -54,12 +54,43 @@ namespace Mct {
             {
                 std::unique_lock<std::mutex> lock(m_QueueMutex);
                 if (m_Stop.load(std::memory_order_acquire)) 
-                    return false;
+                    return false; // Pool is shutting down
 
                 m_TaskQueue.push(std::forward<T>(task));
             }
 
             m_Condition.notify_one();
+            return true;
+        }
+
+        template<typename Vector>
+        requires std::is_same_v<std::decay_t<Vector>, std::vector<Task_T>>
+        bool SubmitBatch(Vector&& tasks) {
+            if (tasks.empty()) {
+                // Return true if not stopped.
+                return !m_Stop.load(std::memory_order_acquire);
+            }
+
+            {
+                std::unique_lock<std::mutex> lock(m_QueueMutex);
+                if (m_Stop.load(std::memory_order_acquire))
+                    return false; // Pool is shutting down
+
+                if constexpr (std::is_rvalue_reference_v<Vector&&>) {
+                    // Vector is an rvalue, so we can safely MOVE elements from it
+                    for (auto& task : tasks) {
+                        m_TaskQueue.push(std::move(task));
+                    }
+                }
+                else {
+                    // Vector is an lvalue, so we must COPY elements
+                    for (const auto& task : tasks) {
+                        m_TaskQueue.push(task);
+                    }
+                }
+            }
+
+            m_Condition.notify_all();
             return true;
         }
 

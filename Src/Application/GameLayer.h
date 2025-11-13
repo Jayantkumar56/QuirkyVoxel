@@ -30,8 +30,18 @@ namespace Mct {
     private:
         bool   m_GameHaveFocus = false;
         Player m_Player;
-        World  m_World;
+
+        // IMPORTANT
+        // m_Renderer MUST be declared before m_World.
+        //
+        // This controls the C++ destruction order. The MeshManager (owned by m_Renderer) 
+        // should be destroyed after the ChunkManager (owned by m_World).
+        //
+        // If m_World is destroyed first, its worker threads can deadlock trying to access 
+        // the MeshManager's deletion queue while the main thread is already destroying it.
+
         GameRenderer m_Renderer;
+        World        m_World;
 
         glm::vec2 m_GameViewportSize = { 0.0f, 0.0f };
     };

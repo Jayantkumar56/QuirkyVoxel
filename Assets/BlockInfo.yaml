@@ -1,12 +1,15 @@
 textures:
     dirt: &dirtTex Assets/Textures/Blocks/dirt.png
     bedrock: &bedrockTex Assets/Textures/Blocks/bedrock.png
+    stone: &stoneTex Assets/Textures/Blocks/stone.png
+    grass_top: &grass_topTex Assets/Textures/Blocks/grass_top.png
+    grass_side: &grass_sideTex Assets/Textures/Blocks/grass_side.png
 
 uv_quad: &quadUV
   - {u: 0, v: 0}
-  - {u: 1, v: 0}
-  - {u: 1, v: 1}
   - {u: 0, v: 1}
+  - {u: 1, v: 1}
+  - {u: 1, v: 0}
 
 BlocksInfo:
   - BlockType: Air
@@ -76,12 +79,28 @@ BlocksInfo:
   - BlockType: Grass
     IsSolid: true
     FaceTextures:
-        Top: *dirtTex
+        Top: *grass_topTex
         Bottom: *dirtTex
-        East: *dirtTex
-        West: *dirtTex
-        South: *dirtTex
-        North: *dirtTex
+        East: *grass_sideTex
+        West: *grass_sideTex
+        South: *grass_sideTex
+        North: *grass_sideTex
+    FaceUV:
+        Top: *quadUV
+        Bottom: *quadUV
+        East: *quadUV
+        West: *quadUV
+        South: *quadUV
+        North: *quadUV
+  - BlockType: Stone
+    IsSolid: true
+    FaceTextures:
+        Top: *stoneTex
+        Bottom: *stoneTex
+        East: *stoneTex
+        West: *stoneTex
+        South: *stoneTex
+        North: *stoneTex
     FaceUV:
         Top: *quadUV
         Bottom: *quadUV

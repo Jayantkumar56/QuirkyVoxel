@@ -35,7 +35,7 @@ namespace Mct::WorldConst {
 
     // The render distance (measured in chunks).
     // TODO: Consider a better place for this.
-    inline constexpr int LoadDistance   = 2;
-    inline constexpr int RenderDistance = 1;
+    inline constexpr int LoadDistance   = 11;
+    inline constexpr int RenderDistance = 9;
 
 }

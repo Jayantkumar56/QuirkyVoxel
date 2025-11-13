@@ -4,9 +4,6 @@
 // Copyright(c) 2025 Jayantkumar56
 
 
-#pragma once
-
-
 #include "ChunkManager.h"
 #include "TerrainGeneration/TerrainGenerator.h"
 
@@ -48,6 +45,8 @@ namespace Mct {
                 if (it != m_LoadedChunks.end()) {
                     it->second->SetMesh(std::move(result.ChunkMesh));
                 }
+
+                m_ChunksInMeshGeneration.erase(result.ChunkCoord);
             }
         }
 
@@ -55,14 +54,14 @@ namespace Mct {
         for (int x = playerChunkPos.X - loadDist; x <= playerChunkPos.X + loadDist; ++x) {
             for (int z = playerChunkPos.Z - loadDist; z <= playerChunkPos.Z + loadDist; ++z) {
                 ChunkCoord pos = { x, z };
-       
+                
                 if (m_LoadedChunks.contains(pos)) {
-                    if (!m_ChunksInMeshGeneration.contains(pos) && m_LoadedChunks[pos]->NeedRemesh()) {
-                        const int distFromPlayerX = std::abs(x - playerChunkPos.X);
-                        const int distFromPlayerZ = std::abs(z - playerChunkPos.Z);
+                    const int distFromPlayerX = std::abs(x - playerChunkPos.X);
+                    const int distFromPlayerZ = std::abs(z - playerChunkPos.Z);
 
-                        // Queue for Remesh only when in the render distance.
-                        if (distFromPlayerX <= renderDist && distFromPlayerZ <= renderDist) {
+                    // Queue for Remesh only when in the render distance.
+                    if (distFromPlayerX <= renderDist && distFromPlayerZ <= renderDist) {
+                        if (!m_ChunksInMeshGeneration.contains(pos) && m_LoadedChunks[pos]->NeedRemesh()) {
                             std::optional<ChunkMeshInput> meshInput = GetChunkMeshInputData(pos);
 
                             if (meshInput) {

@@ -9,6 +9,7 @@
 
 #include "World/WorldSettings.h"
 #include "SuperFlatTerrainGen.h"
+#include "SimpleTerrainGen.h"
 
 #include <memory>
 #include <variant>
@@ -19,6 +20,12 @@ namespace Mct {
 	class Chunk;
 
 	class TerrainGenerator {
+		using Generator_T = std::variant<
+			std::monostate,
+			SuperFlatTerrainGen,
+			SimpleTerrainGen
+		>;
+
 	public:
 		template<typename T>
 		static TerrainGenerator Create() {
@@ -38,10 +45,10 @@ namespace Mct {
 		}
 
 	private:
-		std::variant<
-			std::monostate, 
-			SuperFlatTerrainGen
-		> m_Generator;
+		TerrainGenerator() noexcept = default;
+
+	private:
+		Generator_T m_Generator;
 	};
 
 }

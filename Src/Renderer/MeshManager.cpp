@@ -26,7 +26,7 @@ namespace Mct {
 		m_VertexArray.AddVertexBuffer(m_VertexBuffer);
     }
 
-	std::optional<GpuMesh> MeshManager::UploadMesh(const Mesh& mesh) {
+	std::optional<GpuMeshHandle> MeshManager::UploadMesh(const Mesh& mesh) {
         const MeshUploadDesc& desc = mesh.GetDesc();
 
         // Handle Empty Mesh
@@ -74,12 +74,30 @@ namespace Mct {
         // Create the handle
         VertexBufferHandle vboHandle(vOffset, vertexDataSize, m_VBOLayoutId);
 
-        // Return the GpuMesh
-        return GpuMesh{
-            .VboHandle = vboHandle,
-            .IboHandle = iboHandle
-        };
+        // Return the GpuMeshHandle
+        return GpuMeshHandle{this, vboHandle, iboHandle};
 	}
+
+    void MeshManager::Update() {
+        std::vector<GpuMeshHandlesToFree> handlesToFree = m_DeletionQueue.Drain();
+
+        for (const auto& handles : handlesToFree) {
+            FreeMesh(handles);
+        }
+    }
+
+    void MeshManager::ScheduleForDeletion(GpuMeshHandle& mesh) {
+        m_DeletionQueue.Push(GpuMeshHandlesToFree{ mesh.VboHandle, mesh.IboHandle });
+    }
+
+    void MeshManager::FreeMesh(const GpuMeshHandlesToFree& mesh) {
+        if (mesh.VboHandle.GetSize())
+            m_VertexAllocator.Free(mesh.VboHandle.GetOffset());
+
+        if (mesh.IboHandle && mesh.IboHandle.value().GetSize()) {
+            m_IndexAllocator.Free(mesh.IboHandle->GetOffset());
+        }
+    }
 
 	void MeshManager::UploadVertexData(const void* data, size_t size, size_t offset) noexcept {
         if (m_VertexBuffer) {
@@ -92,15 +110,5 @@ namespace Mct {
             m_IndexBuffer->Upload(data, size, offset);
         }
 	}
-
-    void MeshManager::FreeMesh(const GpuMesh& mesh) {
-        if (mesh.VboHandle.GetSize())
-            m_VertexAllocator.Free(mesh.VboHandle.GetOffset());
-
-        // 2. Free the index buffer block, if it exists
-        if (mesh.IboHandle && mesh.IboHandle.value().GetSize()) {
-            m_IndexAllocator.Free(mesh.IboHandle->GetOffset());
-        }
-    }
 
 }

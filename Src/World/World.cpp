@@ -10,8 +10,7 @@
 namespace Mct {
 
 	World::World(const WorldSettings& settings) :
-			m_TerrainGenerator(TerrainGenerator::Create<SuperFlatTerrainGen>()),
-			m_ChunkManager(TerrainGenerator::Create<SuperFlatTerrainGen>())
+			m_ChunkManager(TerrainGenerator::Create<SimpleTerrainGen>())
 	{}
 
 	void World::Update(glm::vec3 playerPos) {

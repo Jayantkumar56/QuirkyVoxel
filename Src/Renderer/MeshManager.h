@@ -13,7 +13,8 @@
 #include "Primitives/IndexBuffer.h"
 #include "Primitives/VertexArray.h"
 #include "Mesh/Mesh.h"
-#include "Mesh/GpuMesh.h"
+#include "Mesh/GpuMeshHandle.h"
+#include "Utils/ThreadSafeVector.h"
 
 #include <memory>
 #include <optional>
@@ -33,9 +34,11 @@ namespace Mct {
                     const size_t indexMinBlockSize);
 
         // Uploads a CPU-side mesh to the GPU. Returns std::nullopt on allocation/upload failure.
-        [[nodiscard]] std::optional<GpuMesh> UploadMesh(const Mesh& mesh);
+        [[nodiscard]] std::optional<GpuMeshHandle> UploadMesh(const Mesh& mesh);
 
-        void FreeMesh(const GpuMesh& mesh);
+        void Update();
+
+        void ScheduleForDeletion(GpuMeshHandle& mesh);
 
         [[nodiscard]] const VertexArray& GetCommonVAO() const noexcept { return m_VertexArray; }
 
@@ -45,6 +48,14 @@ namespace Mct {
         [[nodiscard]] const BufferLayout& GetVBOLayout() const noexcept { return m_VertexBuffer->GetLayout(); }
 
     private:
+        struct GpuMeshHandlesToFree {
+            VertexBufferHandle               VboHandle;
+            std::optional<IndexBufferHandle> IboHandle;
+        };
+
+    private:
+        void FreeMesh(const GpuMeshHandlesToFree& mesh);
+
         void UploadVertexData(const void* data, size_t size, size_t offset) noexcept;
         void UploadIndexData(const void* data, size_t size, size_t offset)  noexcept;
 
@@ -60,6 +71,8 @@ namespace Mct {
         BuddyAllocator m_IndexAllocator;
 
         BufferLayoutId m_VBOLayoutId = 0;
+
+        ThreadSafeVector<GpuMeshHandlesToFree> m_DeletionQueue;
     };
 
 }

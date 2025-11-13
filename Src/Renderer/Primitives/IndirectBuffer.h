@@ -53,8 +53,8 @@ namespace Mct {
         void UploadData(const T* data, size_t elementCount, size_t elementOffset = 0) const noexcept {
             Upload(
                 data,
-                elementCount  * c_ElementSize,   // Calculate byte offset
-                elementOffset * c_ElementSize    // Calculate byte size      
+                elementCount  * c_ElementSize,   // Calculate byte size
+                elementOffset * c_ElementSize    // Calculate byte offset
             );
         }
 

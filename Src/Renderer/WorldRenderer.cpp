@@ -18,7 +18,7 @@
 
 namespace Mct {
 
-    constexpr size_t c_MaxDrawCommands = 20;
+    constexpr size_t c_MaxDrawCommands = 5000;
 
     WorldRenderer::WorldRenderer() :
             m_ChunkOffsetSSBO ( c_MaxDrawCommands * sizeof(glm::vec4) ),
@@ -57,6 +57,7 @@ namespace Mct {
     WorldRenderer::~WorldRenderer() = default;
 
     void WorldRenderer::Render(const Camera& camera, World& world) {
+        m_MeshManager->Update();
         BuildRenderCommands(world, camera);
 
         // Bind Shader and perform draw call
@@ -71,6 +72,7 @@ namespace Mct {
             m_BlockTextureArray->Bind();
 
             m_TerrainShader->UploadUniform("u_ViewProjection", camera.GetViewProjection());
+            m_TerrainShader->UploadUniform("u_CameraPos", camera.GetPosition());
 
             m_MeshManager->GetCommonVAO().Bind();
 
@@ -126,7 +128,7 @@ namespace Mct {
 
                 // Render solid meshes
                 if (subchunk.HasSolidMesh()) {
-                    const GpuMesh& mesh = subchunk.GetSolidMesh();
+                    const GpuMeshHandle& mesh = subchunk.GetSolidMesh();
 
                     // We can only draw if it has an index buffer
                     if (mesh.IboHandle) {
@@ -158,13 +160,13 @@ namespace Mct {
 
         std::unique_ptr<ChunkGpuMesh> chunkGpuMesh = std::make_unique<ChunkGpuMesh>();
 
-        // Uploads mesh of each subchunks and asign the generated GpuMesh to the respective subchunk.
+        // Uploads mesh of each subchunks and asign the generated GpuMeshHandle to the respective subchunk.
         for (size_t i = 0; i < cpuMeshes->SubchunkMesh.size(); ++i) {
-            auto solidMeshOpt = m_MeshManager->UploadMesh(cpuMeshes->SubchunkMesh[i].SolidMesh);
-            auto waterMeshOpt = m_MeshManager->UploadMesh(cpuMeshes->SubchunkMesh[i].WaterMesh);
+            auto& solidMeshOpt = chunkGpuMesh->SubchunkMeshes[i].SolidMesh;
+            auto& waterMeshOpt = chunkGpuMesh->SubchunkMeshes[i].WaterMesh;
 
-            chunkGpuMesh->SubchunkMeshes[i].SolidMesh = solidMeshOpt;
-            chunkGpuMesh->SubchunkMeshes[i].WaterMesh = waterMeshOpt;
+            solidMeshOpt = m_MeshManager->UploadMesh(cpuMeshes->SubchunkMesh[i].SolidMesh);
+            waterMeshOpt = m_MeshManager->UploadMesh(cpuMeshes->SubchunkMesh[i].WaterMesh);
         }
 
         chunk->SetGpuMesh(std::move(chunkGpuMesh));
