@@ -14,10 +14,10 @@
 namespace Mct {
 
 	void SimpleTerrainGen::GenerateFor(Chunk& chunk) {
-		const HeightMap  heightMap = CreateHeightMap(chunk);
-		ChunkSpan<Block> chunkSpan = chunk.GetBlocksForWrite();
+		const HeightMap  heightMap   = CreateHeightMap(chunk);
+		ChunkSpan<Block> chunkBlocks = chunk.GetBlocksForWrite();
 
-		chunkSpan.ForEachXYZ([&heightMap](size_t x, size_t y, size_t z, Block& block) {
+		chunkBlocks.ForEachXYZ([&heightMap](size_t x, size_t y, size_t z, Block& block) {
 			const float terrainHeight = heightMap[x][z];
 
 			if (y > terrainHeight) {

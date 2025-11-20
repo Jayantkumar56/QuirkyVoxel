@@ -16,14 +16,25 @@ namespace Mct {
 	{}
 
     void ChunkManager::Update(glm::vec3 playerPos) {
-        ChunkCoord playerChunkPos = ChunkCoord::FromWorldXZ(
+        ProcessPendingResults();
+
+        const ChunkCoord playerChunkPos = ChunkCoord::FromWorldXZ(
             static_cast<int>(std::floor(playerPos.x)),
             static_cast<int>(std::floor(playerPos.z))
         );
 
-        const int loadDist   = WorldConst::LoadDistance;
-        const int renderDist = WorldConst::RenderDistance;
+        LoadChunksInRange(playerChunkPos);
+        UnloadOutOfRangeChunks(playerChunkPos);
+	}
 
+    std::shared_ptr<Chunk> ChunkManager::GetChunk(ChunkCoord pos) {
+        if (auto it = m_LoadedChunks.find(pos); it != m_LoadedChunks.end())
+            return it->second;
+
+        return nullptr;
+    }
+
+    void ChunkManager::ProcessPendingResults() {
         // Stores chunks returned by the terrain generator.
         {
             std::vector<std::shared_ptr<Chunk>> results = m_TerrainGeneratorResults.Drain();
@@ -49,12 +60,21 @@ namespace Mct {
                 m_ChunksInMeshGeneration.erase(result.ChunkCoord);
             }
         }
+    }
 
-        // Load Pass
+    void ChunkManager::LoadChunksInRange(ChunkCoord playerChunkPos) {
+        const int loadDist   = WorldConst::LoadDistance;
+        const int renderDist = WorldConst::RenderDistance;
+
+        std::vector<ChunkCoord> chunksForTerrainGen;
+
+        std::vector<ChunkCoord> chunksForMeshGen;
+        std::vector<ChunkMeshInput> chunksMeshGenInputs;
+
         for (int x = playerChunkPos.X - loadDist; x <= playerChunkPos.X + loadDist; ++x) {
             for (int z = playerChunkPos.Z - loadDist; z <= playerChunkPos.Z + loadDist; ++z) {
                 ChunkCoord pos = { x, z };
-                
+
                 if (m_LoadedChunks.contains(pos)) {
                     const int distFromPlayerX = std::abs(x - playerChunkPos.X);
                     const int distFromPlayerZ = std::abs(z - playerChunkPos.Z);
@@ -65,18 +85,28 @@ namespace Mct {
                             std::optional<ChunkMeshInput> meshInput = GetChunkMeshInputData(pos);
 
                             if (meshInput) {
-                                m_ChunksInMeshGeneration.emplace(pos);
-                                m_ChunkMeshGenPool.Submit(std::move(*meshInput));
+                                chunksMeshGenInputs.emplace_back(std::move(*meshInput));
+                                chunksForMeshGen.emplace_back(pos.X, pos.Z);
                             }
                         }
                     }
                 }
                 else if (!m_ChunksInTerrainGeneration.contains(pos)) {   // If the chunk doesn't exist, add it.
-                    m_TerrainGeneratorPool.Submit(pos);
-                    m_ChunksInTerrainGeneration.insert(pos);
+                    chunksForTerrainGen.emplace_back(pos.X, pos.Z);
                 }
             }
         }
+
+        m_ChunksInTerrainGeneration.insert(chunksForTerrainGen.begin(), chunksForTerrainGen.end());
+        m_TerrainGeneratorPool.SubmitBatch(chunksForTerrainGen);
+
+        m_ChunksInMeshGeneration.insert(chunksForMeshGen.begin(), chunksForMeshGen.end());
+        m_ChunkMeshGenPool.SubmitBatch(std::move(chunksMeshGenInputs));
+    }
+
+    void ChunkManager::UnloadOutOfRangeChunks(ChunkCoord playerChunkPos) {
+        const int loadDist   = WorldConst::LoadDistance;
+        const int renderDist = WorldConst::RenderDistance;
 
         // Unload Pass
         for (auto it = m_LoadedChunks.begin(); it != m_LoadedChunks.end(); ) {
@@ -92,13 +122,6 @@ namespace Mct {
 
             ++it;
         }
-	}
-
-    std::shared_ptr<Chunk> ChunkManager::GetChunk(ChunkCoord pos) {
-        if (auto it = m_LoadedChunks.find(pos); it != m_LoadedChunks.end())
-            return it->second;
-
-        return nullptr;
     }
 
     std::optional<ChunkMeshInput> ChunkManager::GetChunkMeshInputData(ChunkCoord pos) {

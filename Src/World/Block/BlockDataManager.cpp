@@ -6,35 +6,67 @@
 
 #include "BlockDataManager.h"
 #include "Utils/IdGenerator.h"
+#include "Utils/Assert.h"
 
 #include <yaml-cpp/yaml.h>
 
 #include <unordered_map>
+#include <iostream>
 
 
 namespace Mct {
 
-    static bool DecodeBlockData(const YAML::Node&           node,
-                                Mct::BlockData&             info, 
-                                LinearIdGenerator<int32_t>& idGenerator,
-                                std::unordered_map<std::string, int32_t>& texFileIdMap);
+    static bool DecodeBlockData(const YAML::Node&            node,
+                                Mct::BlockData&              info, 
+                                LinearIdGenerator<uint16_t>& texIdGenerator,
+                                std::unordered_map<std::string, uint16_t>& texFileIdMap);
 
 	void BlockDataManager::Init() {
-        YAML::Node root = YAML::LoadFile("Assets/BlockInfo.yaml");
+        constexpr std::string_view blockDataFilePath = "Assets/BlockData.yaml";
 
-        LinearIdGenerator<int> idGenerator{};
-        std::unordered_map<std::string, int32_t> texFileIdMap;
+        YAML::Node root;
 
-        if (root["BlocksInfo"] && root["BlocksInfo"].IsSequence()) {
-            const YAML::Node& arr = root["BlocksInfo"];
+        try {
+            root = YAML::LoadFile(blockDataFilePath.data());
+        }
+        catch (const YAML::BadFile& e) {
+            std::cerr << "Failed to open YAML file: " << e.what() << "\n";
+            return;
+        }
+        catch (const YAML::ParserException& e) {
+            std::cerr << "YAML parse error: " << e.what() << "\n";
+            return;
+        }
+        catch (const YAML::Exception& e) {
+            std::cerr << "YAML error: " << e.what() << "\n";
+            return;
+        }
 
-            for (const auto& item : arr) {
-                const auto blockType = BlockTypeFromString(item["BlockType"].Scalar());
-                const int  blockIdx  = static_cast<int>(blockType);
+        LinearIdGenerator<uint16_t> texIdGenerator{0};
+        std::unordered_map<std::string, uint16_t> texFileIdMap;
 
-                auto& currBlockData = s_BlockData[blockIdx];
+        if (const YAML::Node& blockArr = root["BlocksInfo"]; blockArr && blockArr.IsSequence()) {
+            // To generate id for blocks (ids are just index of the block in s_BlockData).
+            LinearIdGenerator<BlockId> blockIdGenerator{0};
 
-                DecodeBlockData(item, currBlockData, idGenerator, texFileIdMap);
+            s_BlockData.reserve(blockArr.size());
+
+            for (const YAML::Node& item : blockArr) {
+                const std::string& blockName = item["BlockType"].Scalar();
+
+                if (s_BlockNameToId.contains(blockName)) {
+                    std::cout << "Block: " << blockName << " have duplicate entries in Block DataBase."
+                              << " Taking the first entry.";
+                    continue;
+                }
+
+                s_BlockNameToId[blockName] = blockIdGenerator.GetNext();
+
+                BlockData& currBlockData = s_BlockData.emplace_back();
+
+                if (!DecodeBlockData(item, currBlockData, texIdGenerator, texFileIdMap)) {
+                    std::cout << "Unformatted or incomplete data found for Block: " << blockName << " in Block DataBase.";
+                }
             }
         }
 
@@ -43,15 +75,25 @@ namespace Mct {
             s_TextureFilePaths.resize(texFileIdMap.size());
 
             for (auto& [path, id] : texFileIdMap) {
-                s_TextureFilePaths[id] = std::move(path);
+                s_TextureFilePaths[id] = path;
             }
+        }
+
+        // Store ids of core blocks
+        {
+            CoreBlocks::Storage::Air     = s_BlockNameToId[ "Air"     ];
+            CoreBlocks::Storage::Bedrock = s_BlockNameToId[ "Bedrock" ];
+            CoreBlocks::Storage::Stone   = s_BlockNameToId[ "Stone"   ];
+            CoreBlocks::Storage::Dirt    = s_BlockNameToId[ "Dirt"    ];
+            CoreBlocks::Storage::Grass   = s_BlockNameToId[ "Grass"   ];
+            CoreBlocks::Storage::Water   = s_BlockNameToId[ "Water"   ];
         }
 	}
 
     static bool DecodeBlockData(const YAML::Node&           node,
                                 Mct::BlockData&             info, 
-                                LinearIdGenerator<int32_t>& idGenerator,
-                                std::unordered_map<std::string, int32_t>& texFileIdMap) {
+                                LinearIdGenerator<uint16_t>& texIdGenerator,
+                                std::unordered_map<std::string, uint16_t>& texFileIdMap) {
         if (!node.IsMap()) return false;
 
         // IsSolid
@@ -71,9 +113,9 @@ namespace Mct {
             const std::string& SouthTexture  = faceTextures["South" ].Scalar();
             const std::string& NorthTexture  = faceTextures["North" ].Scalar();
 
-            static auto getOrCreateTextureId = +[](std::unordered_map<std::string, int32_t>& map,
-                                                   const std::string&      textureName,
-                                                   LinearIdGenerator<int32_t>& idGen) -> int32_t {
+            static auto getOrCreateTextureId = +[](std::unordered_map<std::string, uint16_t>& map,
+                                                   const std::string&           textureName,
+                                                   LinearIdGenerator<uint16_t>& idGen) {
                 auto [it, inserted] = map.try_emplace(textureName, 0);
 
                 if (inserted) {
@@ -85,12 +127,12 @@ namespace Mct {
 
             using enum CubeNormal;
             auto& faceTexIds = info.FaceTextureIds;
-            faceTexIds[static_cast<int>(Top   )] = getOrCreateTextureId(texFileIdMap, TopTexture,    idGenerator);
-            faceTexIds[static_cast<int>(Bottom)] = getOrCreateTextureId(texFileIdMap, BottomTexture, idGenerator);
-            faceTexIds[static_cast<int>(East  )] = getOrCreateTextureId(texFileIdMap, EastTexture,   idGenerator);
-            faceTexIds[static_cast<int>(West  )] = getOrCreateTextureId(texFileIdMap, WestTexture,   idGenerator);
-            faceTexIds[static_cast<int>(South )] = getOrCreateTextureId(texFileIdMap, SouthTexture,  idGenerator);
-            faceTexIds[static_cast<int>(North )] = getOrCreateTextureId(texFileIdMap, NorthTexture,  idGenerator);
+            faceTexIds[static_cast<int>(Top   )] = getOrCreateTextureId(texFileIdMap, TopTexture,    texIdGenerator);
+            faceTexIds[static_cast<int>(Bottom)] = getOrCreateTextureId(texFileIdMap, BottomTexture, texIdGenerator);
+            faceTexIds[static_cast<int>(East  )] = getOrCreateTextureId(texFileIdMap, EastTexture,   texIdGenerator);
+            faceTexIds[static_cast<int>(West  )] = getOrCreateTextureId(texFileIdMap, WestTexture,   texIdGenerator);
+            faceTexIds[static_cast<int>(South )] = getOrCreateTextureId(texFileIdMap, SouthTexture,  texIdGenerator);
+            faceTexIds[static_cast<int>(North )] = getOrCreateTextureId(texFileIdMap, NorthTexture,  texIdGenerator);
         }
 
         // FaceUV

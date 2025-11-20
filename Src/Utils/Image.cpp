@@ -12,11 +12,15 @@
 
 namespace Mct {
 
+    Image::Image(const char* filepath, bool flipVertically, int forceChannels) {
+        stbi_set_flip_vertically_on_load(flipVertically);
+        m_Data = stbi_load(filepath, &m_Width, &m_Height, &m_Channels, forceChannels);
+        MCT_ASSERT(m_Data != nullptr && "Image Failed to load");
+    }
+
     Image::Image(const std::string& filepath, bool flipVertically, int forceChannels) {
         stbi_set_flip_vertically_on_load(flipVertically);
-
         m_Data = stbi_load(filepath.c_str(), &m_Width, &m_Height, &m_Channels, forceChannels);
-
         MCT_ASSERT(m_Data != nullptr && "Image Failed to load");
     }
 

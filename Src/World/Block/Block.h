@@ -7,7 +7,7 @@
 #pragma once
 
 
-#include "BlockType.h"
+#include "BlockId.h"
 #include "BlockDataManager.h"
 #include "Utils/CubeData.h"
 
@@ -16,12 +16,12 @@ namespace Mct {
 
 	class Block {
 	public:
-		constexpr Block(BlockType type = BlockType::Air) noexcept : m_Type(type) {}
+		constexpr Block(BlockId type = CoreBlocks::Air) noexcept : m_Type(type) {}
 
-		[[nodiscard]] constexpr BlockType GetType() const noexcept { return m_Type; }
+		[[nodiscard]] constexpr BlockId GetType() const noexcept { return m_Type; }
 
 		[[nodiscard]] bool IsSolid()  const noexcept { return BlockDataManager::IsSolid(m_Type);       }
-		[[nodiscard]] bool IsWater()  const noexcept { return m_Type == BlockType::Water;              }
+		[[nodiscard]] bool IsWater()  const noexcept { return m_Type == CoreBlocks::Water;             }
 		[[nodiscard]] bool HaveMesh() const noexcept { return BlockDataManager::BlockHaveMesh(m_Type); }
 
 		[[nodiscard]] uint32_t GetFaceTexture(CubeNormal faceNormal) const noexcept {
@@ -33,7 +33,7 @@ namespace Mct {
 		}
 
 	private:
-		BlockType m_Type;
+		BlockId m_Type;
 	};
 
 }

@@ -1,9 +1,14 @@
 textures:
     dirt: &dirtTex Assets/Textures/Blocks/dirt.png
     bedrock: &bedrockTex Assets/Textures/Blocks/bedrock.png
+    water: &waterTex Assets/Textures/Blocks/dirt.png
     stone: &stoneTex Assets/Textures/Blocks/stone.png
     grass_top: &grass_topTex Assets/Textures/Blocks/grass_top.png
     grass_side: &grass_sideTex Assets/Textures/Blocks/grass_side.png
+    sand: &sandTex Assets/Textures/Blocks/sand.png
+    sandstone: &sandstoneTex Assets/Textures/Blocks/sandstone.png
+    gravel: &gravelTex Assets/Textures/Blocks/gravel.png
+    snow: &snowTex Assets/Textures/Blocks/snow.png
 
 uv_quad: &quadUV
   - {u: 0, v: 0}
@@ -47,12 +52,12 @@ BlocksInfo:
   - BlockType: Water
     IsSolid: true
     FaceTextures:
-        Top: *dirtTex
-        Bottom: *dirtTex
-        East: *dirtTex
-        West: *dirtTex
-        South: *dirtTex
-        North: *dirtTex
+        Top: *waterTex
+        Bottom: *waterTex
+        East: *waterTex
+        West: *waterTex
+        South: *waterTex
+        North: *waterTex
     FaceUV:
         Top: *quadUV
         Bottom: *quadUV
@@ -108,3 +113,68 @@ BlocksInfo:
         West: *quadUV
         South: *quadUV
         North: *quadUV
+  - BlockType: Sand
+    IsSolid: true
+    FaceTextures:
+        Top: *sandTex
+        Bottom: *sandTex
+        East: *sandTex
+        West: *sandTex
+        South: *sandTex
+        North: *sandTex
+    FaceUV:
+        Top: *quadUV
+        Bottom: *quadUV
+        East: *quadUV
+        West: *quadUV
+        South: *quadUV
+        North: *quadUV
+  - BlockType: Sandstone
+    IsSolid: true
+    FaceTextures:
+        Top: *sandstoneTex
+        Bottom: *sandstoneTex
+        East: *sandstoneTex
+        West: *sandstoneTex
+        South: *sandstoneTex
+        North: *sandstoneTex
+    FaceUV:
+        Top: *quadUV
+        Bottom: *quadUV
+        East: *quadUV
+        West: *quadUV
+        South: *quadUV
+        North: *quadUV
+  - BlockType: Gravel
+    IsSolid: true
+    FaceTextures:
+        Top: *gravelTex
+        Bottom: *gravelTex
+        East: *gravelTex
+        West: *gravelTex
+        South: *gravelTex
+        North: *gravelTex
+    FaceUV:
+        Top: *quadUV
+        Bottom: *quadUV
+        East: *quadUV
+        West: *quadUV
+        South: *quadUV
+        North: *quadUV
+  - BlockType: Snow
+    IsSolid: true
+    FaceTextures:
+        Top: *snowTex
+        Bottom: *snowTex
+        East: *snowTex
+        West: *snowTex
+        South: *snowTex
+        North: *snowTex
+    FaceUV:
+        Top: *quadUV
+        Bottom: *quadUV
+        East: *quadUV
+        West: *quadUV
+        South: *quadUV
+        North: *quadUV
+    

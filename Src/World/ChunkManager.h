@@ -37,6 +37,10 @@ namespace Mct {
 		std::shared_ptr<Chunk> GetChunk(ChunkCoord pos);
 
 	private:
+		void ProcessPendingResults();
+		void LoadChunksInRange(ChunkCoord playerChunkPos);
+		void UnloadOutOfRangeChunks(ChunkCoord playerChunkPos);
+
 		std::optional<ChunkMeshInput> GetChunkMeshInputData(ChunkCoord pos);
 
 	private:

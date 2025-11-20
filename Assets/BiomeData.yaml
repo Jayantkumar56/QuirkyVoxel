@@ -1,0 +1,1165 @@
+BiomesInfo:
+- Biome: Grasslands
+  LutColor: '0x8BD85A'
+  BaseHeight: 64
+  HeightAmplitude: 4.0
+  TerrainRoughness: 0.0025
+  BlockPalette:
+  - Block: Grass
+    Depth: 1
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: Dither_Low
+  - Block: Dirt
+    Depth: 3
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  - Block: Stone
+    Depth: 255
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  TreeDensity: 0.02
+  TreePalette:
+  - TreeType: Oak
+    Weight: 10
+  - TreeType: Birch
+    Weight: 2
+  FloraDensity: 0.08
+  FloraPalette:
+  - FloraType: TallGrass
+    Weight: 8
+- Biome: Steppe
+  LutColor: '0xC7C77D'
+  BaseHeight: 64
+  HeightAmplitude: 6.0
+  TerrainRoughness: 0.002
+  BlockPalette:
+  - Block: Grass
+    Depth: 1
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: Dither_Low
+  - Block: Dirt
+    Depth: 3
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  - Block: Stone
+    Depth: 255
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  TreeDensity: 0.05
+  TreePalette:
+  - TreeType: Oak
+    Weight: 10
+  FloraDensity: 0.08
+  FloraPalette:
+  - FloraType: TallGrass
+    Weight: 8
+- Biome: AridPlains
+  LutColor: '0xE6C169'
+  BaseHeight: 62
+  HeightAmplitude: 2.0
+  TerrainRoughness: 0.001
+  BlockPalette:
+  - Block: Sand
+    Depth: 6
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  - Block: Sandstone
+    Depth: 255
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  TreeDensity: 0.005
+  TreePalette:
+  - TreeType: DeadBush
+    Weight: 1
+  FloraDensity: 0.001
+  FloraPalette:
+  - FloraType: DeadBush
+    Weight: 10
+- Biome: WildflowerMeadow
+  LutColor: '0xFF6EDC'
+  BaseHeight: 64
+  HeightAmplitude: 5.0
+  TerrainRoughness: 0.0022
+  BlockPalette:
+  - Block: Grass
+    Depth: 1
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: Dither_Low
+  - Block: Dirt
+    Depth: 3
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  - Block: Stone
+    Depth: 255
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  TreeDensity: 0.08
+  TreePalette:
+  - TreeType: Oak
+    Weight: 6
+  - TreeType: Birch
+    Weight: 4
+  FloraDensity: 0.4
+  FloraPalette:
+  - FloraType: Poppy
+    Weight: 10
+  - FloraType: Dandelion
+    Weight: 10
+  - FloraType: OxeyeDaisy
+    Weight: 3
+  - FloraType: AzureBluet
+    Weight: 2
+- Biome: WaterloggedPlains
+  LutColor: '0x3E7B4C'
+  BaseHeight: 46
+  HeightAmplitude: 6.0
+  TerrainRoughness: 0.0006
+  BlockPalette:
+  - Block: Water
+    Depth: 1
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  - Block: Sand
+    Depth: 4
+    MinAllowedY: -64
+    MaxAllowedY: 64
+    BlendMode: None
+  - Block: Gravel
+    Depth: 255
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  TreeDensity: 0.0
+  TreePalette: []
+  FloraDensity: 0.0
+  FloraPalette: []
+- Biome: BorealForest
+  LutColor: '0x2B5D3A'
+  BaseHeight: 64
+  HeightAmplitude: 7.0
+  TerrainRoughness: 0.002
+  BlockPalette:
+  - Block: Grass
+    Depth: 1
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: Dither_Low
+  - Block: Dirt
+    Depth: 3
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  - Block: Stone
+    Depth: 255
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  TreeDensity: 0.18
+  TreePalette:
+  - TreeType: Spruce
+    Weight: 14
+  FloraDensity: 0.05
+  FloraPalette:
+  - FloraType: TallGrass
+    Weight: 8
+- Biome: GiantConiferForest
+  LutColor: '0x173623'
+  BaseHeight: 64
+  HeightAmplitude: 7.0
+  TerrainRoughness: 0.002
+  BlockPalette:
+  - Block: Grass
+    Depth: 1
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: Dither_Low
+  - Block: Dirt
+    Depth: 3
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  - Block: Stone
+    Depth: 255
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  TreeDensity: 0.18
+  TreePalette:
+  - TreeType: Spruce
+    Weight: 14
+  FloraDensity: 0.05
+  FloraPalette:
+  - FloraType: TallGrass
+    Weight: 8
+- Biome: SnowyTundra
+  LutColor: '0xDCEEFF'
+  BaseHeight: 64
+  HeightAmplitude: 4.0
+  TerrainRoughness: 0.0015
+  BlockPalette:
+  - Block: Snow
+    Depth: 1
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  - Block: Dirt
+    Depth: 3
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  - Block: Stone
+    Depth: 255
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  TreeDensity: 0.02
+  TreePalette:
+  - TreeType: Spruce
+    Weight: 6
+  FloraDensity: 0.01
+  FloraPalette:
+  - FloraType: TallGrass
+    Weight: 8
+- Biome: FrozenWastes
+  LutColor: '0xBEEAFF'
+  BaseHeight: 64
+  HeightAmplitude: 6.0
+  TerrainRoughness: 0.002
+  BlockPalette:
+  - Block: Grass
+    Depth: 1
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: Dither_Low
+  - Block: Dirt
+    Depth: 3
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  - Block: Stone
+    Depth: 255
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  TreeDensity: 0.05
+  TreePalette:
+  - TreeType: Oak
+    Weight: 10
+  FloraDensity: 0.08
+  FloraPalette:
+  - FloraType: TallGrass
+    Weight: 8
+- Biome: IceSpires
+  LutColor: '0x77CBFF'
+  BaseHeight: 64
+  HeightAmplitude: 4.0
+  TerrainRoughness: 0.0015
+  BlockPalette:
+  - Block: Snow
+    Depth: 1
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  - Block: Dirt
+    Depth: 3
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  - Block: Stone
+    Depth: 255
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  TreeDensity: 0.02
+  TreePalette:
+  - TreeType: Spruce
+    Weight: 6
+  FloraDensity: 0.01
+  FloraPalette:
+  - FloraType: TallGrass
+    Weight: 8
+- Biome: Dunes
+  LutColor: '0xEEC37A'
+  BaseHeight: 64
+  HeightAmplitude: 6.0
+  TerrainRoughness: 0.002
+  BlockPalette:
+  - Block: Grass
+    Depth: 1
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: Dither_Low
+  - Block: Dirt
+    Depth: 3
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  - Block: Stone
+    Depth: 255
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  TreeDensity: 0.05
+  TreePalette:
+  - TreeType: Oak
+    Weight: 10
+  FloraDensity: 0.08
+  FloraPalette:
+  - FloraType: TallGrass
+    Weight: 8
+- Biome: Savanna
+  LutColor: '0xD6C645'
+  BaseHeight: 64
+  HeightAmplitude: 6.5
+  TerrainRoughness: 0.0028
+  BlockPalette:
+  - Block: Grass
+    Depth: 1
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: Dither_Low
+  - Block: Dirt
+    Depth: 3
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  - Block: Stone
+    Depth: 255
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  TreeDensity: 0.1
+  TreePalette:
+  - TreeType: Acacia
+    Weight: 10
+  FloraDensity: 0.03
+  FloraPalette:
+  - FloraType: TallGrass
+    Weight: 8
+  - FloraType: DeadBush
+    Weight: 1
+- Biome: AridHighlands
+  LutColor: '0xB88A3A'
+  BaseHeight: 62
+  HeightAmplitude: 2.0
+  TerrainRoughness: 0.001
+  BlockPalette:
+  - Block: Sand
+    Depth: 6
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  - Block: Sandstone
+    Depth: 255
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  TreeDensity: 0.005
+  TreePalette:
+  - TreeType: DeadBush
+    Weight: 1
+  FloraDensity: 0.001
+  FloraPalette:
+  - FloraType: DeadBush
+    Weight: 10
+- Biome: VolcanicPlains
+  LutColor: '0x4A3A3A'
+  BaseHeight: 64
+  HeightAmplitude: 4.0
+  TerrainRoughness: 0.0025
+  BlockPalette:
+  - Block: Grass
+    Depth: 1
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: Dither_Low
+  - Block: Dirt
+    Depth: 3
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  - Block: Stone
+    Depth: 255
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  TreeDensity: 0.02
+  TreePalette:
+  - TreeType: Oak
+    Weight: 10
+  - TreeType: Birch
+    Weight: 2
+  FloraDensity: 0.08
+  FloraPalette:
+  - FloraType: TallGrass
+    Weight: 8
+- Biome: MixedWoodlands
+  LutColor: '0x4FA449'
+  BaseHeight: 64
+  HeightAmplitude: 6.0
+  TerrainRoughness: 0.002
+  BlockPalette:
+  - Block: Grass
+    Depth: 1
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: Dither_Low
+  - Block: Dirt
+    Depth: 3
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  - Block: Stone
+    Depth: 255
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  TreeDensity: 0.05
+  TreePalette:
+  - TreeType: Oak
+    Weight: 10
+  FloraDensity: 0.08
+  FloraPalette:
+  - FloraType: TallGrass
+    Weight: 8
+- Biome: Birchwood
+  LutColor: '0x9EDB70'
+  BaseHeight: 64
+  HeightAmplitude: 6.0
+  TerrainRoughness: 0.002
+  BlockPalette:
+  - Block: Grass
+    Depth: 1
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: Dither_Low
+  - Block: Dirt
+    Depth: 3
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  - Block: Stone
+    Depth: 255
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  TreeDensity: 0.05
+  TreePalette:
+  - TreeType: Oak
+    Weight: 10
+  FloraDensity: 0.08
+  FloraPalette:
+  - FloraType: TallGrass
+    Weight: 8
+- Biome: CanopyForest
+  LutColor: '0x265022'
+  BaseHeight: 64
+  HeightAmplitude: 6.0
+  TerrainRoughness: 0.002
+  BlockPalette:
+  - Block: Grass
+    Depth: 1
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: Dither_Low
+  - Block: Dirt
+    Depth: 3
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  - Block: Stone
+    Depth: 255
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  TreeDensity: 0.12
+  TreePalette:
+  - TreeType: Oak
+    Weight: 12
+  - TreeType: Birch
+    Weight: 8
+  FloraDensity: 0.18
+  FloraPalette:
+  - FloraType: TallGrass
+    Weight: 8
+- Biome: TropicalJungle
+  LutColor: '0x008F3B'
+  BaseHeight: 72
+  HeightAmplitude: 14.0
+  TerrainRoughness: 0.0045
+  BlockPalette:
+  - Block: Grass
+    Depth: 1
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: Dither_Low
+  - Block: Dirt
+    Depth: 3
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  - Block: Stone
+    Depth: 255
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  TreeDensity: 0.35
+  TreePalette:
+  - TreeType: Jungle
+    Weight: 18
+  - TreeType: JungleBig
+    Weight: 4
+  FloraDensity: 0.28
+  FloraPalette:
+  - FloraType: Vine
+    Weight: 10
+  - FloraType: LargeFern
+    Weight: 6
+  - FloraType: Melon
+    Weight: 1
+- Biome: FloweringForest
+  LutColor: '0xD44FD1'
+  BaseHeight: 64
+  HeightAmplitude: 6.0
+  TerrainRoughness: 0.002
+  BlockPalette:
+  - Block: Grass
+    Depth: 1
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: Dither_Low
+  - Block: Dirt
+    Depth: 3
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  - Block: Stone
+    Depth: 255
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  TreeDensity: 0.12
+  TreePalette:
+  - TreeType: Oak
+    Weight: 12
+  - TreeType: Birch
+    Weight: 8
+  FloraDensity: 0.18
+  FloraPalette:
+  - FloraType: Poppy
+    Weight: 10
+  - FloraType: Dandelion
+    Weight: 10
+  - FloraType: OxeyeDaisy
+    Weight: 3
+  - FloraType: AzureBluet
+    Weight: 2
+- Biome: BambooGrove
+  LutColor: '0x7AD100'
+  BaseHeight: 64
+  HeightAmplitude: 6.0
+  TerrainRoughness: 0.002
+  BlockPalette:
+  - Block: Grass
+    Depth: 1
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: Dither_Low
+  - Block: Dirt
+    Depth: 3
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  - Block: Stone
+    Depth: 255
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  TreeDensity: 0.05
+  TreePalette:
+  - TreeType: Oak
+    Weight: 10
+  FloraDensity: 0.08
+  FloraPalette:
+  - FloraType: TallGrass
+    Weight: 8
+- Biome: AutumnalForest
+  LutColor: '0xD27125'
+  BaseHeight: 64
+  HeightAmplitude: 6.0
+  TerrainRoughness: 0.002
+  BlockPalette:
+  - Block: Grass
+    Depth: 1
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: Dither_Low
+  - Block: Dirt
+    Depth: 3
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  - Block: Stone
+    Depth: 255
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  TreeDensity: 0.12
+  TreePalette:
+  - TreeType: Oak
+    Weight: 12
+  - TreeType: Birch
+    Weight: 8
+  FloraDensity: 0.18
+  FloraPalette:
+  - FloraType: TallGrass
+    Weight: 8
+- Biome: Swampland
+  LutColor: '0x475D33'
+  BaseHeight: 62
+  HeightAmplitude: 2.0
+  TerrainRoughness: 0.0015
+  BlockPalette:
+  - Block: Grass
+    Depth: 1
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: Dither_Low
+  - Block: Dirt
+    Depth: 3
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  - Block: Stone
+    Depth: 255
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  TreeDensity: 0.04
+  TreePalette:
+  - TreeType: OakSwamp
+    Weight: 6
+  FloraDensity: 0.2
+  FloraPalette:
+  - FloraType: Lilypad
+    Weight: 6
+  - FloraType: TallGrass
+    Weight: 6
+  - FloraType: Vines
+    Weight: 4
+- Biome: MangroveForest
+  LutColor: '0x2E7A4F'
+  BaseHeight: 62
+  HeightAmplitude: 2.0
+  TerrainRoughness: 0.0015
+  BlockPalette:
+  - Block: Grass
+    Depth: 1
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: Dither_Low
+  - Block: Dirt
+    Depth: 3
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  - Block: Stone
+    Depth: 255
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  TreeDensity: 0.04
+  TreePalette:
+  - TreeType: OakSwamp
+    Weight: 6
+  FloraDensity: 0.2
+  FloraPalette:
+  - FloraType: Lilypad
+    Weight: 6
+  - FloraType: TallGrass
+    Weight: 6
+  - FloraType: Vines
+    Weight: 4
+- Biome: Marshlands
+  LutColor: '0x7FBF3F'
+  BaseHeight: 64
+  HeightAmplitude: 6.0
+  TerrainRoughness: 0.002
+  BlockPalette:
+  - Block: Grass
+    Depth: 1
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: Dither_Low
+  - Block: Dirt
+    Depth: 3
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  - Block: Stone
+    Depth: 255
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  TreeDensity: 0.05
+  TreePalette:
+  - TreeType: Oak
+    Weight: 10
+  FloraDensity: 0.08
+  FloraPalette:
+  - FloraType: TallGrass
+    Weight: 8
+- Biome: TemperateOcean
+  LutColor: '0x3F7EBD'
+  BaseHeight: 46
+  HeightAmplitude: 6.0
+  TerrainRoughness: 0.0006
+  BlockPalette:
+  - Block: Water
+    Depth: 1
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  - Block: Sand
+    Depth: 4
+    MinAllowedY: -64
+    MaxAllowedY: 64
+    BlendMode: None
+  - Block: Gravel
+    Depth: 255
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  TreeDensity: 0.0
+  TreePalette: []
+  FloraDensity: 0.0
+  FloraPalette: []
+- Biome: TropicalOcean
+  LutColor: '0x00C3C0'
+  BaseHeight: 46
+  HeightAmplitude: 6.0
+  TerrainRoughness: 0.0006
+  BlockPalette:
+  - Block: Water
+    Depth: 1
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  - Block: Sand
+    Depth: 4
+    MinAllowedY: -64
+    MaxAllowedY: 64
+    BlendMode: None
+  - Block: Gravel
+    Depth: 255
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  TreeDensity: 0.0
+  TreePalette: []
+  FloraDensity: 0.0
+  FloraPalette: []
+- Biome: ColdOcean
+  LutColor: '0x2E4A7F'
+  BaseHeight: 46
+  HeightAmplitude: 6.0
+  TerrainRoughness: 0.0006
+  BlockPalette:
+  - Block: Water
+    Depth: 1
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  - Block: Sand
+    Depth: 4
+    MinAllowedY: -64
+    MaxAllowedY: 64
+    BlendMode: None
+  - Block: Gravel
+    Depth: 255
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  TreeDensity: 0.0
+  TreePalette: []
+  FloraDensity: 0.0
+  FloraPalette: []
+- Biome: ArcticOcean
+  LutColor: '0x9FDFFF'
+  BaseHeight: 46
+  HeightAmplitude: 6.0
+  TerrainRoughness: 0.0006
+  BlockPalette:
+  - Block: Water
+    Depth: 1
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  - Block: Sand
+    Depth: 4
+    MinAllowedY: -64
+    MaxAllowedY: 64
+    BlendMode: None
+  - Block: Gravel
+    Depth: 255
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  TreeDensity: 0.0
+  TreePalette: []
+  FloraDensity: 0.0
+  FloraPalette: []
+- Biome: OceanDepths
+  LutColor: '0x000B36'
+  BaseHeight: 46
+  HeightAmplitude: 6.0
+  TerrainRoughness: 0.0006
+  BlockPalette:
+  - Block: Water
+    Depth: 1
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  - Block: Sand
+    Depth: 4
+    MinAllowedY: -64
+    MaxAllowedY: 64
+    BlendMode: None
+  - Block: Gravel
+    Depth: 255
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  TreeDensity: 0.0
+  TreePalette: []
+  FloraDensity: 0.0
+  FloraPalette: []
+- Biome: CoralReef
+  LutColor: '0xFF9B6B'
+  BaseHeight: 64
+  HeightAmplitude: 6.0
+  TerrainRoughness: 0.002
+  BlockPalette:
+  - Block: Grass
+    Depth: 1
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: Dither_Low
+  - Block: Dirt
+    Depth: 3
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  - Block: Stone
+    Depth: 255
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  TreeDensity: 0.05
+  TreePalette:
+  - TreeType: Oak
+    Weight: 10
+  FloraDensity: 0.08
+  FloraPalette:
+  - FloraType: TallGrass
+    Weight: 8
+- Biome: Lagoon
+  LutColor: '0x6EE3D4'
+  BaseHeight: 64
+  HeightAmplitude: 6.0
+  TerrainRoughness: 0.002
+  BlockPalette:
+  - Block: Grass
+    Depth: 1
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: Dither_Low
+  - Block: Dirt
+    Depth: 3
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  - Block: Stone
+    Depth: 255
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  TreeDensity: 0.05
+  TreePalette:
+  - TreeType: Oak
+    Weight: 10
+  FloraDensity: 0.08
+  FloraPalette:
+  - FloraType: TallGrass
+    Weight: 8
+- Biome: TropicalKelpForest
+  LutColor: '0x2AAE7D'
+  BaseHeight: 64
+  HeightAmplitude: 6.0
+  TerrainRoughness: 0.002
+  BlockPalette:
+  - Block: Grass
+    Depth: 1
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: Dither_Low
+  - Block: Dirt
+    Depth: 3
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  - Block: Stone
+    Depth: 255
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  TreeDensity: 0.12
+  TreePalette:
+  - TreeType: Oak
+    Weight: 12
+  - TreeType: Birch
+    Weight: 8
+  FloraDensity: 0.18
+  FloraPalette:
+  - FloraType: TallGrass
+    Weight: 8
+- Biome: SeagrassMeadows
+  LutColor: '0x58C38B'
+  BaseHeight: 46
+  HeightAmplitude: 6.0
+  TerrainRoughness: 0.0006
+  BlockPalette:
+  - Block: Water
+    Depth: 1
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  - Block: Sand
+    Depth: 4
+    MinAllowedY: -64
+    MaxAllowedY: 64
+    BlendMode: None
+  - Block: Gravel
+    Depth: 255
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  TreeDensity: 0.0
+  TreePalette: []
+  FloraDensity: 0.0
+  FloraPalette: []
+- Biome: RockyShoals
+  LutColor: '0x6C7B6B'
+  BaseHeight: 64
+  HeightAmplitude: 6.0
+  TerrainRoughness: 0.002
+  BlockPalette:
+  - Block: Grass
+    Depth: 1
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: Dither_Low
+  - Block: Dirt
+    Depth: 3
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  - Block: Stone
+    Depth: 255
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  TreeDensity: 0.05
+  TreePalette:
+  - TreeType: Oak
+    Weight: 10
+  FloraDensity: 0.08
+  FloraPalette:
+  - FloraType: TallGrass
+    Weight: 8
+- Biome: KelpForest
+  LutColor: '0x1E6C4D'
+  BaseHeight: 64
+  HeightAmplitude: 6.0
+  TerrainRoughness: 0.002
+  BlockPalette:
+  - Block: Grass
+    Depth: 1
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: Dither_Low
+  - Block: Dirt
+    Depth: 3
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  - Block: Stone
+    Depth: 255
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  TreeDensity: 0.12
+  TreePalette:
+  - TreeType: Oak
+    Weight: 12
+  - TreeType: Birch
+    Weight: 8
+  FloraDensity: 0.18
+  FloraPalette:
+  - FloraType: TallGrass
+    Weight: 8
+- Biome: BrackishShelf
+  LutColor: '0x9FB07A'
+  BaseHeight: 64
+  HeightAmplitude: 6.0
+  TerrainRoughness: 0.002
+  BlockPalette:
+  - Block: Grass
+    Depth: 1
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: Dither_Low
+  - Block: Dirt
+    Depth: 3
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  - Block: Stone
+    Depth: 255
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  TreeDensity: 0.05
+  TreePalette:
+  - TreeType: Oak
+    Weight: 10
+  FloraDensity: 0.08
+  FloraPalette:
+  - FloraType: TallGrass
+    Weight: 8
+- Biome: AbyssalPlain
+  LutColor: '0x081228'
+  BaseHeight: 64
+  HeightAmplitude: 4.0
+  TerrainRoughness: 0.0025
+  BlockPalette:
+  - Block: Grass
+    Depth: 1
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: Dither_Low
+  - Block: Dirt
+    Depth: 3
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  - Block: Stone
+    Depth: 255
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  TreeDensity: 0.02
+  TreePalette:
+  - TreeType: Oak
+    Weight: 10
+  - TreeType: Birch
+    Weight: 2
+  FloraDensity: 0.08
+  FloraPalette:
+  - FloraType: TallGrass
+    Weight: 8
+- Biome: MidnightZone
+  LutColor: '0x0A0F1B'
+  BaseHeight: 64
+  HeightAmplitude: 6.0
+  TerrainRoughness: 0.002
+  BlockPalette:
+  - Block: Grass
+    Depth: 1
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: Dither_Low
+  - Block: Dirt
+    Depth: 3
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  - Block: Stone
+    Depth: 255
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  TreeDensity: 0.05
+  TreePalette:
+  - TreeType: Oak
+    Weight: 10
+  FloraDensity: 0.08
+  FloraPalette:
+  - FloraType: TallGrass
+    Weight: 8
+- Biome: HydrothermalVents
+  LutColor: '0xFF7F33'
+  BaseHeight: 64
+  HeightAmplitude: 6.0
+  TerrainRoughness: 0.002
+  BlockPalette:
+  - Block: Grass
+    Depth: 1
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: Dither_Low
+  - Block: Dirt
+    Depth: 3
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  - Block: Stone
+    Depth: 255
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  TreeDensity: 0.05
+  TreePalette:
+  - TreeType: Oak
+    Weight: 10
+  FloraDensity: 0.08
+  FloraPalette:
+  - FloraType: TallGrass
+    Weight: 8
+- Biome: VolcanicSeafloor
+  LutColor: '0x44221A'
+  BaseHeight: 46
+  HeightAmplitude: 6.0
+  TerrainRoughness: 0.0006
+  BlockPalette:
+  - Block: Water
+    Depth: 1
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  - Block: Sand
+    Depth: 4
+    MinAllowedY: -64
+    MaxAllowedY: 64
+    BlendMode: None
+  - Block: Gravel
+    Depth: 255
+    MinAllowedY: -64
+    MaxAllowedY: 320
+    BlendMode: None
+  TreeDensity: 0.0
+  TreePalette: []
+  FloraDensity: 0.0
+  FloraPalette: []
