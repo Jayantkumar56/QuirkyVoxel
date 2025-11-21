@@ -52,7 +52,7 @@ namespace Mct {
 			using ResultVector_T = ThreadSafeVector<std::shared_ptr<Chunk>>;
 
 		public:
-			TerrainGenFunctor(TerrainGenerator terrainGenerator, ResultVector_T* resultVector) :
+			TerrainGenFunctor(TerrainGenerator& terrainGenerator, ResultVector_T* resultVector) :
 					m_TerrainGenerator ( terrainGenerator ),
 					m_ResultVector     ( resultVector     )
 			{}
@@ -64,8 +64,8 @@ namespace Mct {
 			}
 
 		private:
-			TerrainGenerator m_TerrainGenerator;
-			ResultVector_T*  m_ResultVector;        // Points to the result owned by ChunkManager.
+			TerrainGenerator& m_TerrainGenerator;
+			ResultVector_T*   m_ResultVector;        // Points to the result owned by ChunkManager.
 		};
 
 		struct ChunkMeshGenResult {
@@ -93,6 +93,8 @@ namespace Mct {
 		};
 
 	private:
+		TerrainGenerator m_TerrainGenerator;
+
 		std::unordered_set<ChunkCoord>                   m_ChunksInTerrainGeneration;
 		ThreadSafeVector<std::shared_ptr<Chunk>>         m_TerrainGeneratorResults;
 		TaskProcessorPool<ChunkCoord, TerrainGenFunctor> m_TerrainGeneratorPool;

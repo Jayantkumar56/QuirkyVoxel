@@ -19,19 +19,19 @@ namespace Mct {
         for (size_t x = 0; x < blocks.SizeX(); ++x) {
             for (size_t z = 0; z < blocks.SizeZ(); ++z) {
                 // Bedrock
-                blocks(x, BEDROCK_Y, z) = Block{ BlockType::Bedrock };
+                blocks(x, BEDROCK_Y, z) = Block{ CoreBlocks::Bedrock };
 
                 // Dirt layers (protect against small ChunkSizeY just in case)
                 for (size_t y = 1; y < 4 && y < blocks.SizeY(); ++y)
-                    blocks(x, y, z) = Block{ BlockType::Dirt };
+                    blocks(x, y, z) = Block{ CoreBlocks::Dirt };
 
                 // Grass on top if available
                 if (blocks.SizeY() > GRASS_Y)
-                    blocks(x, GRASS_Y, z) = Block{ BlockType::Grass };
+                    blocks(x, GRASS_Y, z) = Block{ CoreBlocks::Grass };
 
                 // Air above
                 for (size_t y = GRASS_Y + 1; y < blocks.SizeY(); ++y)
-                    blocks(x, y, z) = Block{ BlockType::Air };
+                    blocks(x, y, z) = Block{ CoreBlocks::Air };
             }
         }
 	}

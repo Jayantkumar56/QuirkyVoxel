@@ -11,7 +11,8 @@
 namespace Mct {
 
     ChunkManager::ChunkManager(TerrainGenerator generator) :
-			m_TerrainGeneratorPool ( 6, TerrainGenFunctor(generator, &m_TerrainGeneratorResults) ),
+            m_TerrainGenerator     ( std::move(generator) ),
+			m_TerrainGeneratorPool ( 6, TerrainGenFunctor(m_TerrainGenerator, &m_TerrainGeneratorResults) ),
 			m_ChunkMeshGenPool     ( 6, ChunkMeshGenFunctor(&m_ChunkMeshGenResults)              )
 	{}
 

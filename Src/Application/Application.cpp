@@ -9,6 +9,8 @@
 #include "GameLayer.h"
 #include "Events/EventDispatcher.h"
 #include "ImguiContext.h"
+#include "World/Block/BlockDataManager.h"
+#include "World/Biome/BiomeDataManager.h"
 
 #include <iostream>
 
@@ -39,6 +41,9 @@ namespace Mct {
         if (!m_Window) {
             return;
         }
+
+        BlockDataManager::Init();
+        BiomeDataManager::Init();
 
         PushLayer<GameLayer>();
 

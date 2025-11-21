@@ -21,16 +21,16 @@ namespace Mct {
 			const float terrainHeight = heightMap[x][z];
 
 			if (y > terrainHeight) {
-				block = Block(BlockType::Air);
+				block = Block(CoreBlocks::Air);
 			}
 			else if (y == terrainHeight) {
-				block = Block(BlockType::Grass);
+				block = Block(CoreBlocks::Grass);
 			}
 			else if (y > terrainHeight - 4.0f) {
-				block = Block(BlockType::Dirt);
+				block = Block(CoreBlocks::Dirt);
 			}
 			else {
-				block = Block(BlockType::Stone);
+				block = Block(CoreBlocks::Stone);
 			}
 		});
 	}

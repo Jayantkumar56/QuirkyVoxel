@@ -115,12 +115,19 @@ RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Utils"
     "ThreadSafeVector.h"
 )
 
+# Source files in World/Biome
+RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/World/Biome"
+    "Biome.h"
+    "BiomeDataManager.h"
+    "BiomeDataManager.cpp"
+)
+
 # Source files in World/Block
 RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/World/Block"
     "Block.h"
     "BlockDataManager.h"
     "BlockDataManager.cpp"
-    "BlockType.h"
+    "BlockId.h"
 )
 
 # Source files in World/Chunk

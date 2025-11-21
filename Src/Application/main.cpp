@@ -6,7 +6,6 @@
 
 #include "Application.h"
 #include "Window.h"
-#include "World/Block/BlockDataManager.h"
 
 #include <iostream>
 
@@ -17,8 +16,6 @@ int main() {
         std::cerr << "Failed to initialise GLFW!" << std::endl;
         return -1;
     }
-
-    Mct::BlockDataManager::Init();
 
     {
         Mct::Application app;
