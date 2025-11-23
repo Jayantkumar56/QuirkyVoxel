@@ -9,6 +9,9 @@
 
 #include <glad/glad.h>
 
+#include <array>
+#include <numeric>
+
 
 namespace Mct {
 
@@ -34,7 +37,17 @@ namespace Mct {
         return -1;
     }
 
-    FrameBuffer::FrameBuffer(const FrameBufferSpecification& spec) noexcept :
+    static constexpr bool IsFrameBufferColorAttachment(FrameBufferTextureType type) noexcept {
+        return type == FrameBufferTextureType::RGBA_8            ||
+               type == FrameBufferTextureType::RGB_8             ||
+               type == FrameBufferTextureType::RED_INTEGER;
+    }
+
+    static constexpr bool IsFrameBufferDepthAttachment(FrameBufferTextureType type) noexcept {
+        return type == FrameBufferTextureType::DEPTH_24_STENCIL_8;
+    }
+
+    FrameBuffer::FrameBuffer(const FrameBufferSpec& spec) noexcept :
             m_FrameBufferSpec(spec)
     {
         glGenFramebuffers(1, &m_RendererID);
@@ -44,36 +57,38 @@ namespace Mct {
         glDeleteFramebuffers(1, &m_RendererID);
     }
 
-    void FrameBuffer::Bind() noexcept {
+    void FrameBuffer::Bind() const noexcept {
         glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
     }
 
-    void FrameBuffer::Unbind() noexcept {
+    void FrameBuffer::Unbind() const noexcept {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
-    void FrameBuffer::ClearAttachments() {
+    void FrameBuffer::ClearAttachments() const noexcept {
         if (m_DepthStencilAttachment)
             glClear(GL_DEPTH_BUFFER_BIT);
 
-        for (int i = 0; i < (int)m_ColorAttachments.size(); ++i) {
-            switch (m_ColorAttachmentsSpec[i].Type) {
+        for (size_t i = 0; i < m_ColorAttachments.size(); ++i) {
+            const auto& colorAttachment = m_ColorAttachmentsSpec[i];
+
+            switch (colorAttachment.Type) {
                 case FrameBufferTextureType::RGBA_8: {
-                    glClearBufferfv(GL_COLOR, i, m_ColorAttachmentsSpec[i].ClearData.RGBA); break;
+                    glClearBufferfv(GL_COLOR, i, colorAttachment.ClearData.RGBA); break;
                 }
 
                 case FrameBufferTextureType::RGB_8: {
-                    glClearBufferfv(GL_COLOR, i, m_ColorAttachmentsSpec[i].ClearData.RGBA); break;
+                    glClearBufferfv(GL_COLOR, i, colorAttachment.ClearData.RGBA); break;
                 }
 
                 case FrameBufferTextureType::RED_INTEGER: {
-                    glClearBufferiv(GL_COLOR, i, &(m_ColorAttachmentsSpec[i].ClearData.RedInteger)); break;
+                    glClearBufferiv(GL_COLOR, i, &(colorAttachment.ClearData.RedInteger)); break;
                 }
             }
         }
     }
 
-    void FrameBuffer::SetAttachments(std::initializer_list<FrameBufferAttachmentSpecification> attachmentsSpec) {
+    void FrameBuffer::SetAttachments(std::initializer_list<FrameBufferAttachmentSpec> attachmentsSpec) {
         int colorAttachmentCount = 0;
 
         for (auto attachmentSpec : attachmentsSpec) {
@@ -83,7 +98,7 @@ namespace Mct {
             }
             else if (IsFrameBufferDepthAttachment(attachmentSpec.Type)) {
                 MCT_ASSERT(
-                    m_DepthAttachmentSpec.Type == FrameBufferTextureType::None &&
+                    !m_DepthAttachmentSpec &&
                     "Framebuffer do not support multiple DepthAttachments"
                 );
 
@@ -92,12 +107,11 @@ namespace Mct {
         }
 
         MCT_ASSERT(colorAttachmentCount < 32 && "Provided ColorAttachments more than max limit of 32 attachments");
-        m_ColorAttachments = std::vector<uint32_t>(colorAttachmentCount, 0);
-        CreateAttachments();
-    }
+    }     
 
     uint32_t FrameBuffer::GetDepthStencilAttachment() const noexcept {
-        return m_DepthStencilAttachment;
+        MCT_ASSERT(m_DepthStencilAttachment);
+        return *m_DepthStencilAttachment;
     }
 
     uint32_t FrameBuffer::GetColorAttachment(size_t index) const noexcept {
@@ -106,6 +120,9 @@ namespace Mct {
     }
 
     void FrameBuffer::Resize(uint32_t width, uint32_t height) {
+        if (width == 0 || height == 0)
+            return;
+
         m_FrameBufferSpec.Width  = width;
         m_FrameBufferSpec.Height = height;
 
@@ -113,30 +130,10 @@ namespace Mct {
         CreateAttachments();
     }
 
-    void FrameBuffer::GetColorPixelData(size_t index, int x, int y, int width, int height, void* outputData, int size) {
-        MCT_ASSERT(index < m_ColorAttachments.size() && "index exceeds the color attachment's count");
-        glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
-        glReadBuffer(GL_COLOR_ATTACHMENT0 + (GLenum)index);
-
-        switch (m_ColorAttachmentsSpec[index].Type) {
-            case FrameBufferTextureType::RED_INTEGER: {
-                glReadnPixels(x, y, width, height, GL_RED_INTEGER, GL_INT, size, outputData);
-                break;
-            }
-
-            case FrameBufferTextureType::RGBA_8: {
-                glReadnPixels(x, y, width, height, GL_RGBA, GL_UNSIGNED_BYTE, size, outputData);
-                break;
-            }
-        }
-
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    }
-
     uint32_t FrameBuffer::CreateBuffer(int          internalFormat,
                                        unsigned int format,
                                        unsigned int dataType,
-                                       FrameBufferAttachmentSpecification spec) const 
+                                       FrameBufferAttachmentSpec spec) const 
     {
         uint32_t buffer;
 
@@ -154,52 +151,77 @@ namespace Mct {
     }
 
     void FrameBuffer::CreateAttachments() {
+        static const std::array colorAttachments = []() noexcept {
+            std::array<GLenum, 32> attachments{};
+            std::iota(attachments.begin(), attachments.end(), GL_COLOR_ATTACHMENT0);
+            return attachments;
+        }();
+
         glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
-        GLenum colorAttachments[32] = { GL_COLOR_ATTACHMENT0 };
-        GLint colorBufferCount = 0;
+
+        m_ColorAttachments.resize(m_ColorAttachmentsSpec.size());
 
         for (size_t i = 0; i < m_ColorAttachmentsSpec.size(); ++i) {
-            colorAttachments[colorBufferCount] = GL_COLOR_ATTACHMENT0 + (GLenum)colorBufferCount;
-
             switch (m_ColorAttachmentsSpec[i].Type) {
                 case FrameBufferTextureType::RGBA_8: {
-                    m_ColorAttachments[colorBufferCount] = CreateBuffer(GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, m_ColorAttachmentsSpec[i]);
+                    m_ColorAttachments[i] = CreateBuffer(GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, m_ColorAttachmentsSpec[i]);
                     break;
                 }
 
                 case FrameBufferTextureType::RGB_8: {
-                    m_ColorAttachments[colorBufferCount] = CreateBuffer(GL_RGB8, GL_RGB, GL_UNSIGNED_BYTE, m_ColorAttachmentsSpec[i]);
+                    m_ColorAttachments[i] = CreateBuffer(GL_RGB8, GL_RGB, GL_UNSIGNED_BYTE, m_ColorAttachmentsSpec[i]);
                     break;
                 }
 
                 case FrameBufferTextureType::RED_INTEGER: {
-                    m_ColorAttachments[colorBufferCount] = CreateBuffer(GL_R32I, GL_RED_INTEGER, GL_INT, m_ColorAttachmentsSpec[i]);
+                    m_ColorAttachments[i] = CreateBuffer(GL_R32I, GL_RED_INTEGER, GL_INT, m_ColorAttachmentsSpec[i]);
                     break;
                 }
             }
 
-            glFramebufferTexture2D(GL_FRAMEBUFFER, colorAttachments[colorBufferCount], GL_TEXTURE_2D, m_ColorAttachments[colorBufferCount], 0);
-            ++colorBufferCount;
+            glFramebufferTexture2D(GL_FRAMEBUFFER, colorAttachments[i], GL_TEXTURE_2D, m_ColorAttachments[i], 0);
         }
 
-        switch (m_DepthAttachmentSpec.Type) {
-            case FrameBufferTextureType::DEPTH_24_STENCIL_8: {
-                m_DepthStencilAttachment = CreateBuffer(GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, m_DepthAttachmentSpec);
-                glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, m_DepthStencilAttachment, 0);
-                break;
+        if (m_DepthAttachmentSpec) {
+            uint32_t depthStencilAttachment = 0;
+
+            switch (m_DepthAttachmentSpec->Type) {
+                case FrameBufferTextureType::DEPTH_24_STENCIL_8: {
+                    depthStencilAttachment = CreateBuffer(GL_DEPTH24_STENCIL8,
+                                                          GL_DEPTH_STENCIL, 
+                                                          GL_UNSIGNED_INT_24_8, 
+                                                          *m_DepthAttachmentSpec);
+
+                    glFramebufferTexture2D(GL_FRAMEBUFFER, 
+                                           GL_DEPTH_STENCIL_ATTACHMENT, 
+                                           GL_TEXTURE_2D,
+                                           depthStencilAttachment,
+                                           0);
+                    break;
+                }
             }
-        }
 
-        glDrawBuffers(colorBufferCount, colorAttachments);
+            m_DepthStencilAttachment = depthStencilAttachment;
+        }
+        
+        const GLint colorBufferCount = static_cast<GLint>(m_ColorAttachments.size());
+        glDrawBuffers(colorBufferCount, colorAttachments.data());
+
         MCT_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE && "Uncomplete FrameBuffer!");
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
     void FrameBuffer::InvalidateAttachments() {
-        glDeleteTextures((int)m_ColorAttachments.size(), m_ColorAttachments.data());
+        if (!m_ColorAttachments.empty()) {
+            glDeleteTextures((int)m_ColorAttachments.size(), m_ColorAttachments.data());
+            m_ColorAttachments.clear();
+        }
 
-        if (m_DepthStencilAttachment)
-            glDeleteTextures(1, &m_DepthStencilAttachment);
+        if (m_DepthStencilAttachment) {
+            const uint32_t depthStencilAttachment = *m_DepthStencilAttachment;
+            glDeleteTextures(1, &depthStencilAttachment);
+            m_DepthStencilAttachment = std::nullopt;
+        }
     }
 
 }

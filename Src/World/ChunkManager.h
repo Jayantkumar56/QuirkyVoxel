@@ -94,6 +94,7 @@ namespace Mct {
 
 	private:
 		TerrainGenerator m_TerrainGenerator;
+		ChunkCoord       m_PrevPlayerPos;
 
 		std::unordered_set<ChunkCoord>                   m_ChunksInTerrainGeneration;
 		ThreadSafeVector<std::shared_ptr<Chunk>>         m_TerrainGeneratorResults;

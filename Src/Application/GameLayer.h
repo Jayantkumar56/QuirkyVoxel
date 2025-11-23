@@ -19,7 +19,6 @@ namespace Mct {
     public:
         GameLayer();
 
-        virtual void OnAttach()                override;
         virtual void OnEvent(Event& e)         override;
         virtual void OnUpdate(float deltaTime) override;
 

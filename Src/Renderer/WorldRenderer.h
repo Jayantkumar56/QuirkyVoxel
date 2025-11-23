@@ -9,6 +9,8 @@
 
 #include "Primitives/IndirectBuffer.h"
 #include "Primitives/ShaderStorageBuffer.h"
+#include "SkyboxRenderer.h"
+#include "ChunkRenderManager.h"
 
 #include <glm/glm.hpp>
 
@@ -23,15 +25,6 @@ namespace Mct {
     class World;
     class Camera;
     class MeshManager;
-    class Chunk;
-
-    struct DrawElementsIndirectCommand {
-        uint32_t count;         // Number of indices (IndexCount)
-        uint32_t instanceCount; // Always 1 for us
-        uint32_t firstIndex;    // Element offset (IndexOffset)
-        uint32_t baseVertex;    // Element offset (VertexOffset)
-        uint32_t baseInstance;  // Always 0 for us
-    };
 
     class WorldRenderer {
     public:
@@ -42,16 +35,11 @@ namespace Mct {
         void Render(const Camera& camera, World& world);
 
     private:
-        void BuildRenderCommands(World& world, const Camera& camera);
-
-        void UploadChunkMesh(std::shared_ptr<Chunk>& chunk);
-
-    private:
-        ShaderStorageBuffer    m_ChunkOffsetSSBO;
-        std::vector<glm::vec4> m_SubchunkPositions;
-
+        ShaderStorageBuffer m_ChunkOffsetSSBO;
         IndirectBuffer<DrawElementsIndirectCommand> m_MdiBuffer;
-        std::vector<DrawElementsIndirectCommand>    m_DrawCommands;
+
+        ChunkRenderManager m_ChunkRendererManager;
+        SkyboxRenderer     m_SkyboxRenderer;
 
         std::unique_ptr<Shader>       m_TerrainShader;
         std::unique_ptr<TextureArray> m_BlockTextureArray;

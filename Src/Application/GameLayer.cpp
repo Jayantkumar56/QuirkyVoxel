@@ -7,13 +7,12 @@
 #include "GameLayer.h"
 #include "Application/Window.h"
 #include "Application/Application.h"
-#include "World/WorldSettings.h"
 #include "Events/KeyboardEvents.h"
 #include "Events/MouseEvents.h"
 #include "Events/EventDispatcher.h"
-#include "Events/ApplicationEvents.h"
 
 #include "imgui.h"
+#include "imgui_internal.h"
 #include <glm/gtc/type_ptr.hpp>
 
 
@@ -23,15 +22,6 @@ namespace Mct {
 			m_Player(),
 			m_World(WorldSettings{ TerrainType::SuperFlat })
 	{}
-
-	void GameLayer::OnAttach() {
-		auto& window = GetApp()->GetWindow();
-		const float width  = static_cast<float>(window.GetWidth());
-		const float height = static_cast<float>(window.GetHeight());
-
-		m_Player.GetCamera().SetAspectRatio(width / height);
-		m_Renderer.OnViewportResize(static_cast<uint32_t>(width), static_cast<uint32_t>(height));
-	}
 
 	void GameLayer::OnEvent(Event& e) {
 		EventDispatcher::Handle<KeyPressedEvent>(e, [this](KeyPressedEvent& event) {
@@ -50,21 +40,6 @@ namespace Mct {
 				GetApp()->GetWindow().SetCursorMode(GLFW_CURSOR_DISABLED);
 				return true;
 			}
-			return false;
-		});
-
-		EventDispatcher::Handle<WindowResizeEvent>(e, [this](WindowResizeEvent& event) {
-			const float width  = static_cast<float>(event.GetWidth());
-			const float height = static_cast<float>(event.GetHeight());
-
-			// Don't update if window is minimized
-			if (width <= 0.0f || height <= 0.0f) {
-				return false;
-			}
-
-			m_Player.GetCamera().SetAspectRatio(width / height);
-			m_Renderer.OnViewportResize(static_cast<uint32_t>(width), static_cast<uint32_t>(height));
-
 			return false;
 		});
 
@@ -88,21 +63,31 @@ namespace Mct {
 		}
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+
+		ImGuiWindowClass window_class;
+		window_class.DockNodeFlagsOverrideSet = ImGuiDockNodeFlags_NoTabBar;
+		ImGui::SetNextWindowClass(&window_class);
 
 		ImGui::Begin("Game");
 
-		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
+		// Updates size changes in viewport.
+		{
+			const ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 
-		if (m_GameViewportSize.x != viewportPanelSize.x || m_GameViewportSize.y != viewportPanelSize.y) {
-			/*m_Renderer.OnViewportResize((uint32_t)viewportPanelSize.x, (uint32_t)viewportPanelSize.y);
+			if (m_GameViewportSize.x != viewportPanelSize.x || m_GameViewportSize.y != viewportPanelSize.y) {
+				m_GameViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
-			m_GameViewportSize = { viewportPanelSize.x, viewportPanelSize.y };*/
+				m_Renderer.OnViewportResize(
+					static_cast<uint32_t>(viewportPanelSize.x),
+					static_cast<uint32_t>(viewportPanelSize.y)
+				);
 
-			// TODO: update camera's aspect ratio
-			// m_Player.GetCamera().SetAspectRatio(viewportPanelSize.x / viewportPanelSize.y);
+				m_Player.GetCamera().SetAspectRatio(viewportPanelSize.x / viewportPanelSize.y);
+			}
 		}
 
-		uint32_t textureID = m_Renderer.GetFinalTextureID();
+		const uint32_t textureID = m_Renderer.GetFinalTextureID();
 
 		// Note: ImGui's Y-axis is inverted for UVs, so we pass {0, 1} and {1, 0}
 		ImGui::Image((void*)(intptr_t)textureID,
@@ -112,19 +97,20 @@ namespace Mct {
 		);
 
 		ImGui::End();
-		ImGui::PopStyleVar();
+		ImGui::PopStyleVar(2);
 	}
 
 	void GameLayer::UpdateDebugUI(float deltaTime) {
-		ImGui::Begin("Hello, world!");
-		ImGuiIO& io = ImGui::GetIO();
+		ImGui::Begin("Stats");
 
-		glm::vec3 player = m_Player.GetPosition();
+		const ImGuiIO& io     = ImGui::GetIO();
+		glm::vec3      player = m_Player.GetPosition();
 
 		ImGui::Text("Player Position:");
 		ImGui::InputFloat3("##pos", glm::value_ptr(player));
 
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+
 		ImGui::End();
 	}
 

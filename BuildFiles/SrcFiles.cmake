@@ -90,10 +90,14 @@ RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Renderer/Primitives"
 
 # Source files in Renderer
 RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Renderer"
+    "ChunkRenderManager.h"
+    "ChunkRenderManager.cpp"
     "GameRenderer.h"
     "GameRenderer.cpp"
     "MeshManager.h"
     "MeshManager.cpp"
+    "SkyboxRenderer.h"
+    "SkyboxRenderer.cpp"
     "WorldRenderer.h"
     "WorldRenderer.cpp"
 )

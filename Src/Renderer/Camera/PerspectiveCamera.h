@@ -42,8 +42,9 @@ namespace Mct {
 
 		virtual glm::mat4 GetViewProjection() const noexcept override { return m_ViewProjectionMatrix; }
 		virtual glm::vec3 GetPosition()       const noexcept override { return m_Position;             }
+		virtual glm::mat4 GetView()           const noexcept override { return m_ViewMatrix;           }
+		virtual glm::mat4 GetProjection()     const noexcept override { return m_ProjectionMatrix;     }
 
-		glm::mat4 GetViewMatrix()     const noexcept { return m_ViewMatrix;           }
 		glm::quat GetOrientation()    const noexcept { return m_Orientation;          }
 		glm::vec3 GetRight()          const noexcept { return glm::normalize(m_Orientation * glm::vec3(1, 0, 0));  }
 		glm::vec3 GetForward()        const noexcept { return glm::normalize(m_Orientation * glm::vec3(0, 0, -1)); }

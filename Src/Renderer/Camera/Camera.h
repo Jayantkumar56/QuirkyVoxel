@@ -17,6 +17,8 @@ namespace Mct {
         virtual ~Camera() = default;
 
         virtual glm::mat4 GetViewProjection() const noexcept = 0;
+        virtual glm::mat4 GetView()           const noexcept = 0;
+        virtual glm::mat4 GetProjection()     const noexcept = 0;
         virtual glm::vec3 GetPosition()       const noexcept = 0;
     };
 

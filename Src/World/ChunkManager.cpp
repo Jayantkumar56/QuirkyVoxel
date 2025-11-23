@@ -11,7 +11,8 @@
 namespace Mct {
 
     ChunkManager::ChunkManager(TerrainGenerator generator) :
-            m_TerrainGenerator     ( std::move(generator) ),
+            m_TerrainGenerator     ( std::move(generator)      ),
+            m_PrevPlayerPos        ( ChunkCoord::MakeInvalid() ),
 			m_TerrainGeneratorPool ( 6, TerrainGenFunctor(m_TerrainGenerator, &m_TerrainGeneratorResults) ),
 			m_ChunkMeshGenPool     ( 6, ChunkMeshGenFunctor(&m_ChunkMeshGenResults)              )
 	{}
@@ -19,13 +20,14 @@ namespace Mct {
     void ChunkManager::Update(glm::vec3 playerPos) {
         ProcessPendingResults();
 
-        const ChunkCoord playerChunkPos = ChunkCoord::FromWorldXZ(
-            static_cast<int>(std::floor(playerPos.x)),
-            static_cast<int>(std::floor(playerPos.z))
-        );
+        const ChunkCoord playerChunkPos = ChunkCoord::FromWorldXZ(playerPos.x, playerPos.z);
 
-        LoadChunksInRange(playerChunkPos);
-        UnloadOutOfRangeChunks(playerChunkPos);
+        if (m_PrevPlayerPos.IsValid() || m_PrevPlayerPos != playerChunkPos) {
+            m_PrevPlayerPos = playerChunkPos;
+
+            LoadChunksInRange(playerChunkPos);
+            UnloadOutOfRangeChunks(playerChunkPos);
+        }
 	}
 
     std::shared_ptr<Chunk> ChunkManager::GetChunk(ChunkCoord pos) {

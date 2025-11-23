@@ -15,7 +15,7 @@
 namespace Mct {
 
     GameRenderer::GameRenderer() {
-        FrameBufferSpecification spec;
+        FrameBufferSpec spec;
         spec.Width  = 1280;
         spec.Height = 720;
 
@@ -26,20 +26,21 @@ namespace Mct {
 		});
 
         m_WorldRenderer = std::make_unique<WorldRenderer>();
+
+        // Enables back face culling.
+        glEnable(GL_CULL_FACE);
     }
 
     GameRenderer::~GameRenderer() = default;
 
     void GameRenderer::Render(World& world, Player& player) {
-        //m_FrameBuffer->Bind();
-        glClearColor(0.2f, 0.5f, 0.5f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        m_FrameBuffer->Bind();
 
         m_FrameBuffer->ClearAttachments();
 
         m_WorldRenderer->Render(player.GetCamera(), world);
 
-        //m_FrameBuffer->Unbind();
+        m_FrameBuffer->Unbind();
     }
 
     void GameRenderer::OnViewportResize(uint32_t width, uint32_t height) {

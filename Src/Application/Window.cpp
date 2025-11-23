@@ -49,6 +49,7 @@ namespace Mct {
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+		glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 
 		GLFWwindow* windowHandle = glfwCreateWindow(width, height, title.data(), NULL, NULL);
 
@@ -60,8 +61,23 @@ namespace Mct {
 
 		glfwMakeContextCurrent(windowHandle);
 
-		if (!s_GladInitialized && !InitialiseGlad()) {
-			return nullptr;
+		if (!s_GladInitialized) {
+			if (!InitialiseGlad())
+				return nullptr;
+
+			static auto MessageCallback = +[](GLenum source, 
+											  GLenum type, 
+											  GLuint id, 
+											  GLenum severity, 
+											  GLsizei length, 
+											  const GLchar* message, 
+											  const void* userParam) noexcept 
+			{
+				std::cout << "[OpenGL Error](" << type << ") " << message << "\n";
+			};
+
+			glEnable(GL_DEBUG_OUTPUT);
+			glDebugMessageCallback(MessageCallback, 0);
 		}
 
 		std::unique_ptr<Window> window (new Window(windowHandle, std::move(eventCallbacks), width, height));

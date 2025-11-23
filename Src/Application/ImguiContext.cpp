@@ -54,7 +54,7 @@ namespace Mct {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        //ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport());
+        ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport());
 	}
 
 	void ImguiContext::End() {

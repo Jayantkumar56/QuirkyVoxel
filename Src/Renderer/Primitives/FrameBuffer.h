@@ -8,6 +8,7 @@
 
 
 #include <vector>
+#include <optional>
 
 
 namespace Mct {
@@ -23,18 +24,6 @@ namespace Mct {
         // depth and stencile attachments
         DEPTH_24_STENCIL_8
     };
-
-    inline bool IsFrameBufferColorAttachment(FrameBufferTextureType type) noexcept {
-        bool isColorType = type == FrameBufferTextureType::RGBA_8;
-        isColorType = isColorType || (type == FrameBufferTextureType::RGB_8);
-        isColorType = isColorType || (type == FrameBufferTextureType::RED_INTEGER);
-        return isColorType;
-    }
-
-    inline bool IsFrameBufferDepthAttachment(FrameBufferTextureType type) noexcept {
-        bool isDepthType = type == FrameBufferTextureType::DEPTH_24_STENCIL_8;
-        return isDepthType;
-    }
 
     union ClearAttachmentData {
         float RGBA[4];
@@ -54,7 +43,7 @@ namespace Mct {
         ClampToBorder
     };
 
-    struct FrameBufferAttachmentSpecification {
+    struct FrameBufferAttachmentSpec {
         FrameBufferTextureType Type = FrameBufferTextureType::None;
         ClearAttachmentData    ClearData = { 0.0f, 0.0f, 0.0f, 1.0f };
         TextureWrap			   WrapMode  = TextureWrap::Repeat;
@@ -62,44 +51,43 @@ namespace Mct {
         TextureFilter MagficationFilter  = TextureFilter::Linear;
     };
 
-    struct FrameBufferSpecification {
+    struct FrameBufferSpec {
         uint32_t Width = 0, Height = 0;
     };
 
     class FrameBuffer {
     public:
-        FrameBuffer(const FrameBufferSpecification& spec) noexcept;
+        FrameBuffer(const FrameBufferSpec& spec) noexcept;
         ~FrameBuffer() noexcept;
 
-        void Bind()   noexcept;
-        void Unbind() noexcept;
+        void Bind()   const noexcept;
+        void Unbind() const noexcept;
 
-        void ClearAttachments();
-        void SetAttachments(std::initializer_list<FrameBufferAttachmentSpecification> attachmentsSpec);
+        void ClearAttachments() const noexcept;
+        void SetAttachments(std::initializer_list<FrameBufferAttachmentSpec> attachmentsSpec);
 
         uint32_t GetDepthStencilAttachment()      const noexcept;
         uint32_t GetColorAttachment(size_t index) const noexcept;
 
         void Resize(uint32_t width, uint32_t height);
-        void GetColorPixelData(size_t index, int x, int y, int width, int height, void* outputData, int size);
 
     private:
         uint32_t CreateBuffer(int          internalFormat, 
                               unsigned int format, 
                               unsigned int dataType, 
-                              FrameBufferAttachmentSpecification spec) const;
+                              FrameBufferAttachmentSpec spec) const;
 
         void CreateAttachments();
         void InvalidateAttachments();
 
     private:
         uint32_t m_RendererID;
-        uint32_t m_DepthStencilAttachment = 0;
-        std::vector<uint32_t> m_ColorAttachments;
+        std::optional<uint32_t> m_DepthStencilAttachment;
+        std::vector<uint32_t>   m_ColorAttachments;
 
-        FrameBufferSpecification                        m_FrameBufferSpec;
-        FrameBufferAttachmentSpecification              m_DepthAttachmentSpec;
-        std::vector<FrameBufferAttachmentSpecification> m_ColorAttachmentsSpec;
+        FrameBufferSpec                          m_FrameBufferSpec;
+        std::optional<FrameBufferAttachmentSpec> m_DepthAttachmentSpec;
+        std::vector<FrameBufferAttachmentSpec>   m_ColorAttachmentsSpec;
     };
 
 }

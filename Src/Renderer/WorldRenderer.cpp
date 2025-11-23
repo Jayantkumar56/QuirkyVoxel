@@ -38,8 +38,6 @@ namespace Mct {
             m_BlockTextureArray = std::make_unique<TextureArray>(blockTexturesPaths);
         }
 
-        m_DrawCommands.reserve(c_MaxDrawCommands);
-
         // Sets up Terrain Shader.
         {
             std::string vertexSrc   = Utils::ReadFileToString("Assets/Shaders/Terrain.vert");
@@ -58,11 +56,13 @@ namespace Mct {
 
     void WorldRenderer::Render(const Camera& camera, World& world) {
         m_MeshManager->Update();
-        BuildRenderCommands(world, camera);
+        m_ChunkRendererManager.Update(world, camera, *m_MeshManager);
 
         // Bind Shader and perform draw call
         {
-            if (m_DrawCommands.empty()) {
+            const auto& commands = m_ChunkRendererManager.GetSolidCommands();
+
+            if (commands.empty()) {
                 m_TerrainShader->Unbind();
                 return; // Nothing to draw
             }
@@ -77,18 +77,19 @@ namespace Mct {
             m_MeshManager->GetCommonVAO().Bind();
 
             m_MdiBuffer.Bind();
-            m_MdiBuffer.UploadData(m_DrawCommands.data(), m_DrawCommands.size());
+            m_MdiBuffer.UploadData(commands.data(), commands.size());
 
-            m_ChunkOffsetSSBO.Upload(m_SubchunkPositions.data(), m_SubchunkPositions.size() * sizeof(glm::vec4), 0);
+            const auto& offsets = m_ChunkRendererManager.GetSubchunkOffsets();
+
+            m_ChunkOffsetSSBO.Upload(offsets.data(), offsets.size() * sizeof(glm::vec4), 0);
             m_ChunkOffsetSSBO.Bind(1);
-            m_SubchunkPositions.clear();
 
             glEnable(GL_DEPTH_TEST);
             glMultiDrawElementsIndirect(
                 GL_TRIANGLES,                       // mode
                 GL_UNSIGNED_INT,                    // type (must match your EBO type)
                 (void*)0,                           // indirect (offset into MDI buffer)
-                m_DrawCommands.size(),              // drawcount
+                commands.size(),                    // drawcount
                 sizeof(DrawElementsIndirectCommand) // stride
             );
 
@@ -97,79 +98,10 @@ namespace Mct {
 
             m_TerrainShader->Unbind();
         }
-    }
 
-    void WorldRenderer::BuildRenderCommands(World& world, const Camera& camera) {
-        m_DrawCommands.clear();
+        glm::vec3 sunDir{ 0.0f, 0.5f, -1.0f };
 
-        const int renderDist = WorldConst::RenderDistance;
-
-        glm::vec3 cameraPos    = camera.GetPosition();
-        ChunkCoord cameraCoord = ChunkCoord::FromWorldXZ(static_cast<int>(cameraPos.x), static_cast<int>(cameraPos.z));
-
-        // Get info needed to convert byte offsets to element offsets
-        const size_t vertexStride = m_MeshManager->GetVBOLayout().GetStride();
-
-        // Loop through all chunks
-        for (auto& [coord, chunk] : world.GetChunkManager().GetChunks()) {
-            const int distFromCameraX = std::abs(coord.X - cameraCoord.X);
-            const int distFromCameraZ = std::abs(coord.Z - cameraCoord.Z);
-
-            if (distFromCameraX > renderDist || distFromCameraZ > renderDist)
-                continue;
-
-            if (chunk->HaveDirtyMesh()) {
-                UploadChunkMesh(chunk);
-            }
-
-            // Loop through all subchunks in this chunk
-            for (const auto& subchunk : chunk->GetSubchunks()) {
-                glm::vec3 subchunkPos = subchunk.GetPosition();
-
-                // Render solid meshes
-                if (subchunk.HasSolidMesh()) {
-                    const GpuMeshHandle& mesh = subchunk.GetSolidMesh();
-
-                    // We can only draw if it has an index buffer
-                    if (mesh.IboHandle) {
-                        const auto& ibo = *mesh.IboHandle;
-                        const auto& vbo = mesh.VboHandle;
-
-                        // MDI requires ELEMENT offsets, not BYTE offsets.
-                        // We must convert them.
-                        uint32_t indexSize = static_cast<uint32_t>(sizeof(uint32_t));
-
-                        m_SubchunkPositions.push_back(glm::vec4(subchunkPos.x, subchunkPos.y, subchunkPos.z, 1.0));
-
-                        m_DrawCommands.emplace_back(
-                            (uint32_t)(ibo.GetSize() / indexSize),     // count
-                            1,                                         // instanceCount
-                            (uint32_t)(ibo.GetOffset() / indexSize),   // firstIndex
-                            (uint32_t)(vbo.GetOffset() / vertexStride),// baseVertex
-                            0                                          // baseInstance
-                        );
-                    }
-                }
-                // (You would do a separate pass for water/transparent meshes)
-            }
-        }
-    }
-
-    void WorldRenderer::UploadChunkMesh(std::shared_ptr<Chunk>& chunk) {
-        auto cpuMeshes = chunk->GetMeshForUpload();
-
-        std::unique_ptr<ChunkGpuMesh> chunkGpuMesh = std::make_unique<ChunkGpuMesh>();
-
-        // Uploads mesh of each subchunks and asign the generated GpuMeshHandle to the respective subchunk.
-        for (size_t i = 0; i < cpuMeshes->SubchunkMesh.size(); ++i) {
-            auto& solidMeshOpt = chunkGpuMesh->SubchunkMeshes[i].SolidMesh;
-            auto& waterMeshOpt = chunkGpuMesh->SubchunkMeshes[i].WaterMesh;
-
-            solidMeshOpt = m_MeshManager->UploadMesh(cpuMeshes->SubchunkMesh[i].SolidMesh);
-            waterMeshOpt = m_MeshManager->UploadMesh(cpuMeshes->SubchunkMesh[i].WaterMesh);
-        }
-
-        chunk->SetGpuMesh(std::move(chunkGpuMesh));
+        m_SkyboxRenderer.Render(camera, sunDir);
     }
 
 }
