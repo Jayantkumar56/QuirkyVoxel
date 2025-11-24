@@ -11,8 +11,7 @@
 #include "ImguiContext.h"
 #include "World/Block/BlockDataManager.h"
 #include "World/Biome/BiomeDataManager.h"
-
-#include <iostream>
+#include "Utils/Logger.h"
 
 
 namespace Mct {
@@ -41,6 +40,8 @@ namespace Mct {
         if (!m_Window) {
             return;
         }
+
+        MCT_INFO("Application is running.");
 
         BlockDataManager::Init();
         BiomeDataManager::Init();

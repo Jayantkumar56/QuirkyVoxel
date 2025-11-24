@@ -29,7 +29,9 @@ namespace Mct {
 		[[nodiscard]] const BufferLayout& GetLayout() const noexcept { return m_Layout; }
 		void SetLayout(BufferLayout layout) { m_Layout = std::move(layout); }
 
-		[[nodiscard]] uint32_t GetCount() const noexcept { return m_SizeInBytes / m_Layout.GetStride(); }
+		[[nodiscard]] uint32_t GetCount() const noexcept { 
+			return static_cast<uint32_t>(m_SizeInBytes / m_Layout.GetStride()); 
+		}
 
 	private:
 		BufferLayout m_Layout{};

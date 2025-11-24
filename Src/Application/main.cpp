@@ -6,15 +6,16 @@
 
 #include "Application.h"
 #include "Window.h"
-
-#include <iostream>
+#include "Utils/Logger.h"
+#include "Utils/Assert.h"
 
 
 int main() {
-    // Initialise the global GLFW state first.
-    if (!Mct::Window::Initialise()) {
-        std::cerr << "Failed to initialise GLFW!" << std::endl;
-        return -1;
+    Mct::Log::Init();
+
+    {
+        const bool windowInitialised = Mct::Window::Initialise();
+        MCT_ASSERT(windowInitialised, "Failed to initialise Window!");
     }
 
     {
@@ -22,8 +23,9 @@ int main() {
         app.Run();
     }
 
-    // Clean up GLFW
     Mct::Window::Terminate();
+
+    Mct::Log::Shutdown();
 
     return 0;
 }

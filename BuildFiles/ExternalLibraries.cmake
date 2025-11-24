@@ -22,6 +22,7 @@ add_subdirectory( Vendor/glm           )
 add_subdirectory( Vendor/stb           )
 add_subdirectory( Vendor/yaml-cpp      )
 add_subdirectory( Vendor/FastNoiseLite )
+add_subdirectory( Vendor/spdlog        )
 
 include("BuildFiles/imgui.cmake")
 
@@ -33,6 +34,7 @@ target_link_libraries(${CURRENT_PROJ_NAME} PRIVATE
     stb
     yaml-cpp
     FastNoiseLite
+    spdlog
 )
 
 set_target_properties(
@@ -42,6 +44,7 @@ set_target_properties(
     stb
     yaml-cpp
     FastNoiseLite
+    spdlog
     PROPERTIES FOLDER "Dependencies"
 )
 

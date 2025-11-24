@@ -25,9 +25,9 @@ namespace Mct {
 
         void Run();
 
-        template<typename T, typename... Args>
+        template<typename T, typename ...Args>
         requires (std::derived_from<T, Layer>&& std::constructible_from<T, Args...>)
-        T& PushLayer(Args&&... args) {
+        T& PushLayer(Args&& ...args) {
             auto& layer = m_LayerStack.emplace_back(
                 std::make_unique<T>(std::forward<Args>(args)...)
             );
