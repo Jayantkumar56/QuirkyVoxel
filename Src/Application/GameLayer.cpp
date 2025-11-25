@@ -10,6 +10,7 @@
 #include "Events/KeyboardEvents.h"
 #include "Events/MouseEvents.h"
 #include "Events/EventDispatcher.h"
+#include "Utils/Profiler.h"
 
 #include "imgui.h"
 #include "imgui_internal.h"
@@ -49,6 +50,8 @@ namespace Mct {
 	}
 
 	void GameLayer::OnUpdate(float deltaTime) {
+		MCT_PROFILE_FUNCTION();
+
 		UpdateGameUI(deltaTime);
 		UpdateDebugUI(deltaTime);
 	}

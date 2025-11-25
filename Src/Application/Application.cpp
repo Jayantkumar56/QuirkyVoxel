@@ -12,6 +12,7 @@
 #include "World/Block/BlockDataManager.h"
 #include "World/Biome/BiomeDataManager.h"
 #include "Utils/Logger.h"
+#include "Utils/Profiler.h"
 
 
 namespace Mct {
@@ -49,6 +50,9 @@ namespace Mct {
         PushLayer<GameLayer>();
 
         while (!m_Window->ShouldClose()) {
+            MCT_PROFILE_FRAME("MainThread");
+            MCT_PROFILE_FUNCTION();
+
             const double time      = glfwGetTime();
             const float  deltaTime = static_cast<float>(time - m_LastFrameTime);
 

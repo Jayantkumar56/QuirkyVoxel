@@ -117,6 +117,7 @@ RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Utils"
     "Math.h"
     "NonCopyable.h"
     "NonMovable.h"
+    "Profiler.h"
     "TaskProcessorPool.h"
     "ThreadSafeVector.h"
 )

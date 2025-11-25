@@ -8,6 +8,7 @@
 #include "WorldRenderer.h"
 #include "Player/Player.h"
 #include "Renderer/Primitives/FrameBuffer.h"
+#include "Utils/Profiler.h"
 
 #include <glad/glad.h>
 
@@ -34,6 +35,8 @@ namespace Mct {
     GameRenderer::~GameRenderer() = default;
 
     void GameRenderer::Render(World& world, Player& player) {
+        MCT_PROFILE_FUNCTION();
+
         m_FrameBuffer->Bind();
 
         m_FrameBuffer->ClearAttachments();

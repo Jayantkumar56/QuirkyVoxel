@@ -6,6 +6,7 @@
 
 #include "ChunkManager.h"
 #include "TerrainGeneration/TerrainGenerator.h"
+#include "Utils/Profiler.h"
 
 
 namespace Mct {
@@ -18,6 +19,8 @@ namespace Mct {
 	{}
 
     void ChunkManager::Update(glm::vec3 playerPos) {
+        MCT_PROFILE_FUNCTION();
+
         ProcessPendingResults();
 
         const ChunkCoord playerChunkPos = ChunkCoord::FromWorldXZ(playerPos.x, playerPos.z);

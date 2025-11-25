@@ -25,6 +25,7 @@ add_subdirectory( Vendor/FastNoiseLite )
 add_subdirectory( Vendor/spdlog        )
 
 include("BuildFiles/imgui.cmake")
+include("BuildFiles/tracy.cmake")
 
 target_link_libraries(${CURRENT_PROJ_NAME} PRIVATE 
     glfw 
@@ -35,6 +36,7 @@ target_link_libraries(${CURRENT_PROJ_NAME} PRIVATE
     yaml-cpp
     FastNoiseLite
     spdlog
+    TracyClient
 )
 
 set_target_properties(
@@ -45,6 +47,7 @@ set_target_properties(
     yaml-cpp
     FastNoiseLite
     spdlog
+    TracyClient
     PROPERTIES FOLDER "Dependencies"
 )
 
