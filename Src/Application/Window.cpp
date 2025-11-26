@@ -9,8 +9,7 @@
 #include "Events/KeyboardEvents.h"
 #include "Events/MouseEvents.h"
 #include "Events/EventDispatcher.h"
-
-#include <iostream>
+#include "Utils/Logger.h"
 
 
 namespace Mct {
@@ -18,10 +17,17 @@ namespace Mct {
 	bool Window::s_GLFWInitialised = false;
 	bool Window::s_GladInitialized = false;
 
+	static void APIENTRY GLDebugCallback(GLenum        source, 
+									     GLenum        type, 
+									     GLuint        id,
+										 GLenum        severity, 
+									     GLsizei       length,
+										 const GLchar* message, 
+									     const void*   userParam) noexcept;
 
 	bool Window::Initialise() noexcept {
 		if (!glfwInit()) {
-			std::cerr << "Failed to initialize GLFW" << std::endl;
+			MCT_ERROR("Failed to initialize GLFW");
 			s_GLFWInitialised = false;
 			return false;
 		}
@@ -42,7 +48,8 @@ namespace Mct {
 										   std::unique_ptr<WindowCallbacks> eventCallbacks) noexcept
 	{
 		if (!s_GLFWInitialised) {
-			std::cerr << "GLFW not initialised." << std::endl;
+			MCT_ERROR("GLFW not initialised before creation of window " 
+				      "(Call Window::Initialise before calling Window::Create).");
 			return nullptr;
 		}
 
@@ -54,7 +61,7 @@ namespace Mct {
 		GLFWwindow* windowHandle = glfwCreateWindow(width, height, title.data(), NULL, NULL);
 
 		if (windowHandle == NULL) {
-			std::cerr << "Failed to create GLFW window" << std::endl;
+			MCT_ERROR("Failed to create GLFW window.");
 			glfwTerminate();
 			return nullptr;
 		}
@@ -64,20 +71,6 @@ namespace Mct {
 		if (!s_GladInitialized) {
 			if (!InitialiseGlad())
 				return nullptr;
-
-			static auto MessageCallback = +[](GLenum source, 
-											  GLenum type, 
-											  GLuint id, 
-											  GLenum severity, 
-											  GLsizei length, 
-											  const GLchar* message, 
-											  const void* userParam) noexcept 
-			{
-				std::cout << "[OpenGL Error](" << type << ") " << message << "\n";
-			};
-
-			glEnable(GL_DEBUG_OUTPUT);
-			glDebugMessageCallback(MessageCallback, 0);
 		}
 
 		std::unique_ptr<Window> window (new Window(windowHandle, std::move(eventCallbacks), width, height));
@@ -103,17 +96,23 @@ namespace Mct {
 
 	bool Window::InitialiseGlad() noexcept {
 		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-			std::cerr << "Failed to initialize GLAD" << std::endl;
+			MCT_ERROR("Failed to initialize GLAD");
 			s_GladInitialized = false;
 			return false;
 		}
+
+		glEnable(GL_DEBUG_OUTPUT);
+		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
+		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, nullptr, GL_FALSE);
+		glDebugMessageCallback(GLDebugCallback, 0);
 
 		s_GladInitialized = true;
 		return true;
 	}
 
 	void Window::SetKeyCallback() {
-		GLFWkeyfun callback = [] (GLFWwindow* window, int key, int scancode, int action, int mods) {
+		static GLFWkeyfun callback = +[](GLFWwindow* window, int key, int scancode, int action, int mods) {
 			auto* wind = static_cast<Window*>(glfwGetWindowUserPointer(window));
 
 			if (wind->m_EventCallbacks && wind->m_EventCallbacks->Key)
@@ -137,7 +136,7 @@ namespace Mct {
 	}
 
 	void Window::SetCharCallback() {
-		GLFWcharfun callback = [] (GLFWwindow* window, unsigned int codepoint) {
+		static GLFWcharfun callback = +[](GLFWwindow* window, unsigned int codepoint) {
 			auto* wind = static_cast<Window*>(glfwGetWindowUserPointer(window));
 
 			if (wind->m_EventCallbacks && wind->m_EventCallbacks->Char)
@@ -152,7 +151,7 @@ namespace Mct {
 	}
 
 	void Window::SetMouseButtonCallback() {
-		GLFWmousebuttonfun callback = [] (GLFWwindow* window, int button, int action, int mods) {
+		static GLFWmousebuttonfun callback = +[](GLFWwindow* window, int button, int action, int mods) {
 			auto* wind       = static_cast<Window*>(glfwGetWindowUserPointer(window));
 			auto& mouseState = wind->m_MouseState;
 
@@ -173,7 +172,7 @@ namespace Mct {
 	}
 
 	void Window::SetScrollCallback() {
-		GLFWscrollfun callback = [] (GLFWwindow* window, double xoffset, double yoffset) {
+		static GLFWscrollfun callback = +[](GLFWwindow* window, double xoffset, double yoffset) {
 			auto* wind       = static_cast<Window*>(glfwGetWindowUserPointer(window));
 			auto& mouseState = wind->m_MouseState;
 
@@ -188,7 +187,7 @@ namespace Mct {
 	}
 
 	void Window::SetCursorPosCallback() {
-		GLFWcursorposfun callback = [] (GLFWwindow* window, double xpos, double ypos) {
+		static GLFWcursorposfun callback = +[](GLFWwindow* window, double xpos, double ypos) {
 			auto* wind       = static_cast<Window*>(glfwGetWindowUserPointer(window));
 			auto& mouseState = wind->m_MouseState;
 
@@ -218,7 +217,7 @@ namespace Mct {
 	}
 
 	void Window::SetWindowSizeCallback() {
-		GLFWwindowsizefun callback = [] (GLFWwindow* window, int width, int height) {
+		static GLFWwindowsizefun callback = +[](GLFWwindow* window, int width, int height) {
 			auto* wind = static_cast<Window*>(glfwGetWindowUserPointer(window));
 
 			wind->m_Width  = width;
@@ -235,7 +234,7 @@ namespace Mct {
 	}
 
 	void Window::SetWindowCloseCallback() {
-		GLFWwindowclosefun callback = [] (GLFWwindow* window) {
+		static GLFWwindowclosefun callback = +[](GLFWwindow* window) {
 			auto* wind = static_cast<Window*>(glfwGetWindowUserPointer(window));
 
 			if (wind->m_EventCallbacks && wind->m_EventCallbacks->WindowClose)
@@ -246,6 +245,23 @@ namespace Mct {
 		};
 
 		glfwSetWindowCloseCallback(m_WindowHandle, callback);
+	}
+
+	static void APIENTRY GLDebugCallback(GLenum        source, 
+									     GLenum        type, 
+									     GLuint        id,
+										 GLenum        severity, 
+									     GLsizei       length,
+										 const GLchar* message, 
+									     const void*   userParam) noexcept
+	{
+		if (type == GL_DEBUG_TYPE_ERROR || severity == GL_DEBUG_SEVERITY_HIGH) {
+			MCT_ERROR("[GL ERROR] id={} type={} severity={} msg={}", id, type, severity, message);
+			MCT_DEBUGBREAK();
+		}
+		else {
+			MCT_WARN("[GL] id={} type={} severity={} msg={}", id, type, severity, message);
+		}
 	}
 
 }

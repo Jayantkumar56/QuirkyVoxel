@@ -11,7 +11,7 @@
 
 namespace Mct {
 
-	VertexBuffer::VertexBuffer(const uint32_t size) noexcept {
+	VertexBuffer::VertexBuffer(const size_t size) noexcept {
 		Allocate(size, nullptr, GL_DYNAMIC_STORAGE_BIT);
 	}
 

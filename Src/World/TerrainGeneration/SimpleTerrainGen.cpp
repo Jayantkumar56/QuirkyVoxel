@@ -59,7 +59,7 @@ namespace Mct {
 				const float noiseValue       = noise.GetNoise(globalWorldX, globalWorldZ);
 				const float normalizedHeight = (noiseValue + 1.0f) / 2.0f;
 
-				heightMap[x][z] = 64 + (int)(normalizedHeight * 150);
+				heightMap[x][z] = 64.0f + (int)(normalizedHeight * 150.0f);
 			}
 		}
 		 

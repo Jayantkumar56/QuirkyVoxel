@@ -52,7 +52,7 @@ namespace Mct {
             if (subchunk.HasSolidMesh()) {
                 const GpuMeshHandle& mesh = subchunk.GetSolidMesh();
 
-                MCT_ASSERT(mesh.IboHandle && "Subchunk solid mesh must have an ibo");
+                MCT_ASSERT(mesh.IboHandle, "Subchunk solid mesh must have an ibo");
 
                 const auto& ibo = *mesh.IboHandle;
                 const auto& vbo = mesh.VboHandle;

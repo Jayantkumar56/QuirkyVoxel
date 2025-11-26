@@ -46,9 +46,13 @@ namespace Mct {
             m_TerrainShader = std::make_unique<Shader>(vertexSrc, fragmentSrc);
 
             // Sets value of permanent uniforms.
-            m_TerrainShader->Bind();
-            m_TerrainShader->UploadUniform("u_BlockTextures", 0);
-            m_TerrainShader->Unbind();
+            {
+                m_TerrainShader->Bind();
+
+                int32_t blockTexturesTexUnit = 0;
+                m_TerrainShader->UploadUniform("u_BlockTextures", &blockTexturesTexUnit, 1);
+                m_TerrainShader->Unbind();
+            }
         }
     }
 
@@ -86,11 +90,11 @@ namespace Mct {
 
             glEnable(GL_DEPTH_TEST);
             glMultiDrawElementsIndirect(
-                GL_TRIANGLES,                       // mode
-                GL_UNSIGNED_INT,                    // type (must match your EBO type)
-                (void*)0,                           // indirect (offset into MDI buffer)
-                commands.size(),                    // drawcount
-                sizeof(DrawElementsIndirectCommand) // stride
+                GL_TRIANGLES,                           // mode
+                GL_UNSIGNED_INT,                        // type (must match your EBO type)
+                (void*)0,                               // indirect (offset into MDI buffer)
+                static_cast<GLsizei>(commands.size()),  // drawcount
+                sizeof(DrawElementsIndirectCommand)     // stride
             );
 
             m_MeshManager->GetCommonVAO().Unbind();

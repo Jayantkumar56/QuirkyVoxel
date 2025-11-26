@@ -23,7 +23,7 @@ namespace Mct {
             case TextureWrap::ClampToBorder:  return GL_CLAMP_TO_BORDER;
         }
 
-        MCT_ASSERT(false && "Invalid TextureWrap type choosen!");
+        MCT_ASSERT(false, "Invalid TextureWrap type choosen!");
         return -1;
     }
 
@@ -33,7 +33,7 @@ namespace Mct {
             case TextureFilter::Nearest: return GL_NEAREST;
         }
 
-        MCT_ASSERT(false && "Invalid TexutureFilter type choosen!");
+        MCT_ASSERT(false, "Invalid TexutureFilter type choosen!");
         return -1;
     }
 
@@ -71,18 +71,19 @@ namespace Mct {
 
         for (size_t i = 0; i < m_ColorAttachments.size(); ++i) {
             const auto& colorAttachment = m_ColorAttachmentsSpec[i];
+            const auto  idx = static_cast<GLint>(i);
 
             switch (colorAttachment.Type) {
                 case FrameBufferTextureType::RGBA_8: {
-                    glClearBufferfv(GL_COLOR, i, colorAttachment.ClearData.RGBA); break;
+                    glClearBufferfv(GL_COLOR, idx, colorAttachment.ClearData.RGBA); break;
                 }
 
                 case FrameBufferTextureType::RGB_8: {
-                    glClearBufferfv(GL_COLOR, i, colorAttachment.ClearData.RGBA); break;
+                    glClearBufferfv(GL_COLOR, idx, colorAttachment.ClearData.RGBA); break;
                 }
 
                 case FrameBufferTextureType::RED_INTEGER: {
-                    glClearBufferiv(GL_COLOR, i, &(colorAttachment.ClearData.RedInteger)); break;
+                    glClearBufferiv(GL_COLOR, idx, &(colorAttachment.ClearData.RedInteger)); break;
                 }
             }
         }
@@ -97,25 +98,21 @@ namespace Mct {
                 m_ColorAttachmentsSpec.emplace_back(attachmentSpec);
             }
             else if (IsFrameBufferDepthAttachment(attachmentSpec.Type)) {
-                MCT_ASSERT(
-                    !m_DepthAttachmentSpec &&
-                    "Framebuffer do not support multiple DepthAttachments"
-                );
-
+                MCT_ASSERT(!m_DepthAttachmentSpec, "Framebuffer do not support multiple DepthAttachments.");
                 m_DepthAttachmentSpec = attachmentSpec;
             }
         }
 
-        MCT_ASSERT(colorAttachmentCount < 32 && "Provided ColorAttachments more than max limit of 32 attachments");
-    }     
+        MCT_ASSERT(colorAttachmentCount < 32, "Provided ColorAttachments more than max limit of 32 attachments.");
+    }
 
     uint32_t FrameBuffer::GetDepthStencilAttachment() const noexcept {
-        MCT_ASSERT(m_DepthStencilAttachment);
+        MCT_ASSERT(m_DepthStencilAttachment, "No DepthStencilAttachment.");
         return *m_DepthStencilAttachment;
     }
 
     uint32_t FrameBuffer::GetColorAttachment(size_t index) const noexcept {
-        MCT_ASSERT(index < m_ColorAttachments.size() && "Index out of bound for color attachment");
+        MCT_ASSERT(index < m_ColorAttachments.size(), "Index out of bound for color attachment");
         return m_ColorAttachments[index];
     }
 
@@ -207,7 +204,7 @@ namespace Mct {
         const GLint colorBufferCount = static_cast<GLint>(m_ColorAttachments.size());
         glDrawBuffers(colorBufferCount, colorAttachments.data());
 
-        MCT_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE && "Uncomplete FrameBuffer!");
+        MCT_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Uncomplete FrameBuffer!");
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 

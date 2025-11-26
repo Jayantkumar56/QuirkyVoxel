@@ -1,4 +1,4 @@
-
+﻿
 
 // SPDX - License - Identifier: MIT
 // Copyright(c) 2025 Jayantkumar56
@@ -72,7 +72,7 @@ namespace Mct {
         if (foundLevel < targetLevel) {
             auto newNodeOpt = SplitBlock(nodeIndex, targetLevel);
             if (!newNodeOpt) {
-                // split failed � restore the original block to its free-list and fail
+                // split failed — restore the original block to its free-list and fail
                 m_FreeLists[foundLevel].push_front(nodeIndex);
                 return std::nullopt;
             }

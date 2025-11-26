@@ -104,8 +104,8 @@ namespace Mct {
 	}
 
 	bool CameraController::OnMouseMoved(MouseMovedEvent& e) noexcept {
-		m_MouseDelta.x = e.GetDeltaX();
-		m_MouseDelta.y = e.GetDeltaY();
+		m_MouseDelta.x = static_cast<float>(e.GetDeltaX());
+		m_MouseDelta.y = static_cast<float>(e.GetDeltaY());
 
 		return true;
 	}

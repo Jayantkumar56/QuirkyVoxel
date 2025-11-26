@@ -18,7 +18,7 @@ namespace Mct {
 	class VertexBuffer : public GpuBuffer {
 	public:
 		VertexBuffer() noexcept = default;
-		VertexBuffer(const uint32_t size) noexcept;
+		VertexBuffer(size_t size) noexcept;
 
 		VertexBuffer(VertexBuffer&& other)            noexcept( std::is_nothrow_move_constructible_v<BufferLayout> );
 		VertexBuffer& operator=(VertexBuffer&& other) noexcept( std::is_nothrow_move_assignable_v<BufferLayout>    );

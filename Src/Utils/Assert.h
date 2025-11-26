@@ -40,5 +40,5 @@
             }                                                                                        \
         }(__VA_ARGS__);
 #else
-#define MCT_ASSERT(_EXPR_) ((void)0)
+#define MCT_ASSERT(_EXPR_, ...) ((void)0)
 #endif
