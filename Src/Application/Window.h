@@ -103,6 +103,10 @@ namespace Mct {
 			glfwSwapBuffers(m_WindowHandle);
 		}
 
+		void MakeContextCurrent() const noexcept {
+			glfwMakeContextCurrent(m_WindowHandle);
+		}
+
 		void SetCursorMode(int mode) noexcept {
 			glfwSetInputMode(m_WindowHandle, GLFW_CURSOR, mode);
 		}

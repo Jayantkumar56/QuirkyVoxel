@@ -103,11 +103,10 @@ namespace Mct {
     bool BiomeDataManager::LoadAndBakeMap(std::string_view path, 
                                           BiomeLookupMap&  outMap, 
                                           std::unordered_map<uint32_t, BiomeId>& colorTobiomeId) {
-        Image lut(path.data(), false, 3);
+        std::optional<Image> optImage = Image::Create(path.data(), true, 4);
+        MCT_ASSERT(optImage.has_value(), "First image is not valid.");
 
-        if (!lut.IsValid()) {
-            return false;
-        }
+        const Image& lut = *optImage;
 
         outMap.Width  = lut.GetWidth();
         outMap.Height = lut.GetHeight();
@@ -115,7 +114,7 @@ namespace Mct {
         const size_t size = outMap.Width * outMap.Height;
         outMap.Ids.resize(size);
 
-        const uint8_t* pixels = lut.GetData();
+        const uint8_t* pixels = static_cast<const uint8_t*>(lut.GetData());
 
         for (size_t i = 0; i < size; ++i) {
             const uint8_t r = pixels[i * 3 + 0];

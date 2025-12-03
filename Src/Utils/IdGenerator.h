@@ -16,7 +16,7 @@ namespace Mct {
     requires std::is_integral_v<T>
     class LinearIdGenerator {
     public:
-        constexpr LinearIdGenerator(const T startingId) noexcept :
+        constexpr LinearIdGenerator(T startingId) noexcept :
                 m_NextId(startingId)
         {}
 

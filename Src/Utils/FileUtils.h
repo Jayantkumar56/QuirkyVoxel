@@ -7,23 +7,30 @@
 #pragma once
 
 
-#include "Utils/Assert.h"
-
 #include <string>
+#include <optional>
 #include <fstream>
-#include <sstream>
+#include <filesystem>
 
 
 namespace Mct::Utils {
 
-    inline std::string ReadFileToString(const std::string& filepath) {
-        std::ifstream file(filepath);
+    inline std::optional<std::string> ReadFileToString(const std::filesystem::path& filepath) {
+        std::ifstream file(filepath, std::ios::ate | std::ios::binary);
 
-        MCT_ASSERT(file.is_open() && "Cannot open file.");
+        if (!file.is_open()) {
+            return std::nullopt;
+        }
 
-        std::stringstream buffer;
-        buffer << file.rdbuf();
-        return buffer.str();
+        const size_t fileSize = static_cast<size_t>(file.tellg());
+
+        std::string buffer;
+        buffer.resize(fileSize);
+
+        file.seekg(0);
+        file.read(buffer.data(), fileSize);
+
+        return buffer;
     }
 
 }

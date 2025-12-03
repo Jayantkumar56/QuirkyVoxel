@@ -10,7 +10,7 @@
 #include "Utils/Assert.h"
 
 
-namespace Mct::Utils {
+namespace Mct {
 
     // floor-div that works for negatives the Minecraft way.
     // Example: FloorDiv(-1, 16) == -1
@@ -19,6 +19,10 @@ namespace Mct::Utils {
         const int q = a / b;
         const int r = a % b;
         return (r && ((r > 0) != (b > 0))) ? (q - 1) : q;
+    }
+
+    [[nodiscard]] constexpr float InverseLerp(float start, float end, float value) noexcept {
+        return (value - start) / (end - start);
     }
 
 }

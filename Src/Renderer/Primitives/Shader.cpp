@@ -24,8 +24,8 @@ namespace Mct {
 		// Vertex and fragment shaders are successfully compiled.
 		// Now time to link them together into a program.
 		// Get a program object.
-		m_RendererId = glCreateProgram();
-		GLuint program = m_RendererId;
+		m_RendererID = glCreateProgram();
+		GLuint program = m_RendererID;
 
 		// Attach our shaders to our program
 		glAttachShader(program, vertexShader);
@@ -63,30 +63,30 @@ namespace Mct {
 	}
 
 	Shader::~Shader() noexcept {
-		glDeleteProgram(m_RendererId);
+		glDeleteProgram(m_RendererID);
 	}
 
 	Shader::Shader(Shader&& other) noexcept :
-			m_RendererId(other.m_RendererId)
+			m_RendererID(other.m_RendererID)
 	{
-		other.m_RendererId = 0;
+		other.m_RendererID = 0;
 	}
 
 	Shader& Shader::operator=(Shader&& other) noexcept {
 		if (this != &other) {
-			if (m_RendererId > 0) {
-				glDeleteProgram(m_RendererId);
+			if (m_RendererID > 0) {
+				glDeleteProgram(m_RendererID);
 			}
 
-			m_RendererId       = other.m_RendererId;
-			other.m_RendererId = 0;
+			m_RendererID       = other.m_RendererID;
+			other.m_RendererID = 0;
 		}
 
 		return *this;
 	}
 
 	void Shader::Bind() const noexcept {
-		glUseProgram(m_RendererId);
+		glUseProgram(m_RendererID);
 	}
 
 	void Shader::Unbind() const noexcept {
@@ -94,30 +94,44 @@ namespace Mct {
 	}
 
 	void Shader::UploadUniform(const std::string_view name, const glm::mat4& matrix) const noexcept {
-		GLint location = glGetUniformLocation(m_RendererId, name.data());
-		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
+		GLint location = GetUniformLocation(name);
+		glProgramUniformMatrix4fv(m_RendererID, location, 1, GL_FALSE, glm::value_ptr(matrix));
 	}
 
 	void Shader::UploadUniform(const std::string_view name, const glm::vec3& vec) const noexcept {
-		GLint location = glGetUniformLocation(m_RendererId, name.data());
-		glUniform3fv(location, 1, glm::value_ptr(vec));
+		GLint location = GetUniformLocation(name);
+		glProgramUniform3fv(m_RendererID, location, 1, glm::value_ptr(vec));
 	}
 
 	void Shader::UploadUniform(const std::string_view name, const glm::vec4& vec) const noexcept {
-		GLint location = glGetUniformLocation(m_RendererId, name.data());
-		glUniform4fv(location, 1, glm::value_ptr(vec));
+		GLint location = GetUniformLocation(name);
+		glProgramUniform4fv(m_RendererID, location, 1, glm::value_ptr(vec));
+	}
+
+	void Shader::UploadUniform(const std::string_view name, const glm::ivec2& vec) const noexcept {
+		GLint location = GetUniformLocation(name);
+		glProgramUniform2iv(m_RendererID, location, 1, glm::value_ptr(vec));
 	}
 
 	void Shader::UploadUniform(const std::string_view name, const int32_t* data, uint32_t count) const noexcept {
-		GLint location = glGetUniformLocation(m_RendererId, name.data());
-		glUniform1iv(location, count, data);
+		GLint location = GetUniformLocation(name);
+		glProgramUniform1iv(m_RendererID, location, count, data);
 	}
 
 	void Shader::UploadUniform(const std::string_view name, const float* data, uint32_t count) const noexcept {
-		GLint location = glGetUniformLocation(m_RendererId, name.data());
-		glUniform1fv(location, count, data);
+		GLint location = GetUniformLocation(name);
+		glProgramUniform1fv(m_RendererID, location, count, data);
 	}
 
+	int32_t Shader::GetUniformLocation(const std::string_view name) const noexcept {
+		int32_t location = glGetUniformLocation(m_RendererID, name.data());
+
+		if (location == -1) { 
+			MCT_WARN("Uniform '{}' missing in program {}", name, m_RendererID);
+		}
+
+		return location;
+	}
 
 	static GLuint CompileShader(const GLenum glType, const std::string_view shaderSource) noexcept {
 		GLuint shader = glCreateShader(glType);

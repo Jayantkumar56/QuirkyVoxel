@@ -34,16 +34,24 @@ namespace Mct {
 
         // Sets up textures.
         {
+            TextureProperties props{};
+            props.MinFilter = TextureFilter::Nearest;
+            props.MagFilter = TextureFilter::Nearest;
+            props.MipLevels = 2;
+
             const std::vector<std::string>& blockTexturesPaths = BlockDataManager::GetTextureFilePaths();
-            m_BlockTextureArray = std::make_unique<TextureArray>(blockTexturesPaths);
+            m_BlockTextureArray = std::make_unique<TextureArray>(blockTexturesPaths, props);
         }
 
         // Sets up Terrain Shader.
         {
-            std::string vertexSrc   = Utils::ReadFileToString("Assets/Shaders/Terrain.vert");
-            std::string fragmentSrc = Utils::ReadFileToString("Assets/Shaders/Terrain.frag");
+            const std::filesystem::path vertSrcPath = "Assets/Shaders/Terrain.vert";
+            const std::filesystem::path fragSrcPath = "Assets/Shaders/Terrain.frag";
 
-            m_TerrainShader = std::make_unique<Shader>(vertexSrc, fragmentSrc);
+            const auto vertSrc = Utils::ReadFileToString(vertSrcPath);
+            const auto fragSrc = Utils::ReadFileToString(fragSrcPath);
+
+            m_TerrainShader = std::make_unique<Shader>(*vertSrc, *fragSrc);
 
             // Sets value of permanent uniforms.
             {
@@ -61,6 +69,7 @@ namespace Mct {
     void WorldRenderer::Render(const Camera& camera, World& world) {
         m_MeshManager->Update();
         m_ChunkRendererManager.Update(world, camera, *m_MeshManager);
+        glm::vec3 sunDir = world.GetSunDirection();
 
         // Bind Shader and perform draw call
         {
@@ -77,6 +86,7 @@ namespace Mct {
 
             m_TerrainShader->UploadUniform("u_ViewProjection", camera.GetViewProjection());
             m_TerrainShader->UploadUniform("u_CameraPos", camera.GetPosition());
+            m_TerrainShader->UploadUniform("lightDir", -sunDir);
 
             m_MeshManager->GetCommonVAO().Bind();
 
@@ -103,9 +113,8 @@ namespace Mct {
             m_TerrainShader->Unbind();
         }
 
-        glm::vec3 sunDir{ 0.0f, 0.5f, -1.0f };
-
-        m_SkyboxRenderer.Render(camera, sunDir);
+        m_SkyboxRenderer.Render(camera, world.GetSky());
     }
 
 }
+ 

@@ -79,6 +79,8 @@ RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Renderer/Primitives"
     "Shader.cpp"
     "ShaderStorageBuffer.h"
     "ShaderStorageBuffer.cpp"
+    "Texture2D.h"
+    "Texture2D.cpp"
     "TextureArray.h"
     "TextureArray.cpp"
     "Types.h"
@@ -119,7 +121,9 @@ RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Utils"
     "NonMovable.h"
     "Profiler.h"
     "TaskProcessorPool.h"
+    "TextureUtils.h"
     "ThreadSafeVector.h"
+    "Traits.h"
 )
 
 # Source files in World/Biome
@@ -165,10 +169,13 @@ RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/World/TerrainGenerati
 RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/World"
     "ChunkManager.h"
     "ChunkManager.cpp"
+    "Sky.h"
+    "Sky.cpp"
     "World.h"
     "World.cpp"
     "WorldConstants.h"
     "WorldSettings.h"
+    "WorldTime.h"
 )
 
 

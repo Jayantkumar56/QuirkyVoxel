@@ -28,14 +28,20 @@ namespace Mct {
 		void Bind()   const noexcept;
 		void Unbind() const noexcept;
 
-		void UploadUniform(std::string_view name, const glm::mat4& matrix)             const noexcept;
-		void UploadUniform(std::string_view name, const glm::vec3& vec)                const noexcept;
-		void UploadUniform(std::string_view name, const glm::vec4& vec)                const noexcept;
-		void UploadUniform(std::string_view name, const int32_t* data, uint32_t count) const noexcept;
-		void UploadUniform(std::string_view name, const float* data, uint32_t count)   const noexcept;
+		[[nodiscard]] uint32_t GetId() const noexcept { return m_RendererID; }
+
+		void UploadUniform(std::string_view name, const glm::mat4&  matrix)             const noexcept;
+		void UploadUniform(std::string_view name, const glm::vec3&  vec)                const noexcept;
+		void UploadUniform(std::string_view name, const glm::vec4&  vec)                const noexcept;
+		void UploadUniform(std::string_view name, const glm::ivec2& vec)                const noexcept;
+		void UploadUniform(std::string_view name, const int32_t* data, uint32_t count)  const noexcept;
+		void UploadUniform(std::string_view name, const float* data, uint32_t count)    const noexcept;
 
 	private:
-		uint32_t m_RendererId;
+		int32_t GetUniformLocation(const std::string_view name) const noexcept;
+
+	private:
+		uint32_t m_RendererID;
 	};
 
 }

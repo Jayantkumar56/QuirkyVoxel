@@ -35,15 +35,15 @@ namespace Mct {
         // Map world (block) XZ to ChunkCoord.
         [[nodiscard]] static constexpr ChunkCoord FromWorldXZ(const int wx, const int wz) noexcept {
             return {
-                .X{ Utils::FloorDiv(wx, static_cast<int>(WorldConst::ChunkSizeX)) },
-                .Z{ Utils::FloorDiv(wz, static_cast<int>(WorldConst::ChunkSizeZ)) }
+                .X{ FloorDiv(wx, static_cast<int>(WorldConst::ChunkSizeX)) },
+                .Z{ FloorDiv(wz, static_cast<int>(WorldConst::ChunkSizeZ)) }
             };
         }
 
         [[nodiscard]] static constexpr ChunkCoord FromWorldXZ(const float wx, const float wz) noexcept {
             return {
-                .X{ Utils::FloorDiv(static_cast<int>(std::floor(wx)), static_cast<int>(WorldConst::ChunkSizeX)) },
-                .Z{ Utils::FloorDiv(static_cast<int>(std::floor(wz)), static_cast<int>(WorldConst::ChunkSizeZ)) }
+                .X{ FloorDiv(static_cast<int>(std::floor(wx)), static_cast<int>(WorldConst::ChunkSizeX)) },
+                .Z{ FloorDiv(static_cast<int>(std::floor(wz)), static_cast<int>(WorldConst::ChunkSizeZ)) }
             };
         }
 

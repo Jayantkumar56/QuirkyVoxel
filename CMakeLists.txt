@@ -8,7 +8,7 @@
 # =============================================================================
 
 cmake_minimum_required(VERSION 3.20...4.1)
-project("Minecraft-Clone" LANGUAGES CXX)
+project("QuirkyVoxel" LANGUAGES CXX)
 
 include( "BuildFiles/BuildSettings.cmake"   )
 include( "BuildFiles/CompilerOptions.cmake" )
@@ -19,7 +19,7 @@ include( "BuildFiles/SrcFiles.cmake"        )
 # Project Sources & Executable
 # =============================================================================
 
-set(CURRENT_PROJ_NAME "Minecraft-Clone")
+set(CURRENT_PROJ_NAME "QuirkyVoxel")
 
 # Create the main executable for our game
 add_executable(${CURRENT_PROJ_NAME} ${SOURCE_FILES})

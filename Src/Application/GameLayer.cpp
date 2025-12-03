@@ -60,7 +60,7 @@ namespace Mct {
 		// Updates game state ony when game window have focus.
 		if (m_GameHaveFocus) {
 			m_Player.OnUpdate(deltaTime);
-			m_World.Update(m_Player.GetPosition());
+			m_World.Update(deltaTime, m_Player.GetPosition());
 
 			m_Renderer.Render(m_World, m_Player);
 		}
@@ -106,11 +106,45 @@ namespace Mct {
 	void GameLayer::UpdateDebugUI(float deltaTime) {
 		ImGui::Begin("Stats");
 
-		const ImGuiIO& io     = ImGui::GetIO();
-		glm::vec3      player = m_Player.GetPosition();
+		const ImGuiIO& io       = ImGui::GetIO();
+		glm::vec3      player   = m_Player.GetPosition();
+		TimeData       timeData = m_World.GetGameTime().GetTime();
+
+		glm::ivec4 time = {
+			timeData.Seconds,
+			timeData.Minutes,
+			timeData.Hours,
+			timeData.Days
+		};
+
+		ImGui::Text("Game Time:");
+		if (ImGui::InputInt4("##time", glm::value_ptr(time))) {
+			TimeData newTimeData = {
+				.Seconds {static_cast<uint8_t>(time.x)},
+				.Minutes {static_cast<uint8_t>(time.y)},
+				.Hours   {static_cast<uint8_t>(time.z)},
+				.Days    {static_cast<uint32_t>(time.w)}
+			};
+
+			m_World.GetGameTime().SetTime(newTimeData);
+		}
+
+		float timeScale = m_World.GetGameTime().GetTimeScale();
+
+		ImGui::Text("Time Scale:");
+		if (ImGui::InputFloat("##time_scale", &timeScale)) {
+			m_World.GetGameTime().SetTimeScale(timeScale);
+		}
 
 		ImGui::Text("Player Position:");
 		ImGui::InputFloat3("##pos", glm::value_ptr(player));
+
+		static bool pauseTime = true;
+
+		ImGui::Text("Pause Time:");
+		if (ImGui::Checkbox("##pause_time", &pauseTime)) {
+			pauseTime ? m_World.GetGameTime().Pause() : m_World.GetGameTime().Play();
+		}
 
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
 

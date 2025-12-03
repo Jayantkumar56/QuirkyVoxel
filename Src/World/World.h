@@ -9,7 +9,8 @@
 
 #include "WorldSettings.h"
 #include "ChunkManager.h"
-#include "TerrainGeneration/TerrainGenerator.h"
+#include "Sky.h"
+#include "WorldTime.h"
 
 #include <memory>
 
@@ -20,11 +21,27 @@ namespace Mct {
 	public:
 		World(const WorldSettings& settings);
 
-		void Update(glm::vec3 playerPos);
+		void Update(float deltaTime, glm::vec3 playerPos);
 
-		[[nodiscard]] ChunkManager& GetChunkManager() noexcept { return m_ChunkManager; }
+		[[nodiscard]] ChunkManager& GetChunkManager() noexcept {
+			return m_ChunkManager;
+		}
+
+		[[nodiscard]] const Sky& GetSky() const noexcept {
+			return m_Sky;
+		}
+
+		[[nodiscard]] glm::vec3 GetSunDirection() const noexcept {
+			return m_Sky.GetSunDirection();
+		}
+
+		[[nodiscard]] WorldTime& GetGameTime() noexcept {
+			return m_GameTime;
+		}
 
 	private:
+		Sky          m_Sky;
+		WorldTime    m_GameTime;
 		ChunkManager m_ChunkManager;
 	};
 

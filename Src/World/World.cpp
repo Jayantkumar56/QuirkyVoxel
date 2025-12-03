@@ -13,7 +13,9 @@ namespace Mct {
 			m_ChunkManager(TerrainGenerator::Create<SimpleTerrainGen>())
 	{}
 
-	void World::Update(glm::vec3 playerPos) {
+	void World::Update(float deltaTime, glm::vec3 playerPos) {
+		m_GameTime.Update(deltaTime);
+		m_Sky.Update(m_GameTime);
 		m_ChunkManager.Update(playerPos);
 	}
 

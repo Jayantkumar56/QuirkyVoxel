@@ -15,28 +15,6 @@
 
 namespace Mct {
 
-    static constexpr int TextureWrapToOpenglWrap(TextureWrap wrap) noexcept {
-        switch (wrap) {
-            case TextureWrap::Repeat:         return GL_REPEAT;
-            case TextureWrap::MirroredRepeat: return GL_MIRRORED_REPEAT;
-            case TextureWrap::ClampToEdge:    return GL_CLAMP_TO_EDGE;
-            case TextureWrap::ClampToBorder:  return GL_CLAMP_TO_BORDER;
-        }
-
-        MCT_ASSERT(false, "Invalid TextureWrap type choosen!");
-        return -1;
-    }
-
-    static constexpr int TexutureFilterToOpenglFilter(TextureFilter filter) noexcept {
-        switch (filter) {
-            case TextureFilter::Linear:  return GL_LINEAR;
-            case TextureFilter::Nearest: return GL_NEAREST;
-        }
-
-        MCT_ASSERT(false, "Invalid TexutureFilter type choosen!");
-        return -1;
-    }
-
     static constexpr bool IsFrameBufferColorAttachment(FrameBufferTextureType type) noexcept {
         return type == FrameBufferTextureType::RGBA_8            ||
                type == FrameBufferTextureType::RGB_8             ||
@@ -138,11 +116,11 @@ namespace Mct {
         glBindTexture(GL_TEXTURE_2D, buffer);
         glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, m_FrameBufferSpec.Width, m_FrameBufferSpec.Height, 0, format, dataType, NULL);
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, TexutureFilterToOpenglFilter(spec.MinificationFilter));
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, TexutureFilterToOpenglFilter(spec.MagficationFilter));
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, TexutureFilterToGL(spec.MinificationFilter));
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, TexutureFilterToGL(spec.MagficationFilter));
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, TextureWrapToOpenglWrap(spec.WrapMode));
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, TextureWrapToOpenglWrap(spec.WrapMode));
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, TextureWrapToGL(spec.WrapMode));
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, TextureWrapToGL(spec.WrapMode));
 
         return buffer;
     }

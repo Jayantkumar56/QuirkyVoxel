@@ -11,7 +11,7 @@ uniform sampler2DArray u_BlockTextures;
 uniform vec3 u_CameraPos;
 
 // fixed global light direction (normalized)
-const vec3 lightDir = normalize(vec3(0.5, 1.0, 0.3));
+uniform vec3 lightDir;
 
 // fixed ambient and specular parameters
 const float ambientStrength  = 0.3;
@@ -25,7 +25,7 @@ void main() {
 
     // Normalize normal
     vec3 N = normalize(v_Normal);
-    vec3 L = normalize(-lightDir); // light comes from lightDir
+    vec3 L = normalize(lightDir); // light comes from lightDir
 
     // Simple ambient + diffuse + specular
     vec3 ambient  = ambientStrength * albedo;

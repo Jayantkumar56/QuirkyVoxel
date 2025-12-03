@@ -7,6 +7,8 @@
 #pragma once
 
 
+#include "Texture2D.h"
+
 #include <vector>
 #include <optional>
 
@@ -29,18 +31,6 @@ namespace Mct {
         float RGBA[4];
         int	  RedInteger;
         float DepthValue;
-    };
-
-    enum class TextureFilter : uint8_t {
-        Linear,
-        Nearest
-    };
-
-    enum class TextureWrap : uint8_t {
-        Repeat,
-        MirroredRepeat,
-        ClampToEdge,
-        ClampToBorder
     };
 
     struct FrameBufferAttachmentSpec {
