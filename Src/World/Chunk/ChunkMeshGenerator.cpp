@@ -116,7 +116,11 @@ namespace Mct {
         const auto& offset      = CUBE_NEIGHBOR_OFFSETS[static_cast<size_t>(face)];
         const auto& faceIndices = CUBE_FACE_INDICES[static_cast<size_t>(face)];
 
-        const Block neighborBlock = neighbor.GetBlock(x + offset.x, y + offset.y, z + offset.z);
+        const Block neighborBlock = neighbor.GetBlock(
+            static_cast<int>(x) + static_cast<int>(offset.x),
+            static_cast<int>(y) + static_cast<int>(offset.y),
+            static_cast<int>(z) + static_cast<int>(offset.z)
+        );
 
         if (!ShouldDrawFace(currentBlock, neighborBlock)) {
             return; // Face is occluded

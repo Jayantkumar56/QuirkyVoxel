@@ -7,15 +7,11 @@
 #pragma once
 
 
-#include "Layer.h"
-
-#include <vector>
-#include <memory>
+#include "LayerManager.h"
 
 
 namespace Mct {
 
-    class Event;
     class Window;
 
     class Application {
@@ -28,25 +24,15 @@ namespace Mct {
         template<typename T, typename ...Args>
         requires (std::derived_from<T, Layer>&& std::constructible_from<T, Args...>)
         T& PushLayer(Args&& ...args) {
-            auto& layer = m_LayerStack.emplace_back(
-                std::make_unique<T>(std::forward<Args>(args)...)
-            );
-
-            layer->m_App = this;
-            layer->OnAttach();
-            return static_cast<T&>(*layer);
+            m_LayerManager.PushLayer(std::forward<Args>(args)...);
         }
 
         Window& GetWindow() noexcept { return *m_Window; }
 
     private:
-        void OnEvent(Event& e);
-
-    private:
         std::unique_ptr<Window> m_Window;
 
-        // TODO: Move layer stack to it's own dedicated class
-        std::vector<std::unique_ptr<Layer>> m_LayerStack;
+        LayerManager m_LayerManager;
 
         double m_LastFrameTime = 0.0;
     };

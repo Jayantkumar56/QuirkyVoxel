@@ -34,14 +34,14 @@ namespace Mct {
         // 5  bits - Packed V (0-16, representing 0.0 to 1.0)
         // 10 bits - Texture ID bits (supports 1024 unique face textures)
 
-        static constexpr TerrainVertex Create(const uint32_t   x,
-                                              const uint32_t   y,
-                                              const uint32_t   z,                          // Position (0-16)
-                                              const uint32_t   yOffset,                    // Y-Offset (0-15)
-                                              const uint32_t   u,
-                                              const uint32_t   v,                          // UV (0-16)
-                                              const uint32_t   texID,
-                                              const CubeNormal normID) noexcept
+        static constexpr TerrainVertex Create(uint32_t   x,
+                                              uint32_t   y,
+                                              uint32_t   z,                          // Position (0-16)
+                                              uint32_t   yOffset,                    // Y-Offset (0-15)
+                                              uint32_t   u,
+                                              uint32_t   v,                          // UV (0-16)
+                                              uint32_t   texID,
+                                              CubeNormal normID) noexcept
         {
             uint32_t data1 = (x & 0x1F)                 |
                              ((y & 0x1F) << 5)          |

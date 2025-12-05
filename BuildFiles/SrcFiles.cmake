@@ -24,11 +24,11 @@ set(BASE_SOURCE_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Src")
 RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Application"
     "Application.h"
     "Application.cpp"
-    "GameLayer.h"
-    "GameLayer.cpp"
     "ImguiContext.h"
     "ImguiContext.cpp"
     "Layer.h"
+    "LayerManager.h"
+    "LayerManager.cpp"
     "main.cpp"
     "Window.h"
     "Window.cpp"
@@ -41,6 +41,12 @@ RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Events"
     "EventDispatcher.h"
     "KeyboardEvents.h"
     "MouseEvents.h"
+)
+
+# Source files in Layers
+RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Layers"
+    "GameLayer.h"
+    "GameLayer.cpp"
 )
 
 # Source files in Player

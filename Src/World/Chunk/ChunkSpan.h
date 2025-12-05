@@ -33,8 +33,8 @@ namespace Mct {
                 );
 
                 return (subchunkX * WorldConst::SubchunkSizeY * WorldConst::SubchunkSizeZ) +
-                    (subchunkY * WorldConst::SubchunkSizeZ) +
-                    subchunkZ;
+                       (subchunkY * WorldConst::SubchunkSizeZ) +
+                       subchunkZ;
             }
 
             [[nodiscard]] static constexpr size_t SubchunkOffset(const size_t subchunkIdx) noexcept {
@@ -61,14 +61,14 @@ namespace Mct {
             template<class Fun>
             requires std::is_invocable_v<Fun&&, size_t, size_t, size_t, size_t>
             static constexpr void ForEachIndexInSubchunk(Fun&& fun)
-                noexcept(std::is_nothrow_invocable_v<Fun&&, size_t, size_t, size_t, size_t>)
+                noexcept(std::is_nothrow_invocable_v<Fun, size_t, size_t, size_t, size_t>)
             {
                 for (size_t x = 0; x < WorldConst::SubchunkSizeX; ++x) {
                     const size_t baseX = x * StrideX;
                     for (size_t y = 0; y < WorldConst::SubchunkSizeY; ++y) {
                         size_t blockIdx = baseX + y * StrideY;
                         for (size_t z = 0; z < WorldConst::SubchunkSizeZ; ++z, ++blockIdx) {
-                            std::invoke(std::forward<Fun>(fun), x, y, z, blockIdx);
+                            std::invoke(fun, x, y, z, blockIdx);
                         }
                     }
                 }

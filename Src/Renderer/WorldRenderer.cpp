@@ -101,7 +101,7 @@ namespace Mct {
             glEnable(GL_DEPTH_TEST);
             glMultiDrawElementsIndirect(
                 GL_TRIANGLES,                           // mode
-                GL_UNSIGNED_INT,                        // type (must match your EBO type)
+                GL_UNSIGNED_INT,                        // type (match EBO type)
                 (void*)0,                               // indirect (offset into MDI buffer)
                 static_cast<GLsizei>(commands.size()),  // drawcount
                 sizeof(DrawElementsIndirectCommand)     // stride

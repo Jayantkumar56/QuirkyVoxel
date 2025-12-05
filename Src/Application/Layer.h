@@ -7,6 +7,9 @@
 #pragma once
 
 
+#include "Utils/IdGenerator.h"
+
+
 namespace Mct {
 
     class Event;
@@ -14,7 +17,7 @@ namespace Mct {
     class Application;
 
     class Layer {
-        friend class Application;
+        friend class LayerManager;
 
     public:
         virtual ~Layer() = default;
@@ -31,10 +34,16 @@ namespace Mct {
         // Called every frame.
         virtual void OnUpdate(float deltaTime) {}
 
-        Application* GetApp() noexcept { return m_App; }
+        constexpr bool         IsDisabled()    const noexcept { return m_Disabled;   }
+        constexpr size_t       GetTypeId()     const noexcept { return m_TypeId;     }
+        constexpr size_t       GetInstanceId() const noexcept { return m_InstanceId; }
+        constexpr Application* GetApp()              noexcept { return m_App;        }
 
     private:
-        Application* m_App = nullptr;
+        bool         m_Disabled   = true;
+        size_t       m_TypeId     = InvalidTypeId;
+        size_t       m_InstanceId = InvalidId<size_t>;
+        Application* m_App        = nullptr;
     };
 
 }

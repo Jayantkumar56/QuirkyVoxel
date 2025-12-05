@@ -6,9 +6,8 @@
 
 #include "Application.h"
 #include "Window.h"
-#include "GameLayer.h"
+#include "Layers/GameLayer.h"
 #include "Events/EventDispatcher.h"
-#include "ImguiContext.h"
 #include "World/Block/BlockDataManager.h"
 #include "World/Biome/BiomeDataManager.h"
 #include "Utils/Logger.h"
@@ -17,10 +16,12 @@
 
 namespace Mct {
 
-    Application::Application() noexcept {
+    Application::Application() noexcept :
+            m_LayerManager(this)
+    {
         static EventCallbackFn eventCallback = +[] (Event& e, void* userData) {
             Application* app = static_cast<Application*>(userData);
-            app->OnEvent(e);
+            app->m_LayerManager.OnEvent(e);
         };
 
         EventDispatcher::RegisterEventCallback(eventCallback, this);
@@ -47,7 +48,7 @@ namespace Mct {
         BlockDataManager::Init();
         BiomeDataManager::Init();
 
-        PushLayer<GameLayer>();
+        m_LayerManager.PushLayer<GameLayer>();
 
         while (!m_Window->ShouldClose()) {
             MCT_PROFILE_FRAME("MainThread");
@@ -58,27 +59,14 @@ namespace Mct {
 
             m_LastFrameTime = time;
 
+            m_LayerManager.Update();
+
             m_Window->PollEvents();
-
-            ImguiContext::Begin();
-
-            for (const auto& layer : m_LayerStack) {
-                layer->OnUpdate(deltaTime);
-            }
-
-            ImguiContext::End();
-
+            m_LayerManager.UpdateLayers(deltaTime);
             m_Window->SwapBuffers();
         }
-    }
 
-    void Application::OnEvent(Event& e) {
-        for (auto it = m_LayerStack.rbegin(); it != m_LayerStack.rend(); ++it) {
-            if (e.IsHandled())
-                break;
-
-            (*it)->OnEvent(e);
-        }
+        m_LayerManager.Clear();
     }
 
 }
