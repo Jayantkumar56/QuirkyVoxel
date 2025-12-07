@@ -23,6 +23,7 @@ add_subdirectory( Vendor/stb           )
 add_subdirectory( Vendor/yaml-cpp      )
 add_subdirectory( Vendor/FastNoiseLite )
 add_subdirectory( Vendor/spdlog        )
+add_subdirectory( Vendor/QkTraits      )
 
 include("BuildFiles/imgui.cmake")
 include("BuildFiles/tracy.cmake")
@@ -37,6 +38,7 @@ target_link_libraries(${CURRENT_PROJ_NAME} PRIVATE
     FastNoiseLite
     spdlog
     TracyClient
+    QkTraits
 )
 
 set_target_properties(
@@ -48,6 +50,7 @@ set_target_properties(
     FastNoiseLite
     spdlog
     TracyClient
+    QkTraits
     PROPERTIES FOLDER "Dependencies"
 )
 

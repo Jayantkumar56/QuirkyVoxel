@@ -16,7 +16,7 @@ namespace Mct {
     static bool ShouldDrawFace(const Block current, 
                                const Block neighbor) noexcept;
 
-    static void AddFaceIfVisible(size_t x, size_t y, size_t z,      // Current block coords
+    static void AddFaceIfVisible(uint32_t x, uint32_t y, uint32_t z,      // Current block coords
                                  const Block             currentBlock,
                                  const CubeNormal        face,
                                  PackedTerrainMesh&      targetMesh,
@@ -62,9 +62,9 @@ namespace Mct {
 	void ChunkMeshGenerator::GenerateSubchunkMesh(SubchunkMesh* outMesh, const SubChunkNeighbor& neighbor) {
         MCT_ASSERT(outMesh && "Cannot Write to null mesh, provide valid non null mesh.");
 
-        neighbor.Main.ForEachConstXYZ([&neighbor, outMesh](const size_t x, 
-                                                           const size_t y, 
-                                                           const size_t z, 
+        neighbor.Main.ForEachConstXYZ([&neighbor, outMesh](const uint32_t x, 
+                                                           const uint32_t y, 
+                                                           const uint32_t z, 
                                                            const Block currentBlock)
         {
             if (!currentBlock.HaveMesh()) {
@@ -107,7 +107,7 @@ namespace Mct {
         return true;
     }
 
-    static void AddFaceIfVisible(size_t x, size_t y, size_t z,      // Current block coords
+    static void AddFaceIfVisible(uint32_t x, uint32_t y, uint32_t z,      // Current block coords
                                  const Block             currentBlock,
                                  const CubeNormal        face,
                                  PackedTerrainMesh&      targetMesh,

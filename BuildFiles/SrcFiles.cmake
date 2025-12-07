@@ -129,7 +129,6 @@ RegisterSourceFiles(SOURCE_FILES "${BASE_SOURCE_DIRECTORY}/Utils"
     "TaskProcessorPool.h"
     "TextureUtils.h"
     "ThreadSafeVector.h"
-    "Traits.h"
 )
 
 # Source files in World/Biome

@@ -8,8 +8,9 @@
 
 
 #include "NonCopyable.h"
-#include "Traits.h"
 #include "Assert.h"
+
+#include <QkTraits/TypeTraits.h>
 
 #include <string>
 #include <optional>
@@ -59,7 +60,7 @@ namespace Mct {
         }
 
         template<typename T>
-        requires IsOneOf_V<std::decay_t<T>, std::vector<uint8_t>, std::vector<uint16_t>, std::vector<float>>
+        requires QkT::IsOneOf_V<std::decay_t<T>, std::vector<uint8_t>, std::vector<uint16_t>, std::vector<float>>
         [[nodiscard]] static Image Create(T&& data, int width, int height, int channels) {
             MCT_ASSERT(data.size() == static_cast<size_t>(width) * static_cast<size_t>(height) * static_cast<size_t>(channels),
                        "Vector size does not match image dimensions!");

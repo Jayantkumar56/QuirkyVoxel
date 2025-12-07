@@ -16,3 +16,6 @@
 [submodule "Vendor/tracy"]
 	path = Vendor/tracy
 	url = https://github.com/wolfpld/tracy
+[submodule "Vendor/QkTraits"]
+	path = Vendor/QkTraits
+	url = https://github.com/Jayantkumar56/QkTraits

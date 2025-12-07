@@ -9,13 +9,15 @@
 
 #include "Image.h"
 
+#include <QkTraits/TypeTraits.h>
+
 
 namespace Mct {
 
     class TextureUtils {
     public:
         template <typename T>
-        requires IsOneOf_V<T, uint8_t, uint16_t, float>
+        requires QkT::IsOneOf_V<T, uint8_t, uint16_t, float>
         [[nodiscard]] static Image GenerateGenericMissingPattern(int width, int height, int channels) {
             MCT_ASSERT(width != 0 && height != 0 && channels != 0);
 

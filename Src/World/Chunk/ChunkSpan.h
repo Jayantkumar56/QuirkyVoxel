@@ -10,7 +10,7 @@
 #include "World/WorldConstants.h"
 #include "Utils/Assert.h"
 
-#include <type_traits>
+#include <QkTraits/FunctionTraits.h>
 
 
 namespace Mct {
@@ -22,9 +22,9 @@ namespace Mct {
             static constexpr size_t StrideY = WorldConst::SubchunkSizeZ;                             // = SizeZ
             static constexpr size_t StrideX = WorldConst::SubchunkSizeY * WorldConst::SubchunkSizeZ; // = SizeY * SizeZ
 
-            [[nodiscard]] static constexpr size_t IdxFromSubchunkPos(const size_t subchunkX,
-                                                                     const size_t subchunkY,
-                                                                     const size_t subchunkZ) noexcept
+            [[nodiscard]] static constexpr size_t IdxFromSubchunkPos(size_t subchunkX,
+                                                                     size_t subchunkY,
+                                                                     size_t subchunkZ) noexcept
             {
                 MCT_ASSERT(
                     subchunkX < WorldConst::SubchunkSizeX &&
@@ -37,14 +37,14 @@ namespace Mct {
                        subchunkZ;
             }
 
-            [[nodiscard]] static constexpr size_t SubchunkOffset(const size_t subchunkIdx) noexcept {
+            [[nodiscard]] static constexpr size_t SubchunkOffset(size_t subchunkIdx) noexcept {
                 MCT_ASSERT(subchunkIdx < WorldConst::SubchunkCount);
                 return subchunkIdx * WorldConst::SubchunkBlockCount;
             }
 
-            [[nodiscard]] static constexpr size_t IdxFromChunkPos(const size_t chunkX,
-                                                                  const size_t chunkY,
-                                                                  const size_t chunkZ) noexcept
+            [[nodiscard]] static constexpr size_t IdxFromChunkPos(size_t chunkX,
+                                                                  size_t chunkY,
+                                                                  size_t chunkZ) noexcept
             {
                 MCT_ASSERT(
                     chunkX < WorldConst::ChunkSizeX &&
@@ -58,16 +58,43 @@ namespace Mct {
             }
 
             // Walk every (x,y,z) in layout order and invoke f(x,y,z, idx)
-            template<class Fun>
-            requires std::is_invocable_v<Fun&&, size_t, size_t, size_t, size_t>
+            template<typename Fun>
             static constexpr void ForEachIndexInSubchunk(Fun&& fun)
-                noexcept(std::is_nothrow_invocable_v<Fun, size_t, size_t, size_t, size_t>)
+                    noexcept(std::is_nothrow_invocable_v<Fun,
+                        typename QkT::Function<Fun>::ArgsT::template Get<0>, // x
+                        typename QkT::Function<Fun>::ArgsT::template Get<1>, // y
+                        typename QkT::Function<Fun>::ArgsT::template Get<2>, // z
+                        typename QkT::Function<Fun>::ArgsT::template Get<3>  // idx
+                    >)
             {
-                for (size_t x = 0; x < WorldConst::SubchunkSizeX; ++x) {
-                    const size_t baseX = x * StrideX;
-                    for (size_t y = 0; y < WorldConst::SubchunkSizeY; ++y) {
-                        size_t blockIdx = baseX + y * StrideY;
-                        for (size_t z = 0; z < WorldConst::SubchunkSizeZ; ++z, ++blockIdx) {
+                using functorT = QkT::Function<Fun>;
+
+                static_assert(std::is_same_v<typename functorT::ReturnT, void>);
+                static_assert(functorT::ArgsT::Size == 4);
+            
+                using typeX     = typename functorT::ArgsT::template Get<0>;
+                using typeY     = typename functorT::ArgsT::template Get<1>;
+                using typeZ     = typename functorT::ArgsT::template Get<2>;
+                using blockIdxT = typename functorT::ArgsT::template Get<3>;
+
+                static_assert(
+                    std::is_integral_v<typeX> && 
+                    std::is_integral_v<typeY> && 
+                    std::is_integral_v<typeZ> &&
+                    std::is_integral_v<blockIdxT>
+                );
+
+                constexpr typeX subchunkSizeX = static_cast<typeX>(WorldConst::SubchunkSizeX);
+                constexpr typeY subchunkSizeY = static_cast<typeY>(WorldConst::SubchunkSizeY);
+                constexpr typeZ subchunkSizeZ = static_cast<typeZ>(WorldConst::SubchunkSizeZ);
+
+                for (typeX x = 0; x < subchunkSizeX; ++x) {
+                    const blockIdxT baseX = static_cast<blockIdxT>(x) * static_cast<blockIdxT>(StrideX);
+
+                    for (typeY y = 0; y < subchunkSizeY; ++y) {
+                        blockIdxT blockIdx = baseX + static_cast<blockIdxT>(y) * static_cast<blockIdxT>(StrideY);
+
+                        for (typeZ z = 0; z < subchunkSizeZ; ++z, ++blockIdx) {
                             std::invoke(fun, x, y, z, blockIdx);
                         }
                     }
@@ -75,28 +102,49 @@ namespace Mct {
             }
 
             template<class Fun>
-            requires std::is_invocable_v<Fun&&, size_t, size_t, size_t, size_t>
             static constexpr void ForEachIndexInChunk(Fun&& f)
-                noexcept(std::is_nothrow_invocable_v<Fun&&, size_t, size_t, size_t, size_t>)
+                    noexcept(std::is_nothrow_invocable_v<Fun,
+                        typename QkT::Function<Fun>::ArgsT::template Get<0>, // x
+                        typename QkT::Function<Fun>::ArgsT::template Get<1>, // y
+                        typename QkT::Function<Fun>::ArgsT::template Get<2>, // z
+                        typename QkT::Function<Fun>::ArgsT::template Get<3>  // idx
+                    >)
             {
+                using functorT = QkT::Function<Fun>;
+
+                static_assert(std::is_same_v<typename functorT::ReturnT, void>);
+                static_assert(functorT::ArgsT::Size == 4);
+            
+                using typeX     = typename functorT::ArgsT::template Get<0>;
+                using typeY     = typename functorT::ArgsT::template Get<1>;
+                using typeZ     = typename functorT::ArgsT::template Get<2>;
+                using blockIdxT = typename functorT::ArgsT::template Get<3>;
+
+                static_assert(
+                    std::is_integral_v<typeX> && 
+                    std::is_integral_v<typeY> && 
+                    std::is_integral_v<typeZ> &&
+                    std::is_integral_v<blockIdxT>
+                );
+
                 for (size_t scY = 0; scY < WorldConst::SubchunkCount; ++scY) {
                     // Base memory offset for this subchunk
-                    const size_t subchunkBaseOffset = SubchunkOffset(scY);
+                    const blockIdxT subchunkBaseOffset = SubchunkOffset(scY);
 
                     // Base world-Y coordinate for this subchunk
-                    const size_t subchunkBaseY = scY * WorldConst::SubchunkSizeY;
+                    const blockIdxT subchunkBaseY = static_cast<blockIdxT>(scY) * WorldConst::SubchunkSizeY;
 
                     ForEachIndexInSubchunk(
-                        [&](size_t x, size_t y, size_t z, size_t localIdx) 
-                            noexcept(std::is_nothrow_invocable_v<Fun&&, size_t, size_t, size_t, size_t>)
+                        [&](typeX x, typeY y, typeZ z, blockIdxT localIdx)
+                            noexcept(std::is_nothrow_invocable_v<Fun&&, typeX, typeY, typeZ, blockIdxT>)
                         {
                             // Calculate the chunk coordinates
-                            const size_t chunkX = x;
-                            const size_t chunkY = subchunkBaseY + y;
-                            const size_t chunkZ = z;
+                            const blockIdxT chunkX = static_cast<blockIdxT>(x);
+                            const blockIdxT chunkY = subchunkBaseY + static_cast<blockIdxT>(y);
+                            const blockIdxT chunkZ = static_cast<blockIdxT>(z);
 
                             // Calculate the final chunk index
-                            const size_t chunkIdx = subchunkBaseOffset + localIdx;
+                            const blockIdxT chunkIdx = subchunkBaseOffset + localIdx;
 
                             std::invoke(std::forward<Fun>(f), chunkX, chunkY, chunkZ, chunkIdx);
                         }
@@ -141,31 +189,75 @@ namespace Mct {
         [[nodiscard]] constexpr size_t SizeZ() const noexcept { return WorldConst::SubchunkSizeZ; }
 
         template<typename Fun>
-        requires (!std::is_const_v<T> && std::is_invocable_v<Fun&&, size_t, size_t, size_t, T&>)
-        constexpr void ForEachXYZ(Fun&& fun) 
-            noexcept(std::is_nothrow_invocable_v<Fun&&, size_t, size_t, size_t, T&>)
+        constexpr void ForEachXYZ(Fun&& fun)
+                noexcept(std::is_nothrow_invocable_v<Fun,
+                    typename QkT::Function<Fun>::ArgsT::template Get<0>,
+                    typename QkT::Function<Fun>::ArgsT::template Get<1>,
+                    typename QkT::Function<Fun>::ArgsT::template Get<2>,
+                    typename QkT::Function<Fun>::ArgsT::template Get<3>
+                >)
         {
             MCT_ASSERT(m_Data != nullptr);
 
-            Internal::ChunkLayout::ForEachIndexInSubchunk([this, &fun](size_t x, size_t y, size_t z, size_t idx) 
-                noexcept(std::is_nothrow_invocable_v<Fun&&, size_t, size_t, size_t, T&>)
-            {
-                std::invoke(std::forward<Fun>(fun), x, y, z, m_Data[idx]);
-            });
+            using functorT = QkT::Function<Fun>;
+
+            static_assert(std::is_same_v<typename functorT::ReturnT, void>, "Callback must return void");
+            static_assert(functorT::ArgsT::Size == 4, "Callback must take 4 arguments: (x, y, z, Block)");
+
+            using typeX     = typename functorT::ArgsT::template Get<0>;
+            using typeY     = typename functorT::ArgsT::template Get<1>;
+            using typeZ     = typename functorT::ArgsT::template Get<2>;
+            using blockArgT = typename functorT::ArgsT::template Get<3>;
+
+            static_assert(std::is_integral_v<typeX> && std::is_integral_v<typeY> && std::is_integral_v<typeZ>,
+                "Coordinates must be integral types");
+
+            static_assert(!std::is_same_v<blockArgT, T>,
+                "Mutable ForEachXYZ should accept 'Block&' (or const Block&). Do not accept by value (copy).");
+
+            Internal::ChunkLayout::ForEachIndexInSubchunk(
+                [this, &fun](typeX x, typeY y, typeZ z, size_t idx)
+                noexcept(std::is_nothrow_invocable_v<Fun, typeX, typeY, typeZ, blockArgT>)
+                {
+                    std::invoke(fun, x, y, z, m_Data[idx]);
+                }
+            );
         }
 
         template<typename Fun>
-        requires std::is_invocable_v<Fun&&, size_t, size_t, size_t, const T&>
         constexpr void ForEachConstXYZ(Fun&& fun) const
-            noexcept(std::is_nothrow_invocable_v<Fun&&, size_t, size_t, size_t, const T&>)
+                noexcept(std::is_nothrow_invocable_v<Fun,
+                    typename QkT::Function<Fun>::ArgsT::template Get<0>,
+                    typename QkT::Function<Fun>::ArgsT::template Get<1>,
+                    typename QkT::Function<Fun>::ArgsT::template Get<2>,
+                    typename QkT::Function<Fun>::ArgsT::template Get<3>
+                >)
         {
             MCT_ASSERT(m_Data != nullptr);
 
-            Internal::ChunkLayout::ForEachIndexInSubchunk([this, &fun](size_t x, size_t y, size_t z, size_t idx)
-                noexcept(std::is_nothrow_invocable_v<Fun&&, size_t, size_t, size_t, const T&>)
-            {
-                std::invoke(std::forward<Fun>(fun), x, y, z, m_Data[idx]);
-            });
+            using functorT = QkT::Function<Fun>;
+
+            static_assert(std::is_same_v<typename functorT::ReturnT, void>, "Callback must return void");
+            static_assert(functorT::ArgsT::Size == 4, "Callback must take 4 arguments: (x, y, z, Block)");
+
+            using typeX     = typename functorT::ArgsT::template Get<0>;
+            using typeY     = typename functorT::ArgsT::template Get<1>;
+            using typeZ     = typename functorT::ArgsT::template Get<2>;
+            using blockArgT = typename functorT::ArgsT::template Get<3>;
+
+            static_assert(std::is_integral_v<typeX> && std::is_integral_v<typeY> && std::is_integral_v<typeZ>,
+                          "Coordinates must be integral types");
+
+            static_assert(!std::is_same_v<blockArgT, T&>,
+                          "Cannot bind mutable reference (T&) in ForEachConstXYZ. Use const T& or T.");
+
+            Internal::ChunkLayout::ForEachIndexInSubchunk(
+                [this, &fun](typeX x, typeY y, typeZ z, size_t idx)
+                        noexcept(std::is_nothrow_invocable_v<Fun, typeX, typeY, typeZ, blockArgT>)
+                {
+                    std::invoke(fun, x, y, z, m_Data[idx]);
+                }
+            );
         }
 
     private:
@@ -222,31 +314,75 @@ namespace Mct {
         }
 
         template<typename Fun>
-        requires (!std::is_const_v<T> && std::is_invocable_v<Fun&&, size_t, size_t, size_t, T&>)
         constexpr void ForEachXYZ(Fun&& fun) 
-            noexcept(std::is_nothrow_invocable_v<Fun&&, size_t, size_t, size_t, T&>)
+                noexcept(std::is_nothrow_invocable_v<Fun,
+                    typename QkT::Function<Fun>::ArgsT::template Get<0>,
+                    typename QkT::Function<Fun>::ArgsT::template Get<1>,
+                    typename QkT::Function<Fun>::ArgsT::template Get<2>,
+                    typename QkT::Function<Fun>::ArgsT::template Get<3>
+                >)
         {
             MCT_ASSERT(m_Data != nullptr);
 
-            Internal::ChunkLayout::ForEachIndexInChunk([this, &fun](size_t x, size_t y, size_t z, size_t idx)
-                noexcept(std::is_nothrow_invocable_v<Fun&&, size_t, size_t, size_t, T&>)
-            {
-                std::invoke(std::forward<Fun>(fun), x, y, z, m_Data[idx]);
-            });
+            using functorT = QkT::Function<Fun>;
+
+            static_assert(std::is_same_v<typename functorT::ReturnT, void>, "Callback must return void");
+            static_assert(functorT::ArgsT::Size == 4, "Callback must take 4 arguments: (x, y, z, Block)");
+
+            using typeX     = typename functorT::ArgsT::template Get<0>;
+            using typeY     = typename functorT::ArgsT::template Get<1>;
+            using typeZ     = typename functorT::ArgsT::template Get<2>;
+            using blockArgT = typename functorT::ArgsT::template Get<3>;
+
+            static_assert(std::is_integral_v<typeX> && std::is_integral_v<typeY> && std::is_integral_v<typeZ>,
+                "Coordinates must be integral types");
+
+            static_assert(!std::is_same_v<blockArgT, T>,
+                "Mutable ForEachXYZ should accept 'Block&' (or const Block&). Do not accept by value (copy).");
+
+            Internal::ChunkLayout::ForEachIndexInChunk(
+                [this, &fun](typeX x, typeY y, typeZ z, size_t idx)
+                    noexcept(std::is_nothrow_invocable_v<Fun, typeX, typeY, typeZ, blockArgT>)
+                {
+                    std::invoke(fun, x, y, z, m_Data[idx]);
+                }
+            );
         }
 
         template<typename Fun>
-        requires std::is_invocable_v<Fun&&, size_t, size_t, size_t, const T&>
         constexpr void ForEachConstXYZ(Fun&& fun) const
-            noexcept(std::is_nothrow_invocable_v<Fun&&, size_t, size_t, size_t, const T&>)
+                noexcept(std::is_nothrow_invocable_v<Fun,
+                    typename QkT::Function<Fun>::ArgsT::template Get<0>,
+                    typename QkT::Function<Fun>::ArgsT::template Get<1>,
+                    typename QkT::Function<Fun>::ArgsT::template Get<2>,
+                    typename QkT::Function<Fun>::ArgsT::template Get<3>
+                >)
         {
             MCT_ASSERT(m_Data != nullptr);
 
-            Internal::ChunkLayout::ForEachIndexInChunk([this, &fun](size_t x, size_t y, size_t z, size_t idx)
-                noexcept(std::is_nothrow_invocable_v<Fun&&, size_t, size_t, size_t, const T&>)
-            {
-                std::invoke(std::forward<Fun>(fun), x, y, z, m_Data[idx]);
-            });
+            using functorT = QkT::Function<Fun>;
+
+            static_assert(std::is_same_v<typename functorT::ReturnT, void>, "Callback must return void");
+            static_assert(functorT::ArgsT::Size == 4, "Callback must take 4 arguments: (x, y, z, Block)");
+
+            using typeX     = typename functorT::ArgsT::template Get<0>;
+            using typeY     = typename functorT::ArgsT::template Get<1>;
+            using typeZ     = typename functorT::ArgsT::template Get<2>;
+            using blockArgT = typename functorT::ArgsT::template Get<3>;
+
+            static_assert(std::is_integral_v<typeX> && std::is_integral_v<typeY> && std::is_integral_v<typeZ>,
+                          "Coordinates must be integral types");
+
+            static_assert(!std::is_same_v<blockArgT, T&>,
+                          "Cannot bind mutable reference (T&) in ForEachConstXYZ. Use const T& or T.");
+
+            Internal::ChunkLayout::ForEachIndexInChunk(
+                [this, &fun](typeX x, typeY y, typeZ z, size_t idx)
+                    noexcept(std::is_nothrow_invocable_v<Fun, typeX, typeY, typeZ, blockArgT>)
+                {
+                    std::invoke(fun, x, y, z, m_Data[idx]);
+                }
+            );
         }
 
     private:
